@@ -14,7 +14,7 @@ import {
 import { CreditAccountMetadataComponent } from "../../pages/CreditAccountMetadataComponent";
 import { usePermissionMatrix } from "../../../../common/authentication/PermissionMatrix";
 import { useGetCreditAccountMetadataQuery } from "../../hooks/creditAccount";
-import { IDIR_USER_ROLE } from "../../../../common/authentication/types";
+// import { IDIR_USER_ROLE } from "../../../../common/authentication/types";
 import { CREDIT_ACCOUNT_USER_TYPE } from "../../types/creditAccount";
 
 export const ManageSettingsDashboard = React.memo(() => {
@@ -42,7 +42,7 @@ export const ManageSettingsDashboard = React.memo(() => {
   };
 
   const isStaffActingAsCompany = Boolean(idirUserDetails?.userRole);
-  const isFinanceUser = idirUserDetails?.userRole === IDIR_USER_ROLE.FINANCE;
+  // const isFinanceUser = idirUserDetails?.userRole === IDIR_USER_ROLE.FINANCE;
 
   const [hideSuspendTab, setHideSuspendTab] = useState<boolean>(false);
   const showSuspendTab = canViewSuspend(userClaims) && !hideSuspendTab;
@@ -57,10 +57,10 @@ export const ManageSettingsDashboard = React.memo(() => {
       permissionMatrixFeatureKey: "MANAGE_SETTINGS",
       permissionMatrixFunctionKey: getPermissionMatrixFunctionKey(),
     },
-    additionalConditionToCheck: () =>
-      // Show the tab if there is a credit account or if the user is a finance user.
-      // Todo: ORV2-2771 Display info box if there is no credit account.
-      Boolean(creditAccountMetadata) || isFinanceUser,
+    // additionalConditionToCheck: () =>
+    //   // Show the tab if there is a credit account or if the user is a finance user.
+    //   // Todo: ORV2-2771 Display info box if there is no credit account.
+    //   Boolean(creditAccountMetadata) || isFinanceUser,
   });
 
   const { state: stateFromNavigation } = useLocation();
