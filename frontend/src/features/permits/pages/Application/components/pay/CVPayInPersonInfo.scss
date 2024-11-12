@@ -1,0 +1,31 @@
+@import "../../../../../../themes/orbcStyles";
+
+.cv-pay-in-person-info {
+  padding: 0;
+
+  &__heading {
+    color: $bc-black;
+    font-size: 1.5rem;
+    margin: 0;
+    padding-bottom: 1rem;
+  }
+
+  &__body {
+    color: $bc-black;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  &__link {
+    color: $bc-text-links-blue;
+    &:hover {
+      color: $blue;
+      text-decoration: none;
+    }
+  }
+
+  &__icon {
+    color: $bc-text-links-blue;
+    padding-left: .5rem;
+  }
+}

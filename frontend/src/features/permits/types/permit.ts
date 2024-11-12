@@ -14,10 +14,7 @@ import { PermitApplicationOrigin } from "./PermitApplicationOrigin";
 interface PartialPermit
   extends Omit<
     Required<PartialApplication>,
-    "previousRevision"
-    | "comment"
-    | "userGuid"
-    | "documentId"
+    "previousRevision" | "comment" | "userGuid" | "documentId"
   > {
   previousRevision?: Nullable<string>;
   comment?: Nullable<string>;
@@ -68,7 +65,7 @@ export interface PermitListItem {
 /**
  * Type for permit response data from fetching permit details.
  */
-export interface PermitResponseData extends Permit {};
+export interface PermitResponseData extends Permit {}
 
 /**
  * Type used to describe the response object from various actions performed on permits
@@ -82,4 +79,4 @@ export interface PermitsActionResponse {
 /**
  * Type used to describe the response object for issuing permits.
  */
-export interface IssuePermitsResponse extends PermitsActionResponse {};
+export interface IssuePermitsResponse extends PermitsActionResponse {}

@@ -9,7 +9,7 @@ import {
 } from "material-react-table";
 
 import "./LOAList.scss";
-import { LOADetail } from "../../../../types/SpecialAuthorization";
+import { LOADetail } from "../../../../types/LOADetail";
 import { LOAListColumnDef } from "./LOAListColumnDef";
 import {
   defaultTableInitialStateOptions,
@@ -28,11 +28,11 @@ export const LOAList = ({
   loas: LOADetail[];
   isActive: boolean;
   allowEditLOA: boolean;
-  onEdit: (loaId: string) => void;
-  onDelete?: (loaId: string) => void;
-  onDownload: (loaId: string) => void;
+  onEdit: (loaId: number) => void;
+  onDelete?: (loaId: number) => void;
+  onDownload: (loaId: number) => void;
 }) => {
-  const handleEditLOA = (loaId: string) => {
+  const handleEditLOA = (loaId: number) => {
     if (!allowEditLOA) return;
     onEdit(loaId);
   };

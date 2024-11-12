@@ -1,7 +1,4 @@
 import { Box } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
-import { useFormContext } from "react-hook-form";
-import { useEffect } from "react";
 
 import "./PermitForm.scss";
 import { FormActions } from "./FormActions";
@@ -9,178 +6,104 @@ import { ApplicationDetails } from "../../../../components/form/ApplicationDetai
 import { ContactDetails } from "../../../../components/form/ContactDetails";
 import { PermitDetails } from "./PermitDetails";
 import { VehicleDetails } from "./VehicleDetails/VehicleDetails";
-import { CompanyProfile } from "../../../../../manageProfile/types/manageProfile.d";
-import { Nullable } from "../../../../../../common/types/common";
-import { EMPTY_VEHICLE_DETAILS, PermitVehicleDetails } from "../../../../types/PermitVehicleDetails";
-import { PastStartDateStatus } from "../../../../../../common/components/form/subFormComponents/CustomDatePicker";
-import { isVehicleSubtypeLCV } from "../../../../../manageVehicles/helpers/vehicleSubtypes";
-import { PermitCondition } from "../../../../types/PermitCondition";
-import { LCV_CONDITION } from "../../../../constants/constants";
-import { sortConditions } from "../../../../helpers/conditions";
-import { getStartOfDate } from "../../../../../../common/helpers/formatDate";
-import { getExpiryDate } from "../../../../helpers/permitState";
-import { calculateFeeByDuration } from "../../../../helpers/feeSummary";
-import {
-  PowerUnit,
-  Trailer,
-  VehicleSubType,
-} from "../../../../../manageVehicles/types/Vehicle";
+import { PermitLOASection } from "./PermitLOASection";
+import { useApplicationFormContext } from "../../../../hooks/useApplicationFormContext";
+import { AmendReason } from "../../../Amend/components/form/AmendReason";
+import { AmendRevisionHistory } from "../../../Amend/components/form/AmendRevisionHistory";
 
-import {
-  getIneligiblePowerUnitSubtypes,
-  getIneligibleTrailerSubtypes,
-} from "../../../../helpers/permitVehicles";
+export const PermitForm = () => {
+  const {
+    permitType,
+    applicationNumber,
+    permitNumber,
+    startDate,
+    expiryDate,
+    currentSelectedLOAs,
+    vehicleFormData,
+    allConditions,
+    availableDurationOptions,
+    filteredVehicleOptions,
+    subtypeOptions,
+    isSelectedLOAVehicle,
+    feature,
+    companyInfo,
+    isAmendAction,
+    createdDateTime,
+    updatedDateTime,
+    pastStartDateStatus,
+    companyLOAs,
+    revisionHistory,
+    onLeave,
+    onSave,
+    onCancel,
+    onContinue,
+    onSetConditions,
+    onToggleSaveVehicle,
+    onSetVehicle,
+    onClearVehicle,
+    onUpdateLOAs,
+  } = useApplicationFormContext();
 
-interface PermitFormProps {
-  feature: string;
-  onLeave?: () => void;
-  onSave?: () => Promise<void>;
-  onCancel?: () => void;
-  onContinue: () => Promise<void>;
-  isAmendAction: boolean;
-  permitNumber?: Nullable<string>;
-  createdDateTime?: Nullable<Dayjs>;
-  updatedDateTime?: Nullable<Dayjs>;
-  vehicleOptions: (PowerUnit | Trailer)[];
-  powerUnitSubTypes: VehicleSubType[];
-  trailerSubTypes: VehicleSubType[];
-  children?: React.ReactNode;
-  companyInfo?: Nullable<CompanyProfile>;
-  durationOptions: {
-    value: number;
-    label: string;
-  }[];
-  doingBusinessAs?: Nullable<string>;
-  pastStartDateStatus: PastStartDateStatus;
-  isLcvDesignated: boolean;
-}
-
-export const PermitForm = (props: PermitFormProps) => {
-  const { watch, setValue } = useFormContext();
-
-  const permitType = watch("permitType");
-  const applicationNumber = watch("applicationNumber");
-  const permitStartDate = watch("permitData.startDate");
-  const startDate = getStartOfDate(permitStartDate);
-  const permitDuration = watch("permitData.permitDuration");
-  const permitConditions = watch("permitData.commodities");
-  const vehicleFormData = watch("permitData.vehicleDetails");
-
-  const handleSetConditions = (conditions: PermitCondition[]) => {
-    setValue("permitData.commodities", [...conditions]);
-  };
-
-  const handleToggleSaveVehicle = (saveVehicle: boolean) => {
-    setValue("permitData.vehicleDetails.saveVehicle", saveVehicle);
-  };
-
-  const handleSetVehicle = (vehicleDetails: PermitVehicleDetails) => {
-    setValue("permitData.vehicleDetails", {
-      ...vehicleDetails,
-    });
-  };
-
-  const handleClearVehicle = (saveVehicle: boolean) => {
-    setValue("permitData.vehicleDetails", {
-      ...EMPTY_VEHICLE_DETAILS,
-      saveVehicle,
-    });
-  };
-
-  const handleSetExpiryDate = (expiry: Dayjs) => {
-    setValue("permitData.expiryDate", dayjs(expiry));
-  };
-
-  const handleSetFee = (fee: string) => {
-    setValue("permitData.feeSummary", fee);
-  };
-
-  const isLcvDesignated = props.isLcvDesignated;
-  const ineligiblePowerUnitSubtypes = getIneligiblePowerUnitSubtypes(permitType)
-    .filter(subtype => !isLcvDesignated || !isVehicleSubtypeLCV(subtype.typeCode));
-
-  // Permit expiry date === Permit start date + Permit duration - 1
-  const expiryDate = getExpiryDate(startDate, permitDuration);
-  useEffect(() => {
-    handleSetExpiryDate(expiryDate);
-  }, [expiryDate]);
-  
-  // Update fee summary whenever duration or permit type changes
-  useEffect(() => {
-    handleSetFee(`${calculateFeeByDuration(permitType, permitDuration)}`);
-  }, [permitDuration, permitType]);
-
-  const vehicleSubtype = vehicleFormData.vehicleSubType;
-  useEffect(() => {
-    if (
-      !isVehicleSubtypeLCV(vehicleSubtype)
-      && permitConditions.some(({ condition }: PermitCondition) => condition === LCV_CONDITION.condition)
-    ) {
-      // If vehicle subtype in the form isn't LCV but conditions have LCV,
-    // then remove that LCV condition from the form
-    handleSetConditions(permitConditions.filter(
-        ({ condition }: PermitCondition) => condition !== LCV_CONDITION.condition,
-      ));
-    } else if (
-      isVehicleSubtypeLCV(vehicleSubtype)
-      && !permitConditions.some(({ condition }: PermitCondition) => condition === LCV_CONDITION.condition)
-    ) {
-      // If vehicle subtype in the form is LCV but conditions don't have LCV,
-      // then add that LCV condition into the form
-      handleSetConditions(sortConditions([...permitConditions, LCV_CONDITION]));
-    }
-  }, [vehicleSubtype, permitConditions]);
-  
   return (
     <Box className="permit-form layout-box">
       <Box className="permit-form__form">
         <ApplicationDetails
           permitType={permitType}
           infoNumber={
-            props.isAmendAction ? props.permitNumber : applicationNumber
+            isAmendAction ? permitNumber : applicationNumber
           }
-          infoNumberType={props.isAmendAction ? "permit" : "application"}
-          createdDateTime={props.createdDateTime}
-          updatedDateTime={props.updatedDateTime}
-          companyInfo={props.companyInfo}
-          isAmendAction={props.isAmendAction}
-          doingBusinessAs={props.doingBusinessAs}
+          infoNumberType={isAmendAction ? "permit" : "application"}
+          createdDateTime={createdDateTime}
+          updatedDateTime={updatedDateTime}
+          companyInfo={companyInfo}
+          isAmendAction={isAmendAction}
+          doingBusinessAs={companyInfo?.alternateName}
         />
 
-        <ContactDetails feature={props.feature} />
+        <ContactDetails feature={feature} />
+
+        <PermitLOASection
+          permitType={permitType}
+          startDate={startDate}
+          selectedLOAs={currentSelectedLOAs}
+          companyLOAs={companyLOAs}
+          onUpdateLOAs={onUpdateLOAs}
+        />
 
         <PermitDetails
-          feature={props.feature}
+          feature={feature}
           expiryDate={expiryDate}
-          conditionsInPermit={permitConditions}
-          durationOptions={props.durationOptions}
-          disableStartDate={props.isAmendAction}
-          permitType={permitType}
-          pastStartDateStatus={props.pastStartDateStatus}
-          includeLcvCondition={isLcvDesignated && isVehicleSubtypeLCV(vehicleFormData.vehicleSubType)}
-          onSetConditions={handleSetConditions}
+          allConditions={allConditions}
+          durationOptions={availableDurationOptions}
+          disableStartDate={isAmendAction}
+          pastStartDateStatus={pastStartDateStatus}
+          onSetConditions={onSetConditions}
         />
         
         <VehicleDetails
-          feature={props.feature}
+          feature={feature}
           vehicleFormData={vehicleFormData}
-          vehicleOptions={props.vehicleOptions}
-          powerUnitSubtypes={props.powerUnitSubTypes}
-          trailerSubtypes={props.trailerSubTypes}
-          ineligiblePowerUnitSubtypes={ineligiblePowerUnitSubtypes}
-          ineligibleTrailerSubtypes={getIneligibleTrailerSubtypes(permitType)}
-          onSetSaveVehicle={handleToggleSaveVehicle}
-          onSetVehicle={handleSetVehicle}
-          onClearVehicle={handleClearVehicle}
+          vehicleOptions={filteredVehicleOptions}
+          subtypeOptions={subtypeOptions}
+          isSelectedLOAVehicle={isSelectedLOAVehicle}
+          onSetSaveVehicle={onToggleSaveVehicle}
+          onSetVehicle={onSetVehicle}
+          onClearVehicle={onClearVehicle}
         />
-        {props.children}
+
+        {isAmendAction ? (
+          <>
+            <AmendRevisionHistory revisionHistory={revisionHistory} />
+            <AmendReason feature={feature} />
+          </>
+        ) : null}
       </Box>
 
       <FormActions
-        onLeave={props.onLeave}
-        onSave={props.onSave}
-        onCancel={props.onCancel}
-        onContinue={props.onContinue}
+        onLeave={onLeave}
+        onSave={onSave}
+        onCancel={onCancel}
+        onContinue={onContinue}
       />
     </Box>
   );

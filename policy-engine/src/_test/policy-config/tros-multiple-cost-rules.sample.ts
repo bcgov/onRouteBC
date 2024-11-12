@@ -44,10 +44,10 @@ export const multipleCostRules: PolicyDefinition = {
   },
   commodities: [],
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
 };

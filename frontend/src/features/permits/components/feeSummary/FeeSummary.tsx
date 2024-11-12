@@ -1,6 +1,6 @@
 import { Nullable } from "../../../../common/types/common";
 import { feeSummaryDisplayText } from "../../helpers/feeSummary";
-import { PermitType, permitTypeDisplayText } from "../../types/PermitType";
+import { getPermitTypeName, PermitType } from "../../types/PermitType";
 import "./FeeSummary.scss";
 
 export const FeeSummary = ({
@@ -14,7 +14,11 @@ export const FeeSummary = ({
   permitDuration?: number;
   hideDescriptions?: boolean;
 }) => {
-  const feeDisplayText = feeSummaryDisplayText(feeSummary, permitDuration, permitType);
+  const feeDisplayText = feeSummaryDisplayText(
+    feeSummary,
+    permitDuration,
+    permitType,
+  );
 
   return (
     <div className="fee-summary">
@@ -28,17 +32,20 @@ export const FeeSummary = ({
             </div>
 
             <div className="table-row">
-              <div className="table-row__td" data-testid="fee-summary-permit-type">
-                {permitTypeDisplayText(permitType)}
+              <div
+                className="table-row__td"
+                data-testid="fee-summary-permit-type"
+              >
+                {getPermitTypeName(permitType)}
               </div>
-              
+
               <div className="table-row__td" data-testid="fee-summary-price">
                 {feeDisplayText}
               </div>
             </div>
           </>
         )}
-        
+
         <div className="table-row table-row--total">
           <div className="table-row__tf">Total (CAD)</div>
           <div className="table-row__tf" data-testid="fee-summary-total">

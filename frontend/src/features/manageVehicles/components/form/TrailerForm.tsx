@@ -29,6 +29,7 @@ import {
   invalidYearMin,
   requiredMessage,
 } from "../../../../common/helpers/validationMessages";
+import { disableMouseWheelInputOnNumberField } from "../../../../common/helpers/disableMouseWheelInputOnNumberField";
 
 const FEATURE = "trailer";
 
@@ -36,7 +37,7 @@ export const TrailerForm = ({
   companyId,
   trailer,
 }: {
-  companyId: string;
+  companyId: number;
   trailer?: Trailer;
 }) => {
   const isEditMode = Boolean(trailer?.trailerId);
@@ -123,7 +124,7 @@ export const TrailerForm = ({
   const handleClose = () => {
     navigate(VEHICLES_ROUTES.TRAILER_TAB);
   };
-  
+
   const saveButtonText = isEditMode ? "Save" : "Add To Inventory";
 
   return (
@@ -161,6 +162,7 @@ export const TrailerForm = ({
           <CustomFormComponent
             type="input"
             feature={FEATURE}
+            onFocus={disableMouseWheelInputOnNumberField}
             options={{
               name: "year",
               rules: {
@@ -272,7 +274,7 @@ export const TrailerForm = ({
             provinceClassName="trailer-form__field"
           />
         </div>
-        
+
         <Box className="trailer-form__actions">
           <Button
             key="cancel-save-vehicle-button"

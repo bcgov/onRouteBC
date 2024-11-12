@@ -19,6 +19,9 @@
   }
 
   & &__cell {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
     &--checkbox {
       padding-left: 0;
     }
@@ -30,7 +33,13 @@
     }
   }
 
-  & &__checkbox#{&}__checkbox--disabled {
-    color: $disabled-colour;
+  & &__form-control#{&}__form-control--disabled {
+    .condition-checkbox {
+      color: $disabled-colour;
+    }
+
+    .condition-description {
+      color: $bc-black;
+    }
   }
 }

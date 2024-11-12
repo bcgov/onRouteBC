@@ -18,6 +18,8 @@ import {
   useUserContext,
   useUserContextQuery,
 } from "../../features/manageProfile/apiManager/hooks";
+import { canViewApplicationQueue } from "../../features/queue/helpers/canViewApplicationQueue";
+import { getDefaultRequiredVal } from "../helpers/util";
 
 const navigateBCeID = (
   userContextData: BCeIDUserContextType,
@@ -25,8 +27,14 @@ const navigateBCeID = (
   const { associatedCompanies, pendingCompanies, migratedClient, user } =
     userContextData;
 
-  const isAssociatedSuspended = associatedCompanies?.find((company) => company?.isSuspended);
-  const isPendingSuspended = pendingCompanies?.find((company) => company?.isSuspended);
+  const isAssociatedSuspended = getDefaultRequiredVal(
+    [],
+    associatedCompanies,
+  ).find((company) => Boolean(company.isSuspended));
+
+  const isPendingSuspended = getDefaultRequiredVal([], pendingCompanies).find(
+    (company) => Boolean(company.isSuspended),
+  );
 
   // If the user does not exist
   if (!user?.userGUID) {
@@ -109,7 +117,10 @@ export const LoginRedirect = () => {
       } else if (userFromToken?.profile?.identity_provider === IDPS.IDIR) {
         const userContextData: Optional<IDIRUserContextType> =
           queryClient.getQueryData<IDIRUserContextType>(["userContext"]);
-        if (userContextData?.user?.userGUID) {
+        // only IDIR users with PC, SA, CTPO or TRAIN should redirect to STAFF_HOME
+        if (canViewApplicationQueue(userContextData?.user?.userRole)) {
+          navigate(IDIR_ROUTES.STAFF_HOME);
+        } else if (userContextData?.user?.userGUID) {
           navigate(IDIR_ROUTES.WELCOME);
         } else {
           navigate(ERROR_ROUTES.UNAUTHORIZED);

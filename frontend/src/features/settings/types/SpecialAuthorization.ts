@@ -1,5 +1,4 @@
-import { Nullable, RequiredOrNull } from "../../../common/types/common";
-import { PermitType } from "../../permits/types/PermitType";
+import { RequiredOrNull } from "../../../common/types/common";
 
 export const NO_FEE_PERMIT_TYPES = {
   CA_GOVT: "CA_GOVT",
@@ -27,40 +26,6 @@ export const noFeePermitTypeDescription = (noFeePermitType: NoFeePermitType) => 
       return "The government of any state or county in the United States of America";
   }
 };
-
-export interface LOADetail {
-  loaId: string;
-  loaNumber: string;
-  companyId: number;
-  startDate: string;
-  expiryDate?: Nullable<string>;
-  documentId: string;
-  fileName: string;
-  loaPermitType: PermitType[];
-  comment?: Nullable<string>;
-  powerUnits: string[];
-  trailers: string[];
-}
-
-export interface CreateLOARequestData {
-  startDate: string;
-  expiryDate?: Nullable<string>;
-  loaPermitType: PermitType[];
-  // document: Buffer;
-  comment?: Nullable<string>;
-  powerUnits: string[];
-  trailers: string[];
-}
-
-export interface UpdateLOARequestData {
-  startDate: string;
-  expiryDate?: Nullable<string>;
-  loaPermitType: PermitType[];
-  // document?: Buffer;
-  comment?: Nullable<string>;
-  powerUnits: string[];
-  trailers: string[];
-}
 
 export interface SpecialAuthorizationData {
   companyId: number;

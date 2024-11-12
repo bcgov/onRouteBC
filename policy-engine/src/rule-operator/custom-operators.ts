@@ -16,7 +16,11 @@ const CustomOperators: Array<Operator> = [];
 CustomOperators.push(
   new Operator(
     'stringMinimumLength',
-    (a: string, b: number) => a.trim().length >= b,
+    (a: string, b: number) => {
+      if (!a) return false;
+
+      return a.trim().length >= b;
+    },
     stringValidator,
   ),
 );

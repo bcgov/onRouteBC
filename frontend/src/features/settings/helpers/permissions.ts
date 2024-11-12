@@ -82,6 +82,7 @@ export const canUpdateLCVFlag = (
 ): boolean => {
   return (
     userRole === USER_ROLE.HQ_ADMINISTRATOR ||
+    userRole === USER_ROLE.SYSTEM_ADMINISTRATOR ||
     Boolean(DoesUserHaveClaim(userClaims, CLAIMS.WRITE_LCV_FLAG))
   );
 };

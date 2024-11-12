@@ -20,18 +20,18 @@ export const SPECIAL_AUTH_API_ROUTES = {
   },
   LOA: {
     ALL: (companyId: number | string, expired: boolean) =>
-      `${SPECIAL_AUTH_API_BASE}/${companyId}/loas${expired ? "?expired=true" : ""}`,
-    DETAIL: (companyId: number | string, loaId: string) =>
+      `${SPECIAL_AUTH_API_BASE}/${companyId}/loas?expired=${expired}`,
+    DETAIL: (companyId: number | string, loaId: number) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas/${loaId}`,
     CREATE: (companyId: number | string) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas`,
-    UPDATE: (companyId: number | string, loaId: string) =>
+    UPDATE: (companyId: number | string, loaId: number) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas/${loaId}`,
-    REMOVE: (companyId: number | string, loaId: string) =>
+    REMOVE: (companyId: number | string, loaId: number) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas/${loaId}`,
-    DOWNLOAD: (companyId: number | string, loaId: string) =>
+    DOWNLOAD: (companyId: number | string, loaId: number) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas/${loaId}/documents?download=proxy`,
-    REMOVE_DOCUMENT: (companyId: number | string, loaId: string) =>
+    REMOVE_DOCUMENT: (companyId: number | string, loaId: number) =>
       `${SPECIAL_AUTH_API_BASE}/${companyId}/loas/${loaId}/documents`,
   },
 };

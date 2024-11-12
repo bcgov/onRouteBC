@@ -1,0 +1,97 @@
+@import "../../../themes/orbcStyles.scss";
+
+.reject-application-modal {
+  & &__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: $bc-background-light-grey;
+  }
+
+  &__icon {
+    .icon {
+      color: $bc-messages-red-text;
+      height: 2rem;
+    }
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-left: 0.5em;
+    color: $bc-messages-red-text;
+  }
+
+  &__body {
+    padding: 1.5rem;
+  }
+
+  .reject-application-form {
+    width: 100%;
+
+    &__label {
+      font-weight: bold;
+      font-size: 1rem;
+      color: $bc-black;
+    }
+
+    .custom-form-control {
+      margin: 0;
+    }
+
+    .custom-text-area {
+      font-family: $default-font;
+    }
+  }
+
+  &__text {
+    padding-bottom: 1.5rem;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+
+  }
+  & &__button {
+    &--cancel {
+      margin-right: 1.5rem;
+      cursor: pointer;
+      background-color: $bc-background-light-grey;
+      color: $bc-black;
+      border: 2px solid $bc-background-light-grey;
+      box-shadow: none;
+
+      &:hover, &:focus {
+        background-color: $bc-background-light-grey;
+        border: 2px solid $bc-border-grey;
+        box-shadow: none;
+      }
+    }
+
+    &--confirm {
+      color: $white;
+      background-color: $bc-red;
+      font-weight: bold;
+      cursor: pointer;
+
+      &:hover, &:focus {
+        background-color: $bc-messages-red-text
+      }
+
+      &:disabled {
+        background-color: $bc-red-disabled;
+        color: $white;
+      }
+    }
+  }
+}

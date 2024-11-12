@@ -5,11 +5,11 @@ import {
 } from 'onroute-policy-engine/types';
 
 export type SizeDimension = SelfIssuable & {
-  frontProjection?: number;
-  rearProjection?: number;
-  width?: number;
-  height?: number;
-  length?: number;
+  fp?: number;
+  rp?: number;
+  w?: number;
+  h?: number;
+  l?: number;
   modifiers?: Array<DimensionModifier>;
   regions?: Array<RegionSizeOverride>;
 };

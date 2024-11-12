@@ -49,12 +49,12 @@ export class ShoppingCartProfile extends AutomapperProfile {
           mapFrom((s) => s?.applicationOwner?.userGUID),
         ),
         forMember(
-          (d) => d.fee,
+          (d) => d.duration,
           mapFrom((s) => {
             const parsedPermitData = JSON.parse(
               s?.permitData?.permitData,
             ) as PermitData;
-            return +parsedPermitData?.feeSummary;
+            return +parsedPermitData?.permitDuration;
           }),
         ),
         forMember(

@@ -4,8 +4,13 @@
  * referenced from within source code.
  */
 export enum PermitAppInfo {
-  PermitStartDate = 'permitData.startDate',
+  PermitType = 'permitType',
+  PermitData = 'permitData',
+  PermitStartDate = '$.startDate',
   PermitDateFormat = 'YYYY-MM-DD',
-  CompanyName = 'permitData.companyName',
-  PermitDuration = 'permitData.permitDuration',
+  CompanyName = '$.companyName',
+  PermitDuration = '$.permitDuration',
+  PowerUnitType = '$.vehicleDetails.vehicleSubType',
+  TrailerList = '$.vehicleConfiguration.trailers',
+  Commodity = '$.permittedCommodity.commodityType',
 }

@@ -33,6 +33,9 @@ export const expiryMustBeAfterStart = () => {
   return validationMessages.date.expiry.beforeStart.defaultMessage;
 };
 
+export const pastStartOrExpiryDate = () =>
+  validationMessages.date.startOrExpiry.past.defaultMessage;
+
 export const invalidEmail = () => validationMessages.email.defaultMessage;
 
 export const invalidPhoneLength = (min: number, max: number) => {

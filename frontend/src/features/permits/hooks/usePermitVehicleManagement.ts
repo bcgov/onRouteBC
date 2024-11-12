@@ -1,7 +1,9 @@
+import { useCallback, useMemo } from "react";
+
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import { mapToVehicleObjectById } from "../helpers/mappers";
 import { Nullable } from "../../../common/types/common";
-import { getDefaultVehicleDetails } from "../helpers/getDefaultApplicationFormData";
+import { getDefaultVehicleDetails } from "../helpers/permitVehicles";
 import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import {
   usePowerUnitSubTypesQuery,
@@ -25,7 +27,69 @@ import {
   VehicleType,
 } from "../../manageVehicles/types/Vehicle";
 
-export const usePermitVehicleManagement = (companyId: string) => {
+const transformByVehicleType = (
+  vehicleFormData: PermitVehicleDetails,
+  existingVehicle?: Vehicle,
+): Vehicle => {
+  const defaultPowerUnit: PowerUnit = {
+    powerUnitId: "",
+    unitNumber: "",
+    vin: vehicleFormData.vin,
+    plate: vehicleFormData.plate,
+    make: vehicleFormData.make,
+    year: vehicleFormData.year,
+    countryCode: vehicleFormData.countryCode,
+    provinceCode: vehicleFormData.provinceCode,
+    powerUnitTypeCode: vehicleFormData.vehicleSubType,
+  };
+
+  const defaultTrailer: Trailer = {
+    trailerId: "",
+    unitNumber: "",
+    vin: vehicleFormData.vin,
+    plate: vehicleFormData.plate,
+    make: vehicleFormData.make,
+    year: vehicleFormData.year,
+    countryCode: vehicleFormData.countryCode,
+    provinceCode: vehicleFormData.provinceCode,
+    trailerTypeCode: vehicleFormData.vehicleSubType,
+  };
+
+  switch (vehicleFormData.vehicleType) {
+    case VEHICLE_TYPES.TRAILER:
+      return {
+        ...defaultTrailer,
+        trailerId: getDefaultRequiredVal(
+          "",
+          (existingVehicle as Trailer)?.trailerId,
+        ),
+        unitNumber: getDefaultRequiredVal(
+          "",
+          existingVehicle?.unitNumber,
+          vehicleFormData.unitNumber,
+        ),
+      } as Trailer;
+    case VEHICLE_TYPES.POWER_UNIT:
+    default:
+      return {
+        ...defaultPowerUnit,
+        unitNumber: getDefaultRequiredVal(
+          "",
+          existingVehicle?.unitNumber,
+          vehicleFormData.unitNumber,
+        ),
+        powerUnitId: getDefaultRequiredVal(
+          "",
+          (existingVehicle as PowerUnit)?.powerUnitId,
+        ),
+      } as PowerUnit;
+  }
+};
+
+const modifyVehicleSuccess = (status: number) =>
+  status === 201 || status === 200;
+
+export const usePermitVehicleManagement = (companyId: number) => {
   // Mutations used to add/update vehicle details
   const addPowerUnitMutation = useAddPowerUnitMutation();
   const updatePowerUnitMutation = useUpdatePowerUnitMutation();
@@ -38,7 +102,7 @@ export const usePermitVehicleManagement = (companyId: string) => {
   const { data: powerUnitSubtypesData } = usePowerUnitSubTypesQuery();
   const { data: trailerSubtypesData } = useTrailerSubTypesQuery();
 
-  const fetchedVehicles = [
+  const fetchedVehicles = useMemo(() => [
     ...getDefaultRequiredVal(
       [],
       powerUnitsData,
@@ -53,12 +117,12 @@ export const usePermitVehicleManagement = (companyId: string) => {
       ...trailer,
       vehicleType: VEHICLE_TYPES.TRAILER,
     })),
-  ];
+  ], [powerUnitsData, trailersData]);
 
   const powerUnitSubTypes = getDefaultRequiredVal([], powerUnitSubtypesData);
   const trailerSubTypes = getDefaultRequiredVal([], trailerSubtypesData);
 
-  const handleSaveVehicle = async (
+  const handleSaveVehicle = useCallback(async (
     vehicleData?: Nullable<PermitVehicleDetails>,
   ): Promise<Nullable<PermitVehicleDetails>> => {
     // Check if the "add/update vehicle" checkbox was checked by the user
@@ -75,68 +139,6 @@ export const usePermitVehicleManagement = (companyId: string) => {
       vehicle.vehicleType as VehicleType,
       vehicleId,
     );
-
-    const transformByVehicleType = (
-      vehicleFormData: PermitVehicleDetails,
-      existingVehicle?: Vehicle,
-    ): Vehicle => {
-      const defaultPowerUnit: PowerUnit = {
-        powerUnitId: "",
-        unitNumber: "",
-        vin: vehicleFormData.vin,
-        plate: vehicleFormData.plate,
-        make: vehicleFormData.make,
-        year: vehicleFormData.year,
-        countryCode: vehicleFormData.countryCode,
-        provinceCode: vehicleFormData.provinceCode,
-        powerUnitTypeCode: vehicleFormData.vehicleSubType,
-      };
-
-      const defaultTrailer: Trailer = {
-        trailerId: "",
-        unitNumber: "",
-        vin: vehicleFormData.vin,
-        plate: vehicleFormData.plate,
-        make: vehicleFormData.make,
-        year: vehicleFormData.year,
-        countryCode: vehicleFormData.countryCode,
-        provinceCode: vehicleFormData.provinceCode,
-        trailerTypeCode: vehicleFormData.vehicleSubType,
-      };
-
-      switch (vehicleFormData.vehicleType) {
-        case VEHICLE_TYPES.TRAILER:
-          return {
-            ...defaultTrailer,
-            trailerId: getDefaultRequiredVal(
-              "",
-              (existingVehicle as Trailer)?.trailerId,
-            ),
-            unitNumber: getDefaultRequiredVal(
-              "",
-              existingVehicle?.unitNumber,
-              vehicleFormData.unitNumber,
-            ),
-          } as Trailer;
-        case VEHICLE_TYPES.POWER_UNIT:
-        default:
-          return {
-            ...defaultPowerUnit,
-            unitNumber: getDefaultRequiredVal(
-              "",
-              existingVehicle?.unitNumber,
-              vehicleFormData.unitNumber,
-            ),
-            powerUnitId: getDefaultRequiredVal(
-              "",
-              (existingVehicle as PowerUnit)?.powerUnitId,
-            ),
-          } as PowerUnit;
-      }
-    };
-
-    const modifyVehicleSuccess = (status: number) =>
-      status === 201 || status === 200;
 
     // If the vehicle type is a power unit then create a power unit object
     if (vehicle.vehicleType === VEHICLE_TYPES.POWER_UNIT) {
@@ -204,7 +206,7 @@ export const usePermitVehicleManagement = (companyId: string) => {
     }
 
     return undefined;
-  };
+  }, [fetchedVehicles]);
 
   return {
     handleSaveVehicle,

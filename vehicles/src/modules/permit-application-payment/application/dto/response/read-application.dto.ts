@@ -4,6 +4,7 @@ import { ApplicationStatus } from 'src/common/enum/application-status.enum';
 import { PermitApplicationOrigin } from 'src/common/enum/permit-application-origin.enum';
 import { PermitApprovalSource } from 'src/common/enum/permit-approval-source.enum';
 import { PermitType } from 'src/common/enum/permit-type.enum';
+import { ReadCaseActivityDto } from '../../../../case-management/dto/response/read-case-activity.dto';
 
 export class ReadApplicationDto {
   @AutoMap()
@@ -128,4 +129,12 @@ export class ReadApplicationDto {
     required: false,
   })
   applicant: string;
+
+  @AutoMap()
+  @ApiProperty({
+    description: 'Application rejection history',
+    type: [ReadCaseActivityDto],
+    required: false,
+  })
+  rejectionHistory?: ReadCaseActivityDto[];
 }

@@ -28,7 +28,7 @@ export const defaultTrailerSubtypes = [
   },
 ];
 
-const companyId = `${getDefaultCompanyInfo().companyId}`;
+const companyId = getDefaultCompanyInfo().companyId;
 
 const server = setupServer(
   // Mock getting power unit types

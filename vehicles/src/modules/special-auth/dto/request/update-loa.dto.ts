@@ -1,3 +1,3 @@
-import { CreateLoaDto } from "./create-loa.dto";
+import { CreateLoaDto } from './create-loa.dto';
 
-export class UpdateLoaDto extends CreateLoaDto{}
+export class UpdateLoaDto extends CreateLoaDto {}

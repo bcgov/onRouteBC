@@ -1,0 +1,21 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".rejection-history");
+@include orbcStyles.permit-left-box-style(".rejection-history__header");
+@include orbcStyles.permit-right-box-style(".rejection-history__body");
+
+.rejection-history {
+  &__info {
+    padding-top: 1.5rem;
+  }
+  
+  &__item, .item {
+
+    padding-bottom: 1.5rem;
+    
+    &__row {
+      &--flex {
+        display: flex;
+      }
+  }}
+}

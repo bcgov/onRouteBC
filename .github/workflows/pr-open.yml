@@ -74,26 +74,10 @@ jobs:
           triggers: '${{ matrix.package }}/' #omit to build everything
 
   # https://github.com/bcgov-nr/action-deployer-openshift
-  deploys:
-    name: Deploys
+  deploys-dev:
+    name: Deploys (Dev)
     needs: [builds, vars]
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/dev.yml
     secrets: inherit
     with:
-      autoscaling: false
-      repository: ${{ github.event.repository.name }}
-      environment: dev
-      release: ${{ needs.vars.outputs.pr }}
       tag: ${{ needs.vars.outputs.pr }}
-      triggers: '' #omit=always;
-      params: |
-        --set-string global.license='c28f0c' \
-        --set-string global.zone='dev' \
-        --set-string global.vault.role='nonprod' \
-        --set-string global.vault.zone='dev' \
-        --set-string global.pr_num='${{ needs.vars.outputs.pr }}' \
-        --set-json dops.containers[0].resources='{"limits": {"cpu": "1000m", "memory": "2000Mi"}, "requests": {"cpu": "25m", "memory": "50Mi"}}' \
-        --set-json frontend.containers[0].resources='{"limits": {"cpu": "75m", "memory": "150Mi"}, "requests": {"cpu": "25m", "memory": "50Mi"}}' \
-        --set-json scheduler.containers[0].resources='{"limits": {"cpu": "75m", "memory": "150Mi"}, "requests": {"cpu": "25m", "memory": "50Mi"}}' \
-        --set-json policy.containers[0].resources='{"limits": {"cpu": "75m", "memory": "150Mi"}, "requests": {"cpu": "25m", "memory": "50Mi"}}' \
-        --set-json vehicles.containers[0].resources='{"limits": {"cpu": "300m", "memory": "500Mi"}, "requests": {"cpu": "200m", "memory": "400Mi"}}' \

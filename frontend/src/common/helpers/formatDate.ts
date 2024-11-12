@@ -35,22 +35,22 @@ export const now = () => dayjs();
 export const nowUtc = () => dayjs.utc();
 
 /**
- * Get local datetime string in a specified format for a given DayJS object.
- * @param dayjsObj DayJS object that could be in any timezone
+ * Get local datetime string in a specified format for a given local DayJS object.
+ * @param localDayjs Local DayJS object
  * @param formatStr datetime format to display the datetime in (default ISO-8601)
  * @returns datetime string representing local datetime in the format specified
  */
-export const dayjsToLocalStr = (dayjsObj: Dayjs, formatStr?: string) =>
-  dayjs(dayjsObj).local().format(formatStr);
+export const dayjsToLocalStr = (localDayjs: Dayjs, formatStr?: string) =>
+  dayjs(localDayjs).format(formatStr);
 
 /**
- * Get UTC datetime string in a specified format for a given DayJS object.
- * @param dayjsObj DayJS object that could be in any timezone
+ * Get UTC datetime string in a specified format for a given local DayJS object.
+ * @param localDayjs Local DayJS object
  * @param formatStr datetime format to display the datetime in (default ISO-8601)
  * @returns datetime string representing UTC datetime in the format specified
  */
-export const dayjsToUtcStr = (dayjsObj: Dayjs, formatStr?: string) =>
-  dayjs(dayjsObj).utc().format(formatStr);
+export const dayjsToUtcStr = (localDayjs: Dayjs, formatStr?: string) =>
+  dayjs(localDayjs).utc().format(formatStr);
 
 /**
  * Get UTC datetime string in a specified format for a given datetime string
@@ -65,10 +65,16 @@ export const toUtc = (dateTimeStr: string, formatStr?: string) =>
  * Get local datetime string in a specified format for a given datetime string
  * @param dateTimeStr datetime string that could be in any timezone
  * @param formatStr datetime format to display in (default ISO-8601)
+ * @param isDateTimeStrLocal Whether or not the provided datetime string is already local
  * @returns datetime string representing local datetime in the format specified
  */
-export const toLocal = (dateTimeStr: string, formatStr?: string) =>
-  dayjs(dateTimeStr).local().format(formatStr);
+export const toLocal = (
+  dateTimeStr: string,
+  formatStr?: string,
+  isDateTimeStrLocal?: boolean,
+) => isDateTimeStrLocal
+  ? dayjs(dateTimeStr).format(formatStr)
+  : dayjs(dateTimeStr).local().format(formatStr);
 
 /**
  * Get local DayJS object for a given UTC datetime string
@@ -106,7 +112,7 @@ export const toTimeZone = (
 ) =>
   ianaId
     ? dayjs(datetimeStr).tz(ianaId).format(formatStr)
-    : toLocal(datetimeStr, formatStr);
+    : toLocal(datetimeStr, formatStr, true);
 
 /**
  * Gets the number of days between two datetimes (should both be in the same timezone).

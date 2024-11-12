@@ -11,7 +11,10 @@ import { PolicyFacts } from 'onroute-policy-engine/enum';
  * @returns json-rules-engine Engine instance.
  */
 function getEngine(policyDefinition: PolicyDefinition): Engine {
-  const engine = new Engine([], { replaceFactsInEventParams: true });
+  const engine = new Engine([], {
+    replaceFactsInEventParams: true,
+    allowUndefinedFacts: true,
+  });
   CustomOperators.forEach((o) => engine.addOperator(o));
   policyDefinition.commonRules.forEach((r) => engine.addRule(r));
   return engine;

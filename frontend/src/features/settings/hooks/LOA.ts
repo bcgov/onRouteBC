@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { Nullable } from "../../../common/types/common";
 import {
@@ -8,11 +12,11 @@ import {
   removeLOA,
   removeLOADocument,
   updateLOA,
-} from "../apiManager/specialAuthorization";
+} from "../apiManager/loa";
 
 const QUERY_KEYS = {
   LOAS: (expired: boolean) => ["loas", expired],
-  LOA: (loaId?: Nullable<string>) => ["loa", loaId],
+  LOA: (loaId?: Nullable<number>) => ["loa", loaId],
 };
 
 /**
@@ -37,7 +41,7 @@ export const useFetchLOAs = (companyId: number | string, expired: boolean) => {
  * @param loaId id of the LOA to fetch
  * @returns Query result of the LOA details
  */
-export const useFetchLOADetail = (companyId: number, loaId?: Nullable<string>) => {
+export const useFetchLOADetail = (companyId: number, loaId?: Nullable<number>) => {
   return useQuery({
     queryKey: QUERY_KEYS.LOA(loaId),
     queryFn: () => {

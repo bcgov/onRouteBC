@@ -17,7 +17,8 @@ export const trosNoParamsSample: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -36,11 +37,11 @@ export const trosNoParamsSample: PolicyDefinition = {
     trailers: [],
   },
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
   vehicleCategories: {
     trailerCategories: [],

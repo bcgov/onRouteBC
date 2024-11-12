@@ -1,3 +1,3 @@
 export type SelfIssuable = {
-  canSelfIssue?: boolean;
+  selfIssue?: boolean;
 };

@@ -1,4 +1,4 @@
-import { permitTypeDisplayText } from "../../../types/PermitType";
+import { getPermitTypeName } from "../../../types/PermitType";
 import {
   DATE_FORMATS,
   dayjsToLocalStr,
@@ -57,7 +57,7 @@ describe("Application Details Display", () => {
     );
 
     // Assert
-    expect(await title()).toHaveTextContent(permitTypeDisplayText(permitType));
+    expect(await title()).toHaveTextContent(getPermitTypeName(permitType));
     expect(await applicationNumber()).toHaveTextContent(
       defaultApplicationNumber,
     );

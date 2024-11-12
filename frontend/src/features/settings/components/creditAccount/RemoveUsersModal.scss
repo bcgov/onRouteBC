@@ -73,7 +73,7 @@
         }
 
         &:disabled {
-          background-color: #EBC0C1;
+          background-color: $bc-red-disabled;
           color: $white;
         }
       }

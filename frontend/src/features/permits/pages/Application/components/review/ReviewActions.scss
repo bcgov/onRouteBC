@@ -6,8 +6,13 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 2.5rem;
 
   & &__btn {
+    box-shadow: none;
+    &:hover {
+      box-shadow: none;
+    }
     .button-icon {
       margin-right: 0.5rem;
     }
@@ -17,10 +22,27 @@
       align-items: center;
     }
 
+    &--reject {
+      &:hover {
+        background-color: $bc-messages-red-text;
+      }
+      &:disabled {
+        background-color: $bc-red-disabled;
+        color: $white;
+      }
+    }
+
+    &--approve {
+      &:disabled {
+        background-color: $disabled-colour;
+        color: $white;
+      }
+    }
+
     &--cart {
       padding-left: 2rem;
       padding-right: 2rem;
-      margin-left: 2.5rem;
+     
       font-weight: bold;
       border-color: $bc-primary-blue;
       color: $bc-primary-blue;
@@ -34,7 +56,6 @@
 
     &--continue {
       font-weight: bold;
-      margin-left: 2.5rem;
     }
   }
 }

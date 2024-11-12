@@ -25,6 +25,8 @@ import {
   defaultTableStateOptions,
 } from "../../../../common/helpers/tableHelper";
 import "./IDIRPermitSearchResults.scss";
+import { ERROR_ROUTES } from "../../../../routes/constants";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Function to decide whether to show row actions icon or not.
@@ -93,9 +95,11 @@ export const IDIRPermitSearchResults = memo(
 
     const { data, isPending, isError } = searchResultsQuery;
 
+    const navigate = useNavigate();
+
     // Column definitions for the table
     const columns = useMemo<MRT_ColumnDef<PermitListItem>[]>(
-      () => PermitSearchResultColumnDef,
+      () => PermitSearchResultColumnDef(() => navigate(ERROR_ROUTES.DOCUMENT_UNAVAILABLE)),
       [],
     );
 
@@ -180,7 +184,7 @@ export const IDIRPermitSearchResults = memo(
                   permitNumber={row.original.permitNumber}
                   permitId={row.original.permitId}
                   userRole={idirUserDetails?.userRole}
-                  companyId={row.original.companyId?.toString()}
+                  companyId={row.original.companyId}
                 />
               </Box>
             );

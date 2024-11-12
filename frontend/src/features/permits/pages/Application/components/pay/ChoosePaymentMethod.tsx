@@ -1,17 +1,21 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, RadioGroup, Typography } from "@mui/material";
+
+import "./ChoosePaymentMethod.scss";
+import { CVPayInPersonInfo } from "./CVPayInPersonInfo";
 import { PaymentOption } from "./PaymentOption";
 import { PaymentMethodTypeCode } from "../../../../../../common/types/paymentMethods";
 import {
   DEFAULT_EMPTY_CARD_TYPE,
   DEFAULT_EMPTY_PAYMENT_TYPE,
 } from "./types/PaymentMethodData";
-import "./ChoosePaymentMethod.scss";
 
 export const ChoosePaymentMethod = ({
   availablePaymentMethods,
+  showPayInPersonInfo,
 }: {
   availablePaymentMethods: PaymentMethodTypeCode[];
+  showPayInPersonInfo: boolean;
 }) => {
   const { control, watch, setValue, clearErrors } = useFormContext();
   const currPaymentMethod = watch("paymentMethod");
@@ -67,6 +71,10 @@ export const ChoosePaymentMethod = ({
                 handlePaymentMethodChange={handlePaymentMethodChange}
               />
             ))}
+
+            {showPayInPersonInfo ? (
+              <CVPayInPersonInfo />
+            ) : null}
           </RadioGroup>
         )}
       />

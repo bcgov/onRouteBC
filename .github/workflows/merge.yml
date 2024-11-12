@@ -5,16 +5,14 @@ on:
     branches: [main]
     paths-ignore:
       - '*.md'
-      - '.github/**'
       - 'common/graphics/**'
-      - '!.github/workflows/deploy.yml'
-      - '!.github/workflows/merge.yml'
   workflow_dispatch:
     inputs:
-      pr_no:
-        description: "PR-numbered container set to deploy"
-        type: number
-        required: true
+      pr:
+        description: "PR num of image to deploy"
+        required: false
+        type: string
+
 
 concurrency:
   group: ${{ github.workflow }}
@@ -29,27 +27,21 @@ jobs:
     timeout-minutes: 1
     steps:
       # Get PR number for squash merges to main
+      - name: Get PR Number From Event
+        if: ${{ github.event_name == 'push' }}
+        id: pr_no
+        uses: bcgov-nr/action-get-pr@v0.0.1
       - name: PR Number
         id: pr
-        uses: bcgov-nr/action-get-pr@v0.0.1
+        run: echo pr=${{ steps.pr_no.outputs.pr || inputs.pr}} >> $GITHUB_OUTPUT
 
   deploys-test:
-    name: Deploys (test)
+    name: Deploys (Test)
     needs: [vars]
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
-      autoscaling: true
-      environment: test
-      release: test
       tag: ${{ needs.vars.outputs.pr }}
-      params: |
-        --set-string global.license='c28f0c' \
-        --set-string global.zone='test' \
-        --set-string global.vault.role='nonprod' \
-        --set-string global.vault.zone='test' \
-        --set-string global.pr_num='${{ needs.vars.outputs.pr }}' \
-
 
   promote-images-test:
     name: Promote Images - Test
@@ -68,58 +60,3 @@ jobs:
           repository: ${{ github.repository }}/${{ matrix.package }}
           target: ${{ needs.vars.outputs.pr }}
           tags: test  #Promote images AFTER successful deploy
-
-  deploys-prod:
-    name: Deploys (prod)
-    needs: [promote-images-test, vars]
-    uses: ./.github/workflows/deploy.yml
-    secrets: inherit
-    with:
-      autoscaling: true
-      environment: prod
-      tag: ${{ needs.vars.outputs.pr }}
-      release: prod
-      params: |
-        --set-string global.license='c28f0c' \
-        --set-string global.zone='prod' \
-        --set-string global.vault.role='prod' \
-        --set-string global.vault.zone='prod' \
-        --set-string global.pr_num='${{ needs.vars.outputs.pr }}' \
-
-  promote-images-prod:
-    name: Promote Images - Prod
-    needs: [deploys-prod, vars]
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        package: [dops, vehicles, frontend, scheduler, policy]
-    timeout-minutes: 2
-    steps:
-      - uses: shrink/actions-docker-registry-tag@v4
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/${{ matrix.package }}
-          target: ${{ needs.vars.outputs.pr }}
-          tags: prod  #Promote images AFTER successful deploy
-
-  create-release:
-    name: Create release
-    runs-on: ubuntu-22.04
-    needs: [deploys-prod, vars]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Generate release tag
-        id: generate_release_tag
-        shell: bash
-        run: |  
-          echo next_release_tag=$(expr $(echo $(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | grep tag_name | cut -d '-' -f3 - | cut -d '"' -f1 -) + 1)) >> $GITHUB_OUTPUT
-            
-      - name: Create Release
-        run: |
-          gh release create "${{ github.event.repository.name }}-release-${{ steps.generate_release_tag.outputs.next_release_tag }}" \
-          --repo=${{ github.repository }} \
-          --title="${{ github.event.repository.name }}-release-${{ steps.generate_release_tag.outputs.next_release_tag }}" \
-          --generate-notes

@@ -16,6 +16,7 @@ import { ERROR_ROUTES } from "../../../../../routes/constants";
 import { DEFAULT_PERMIT_TYPE } from "../../../types/PermitType";
 import { usePowerUnitSubTypesQuery } from "../../../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../../../manageVehicles/hooks/trailers";
+import { PERMIT_REVIEW_CONTEXTS } from "../../../types/PermitReviewContext";
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
@@ -23,7 +24,8 @@ import {
 
 export const AmendPermitReview = () => {
   const navigate = useNavigate();
-  const { companyId } = useParams();
+  const { companyId: companyIdParam } = useParams();
+  const companyId: number = applyWhenNotNullable(id => Number(id), companyIdParam, 0);
 
   const {
     permit,
@@ -33,13 +35,15 @@ export const AmendPermitReview = () => {
     back,
     next,
     getLinks,
-  } =
-    useContext(AmendPermitContext);
+  } = useContext(AmendPermitContext);
 
   // Send data to the backend API
   const modifyAmendmentMutation = useModifyAmendmentApplication();
 
-  const { createdDateTime, updatedDateTime } = getDatetimes(amendmentApplication, permit);
+  const { createdDateTime, updatedDateTime } = getDatetimes(
+    amendmentApplication,
+    permit,
+  );
 
   const validTransactionHistory = permitHistory.filter((history) =>
     isValidTransaction(history.paymentMethodTypeCode, history.pgApproved),
@@ -52,31 +56,32 @@ export const AmendPermitReview = () => {
   const trailerSubTypesQuery = useTrailerSubTypesQuery();
 
   // For the confirmation checkboxes
-  const [isChecked, setIsChecked] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [allConfirmed, setAllConfirmed] = useState(false);
+  const [hasAttemptedSubmission, setHasAttemptedSubmission] = useState(false);
 
   const onSubmit = async () => {
-    setIsSubmitted(true);
-    if (!isChecked) return;
+    setHasAttemptedSubmission(true);
+    if (!allConfirmed) return;
 
     if (!amendmentApplication) {
       return navigate(ERROR_ROUTES.UNEXPECTED);
     }
 
-    const { application: savedApplication } = await modifyAmendmentMutation.mutateAsync({
-      applicationId: getDefaultRequiredVal(
-        "",
-        amendmentApplication?.permitId,
-      ),
-      application: {
-        ...amendmentApplication,
-        permitData: {
-          ...amendmentApplication.permitData,
-          doingBusinessAs, // always set most recent company info DBA
+    const { application: savedApplication } =
+      await modifyAmendmentMutation.mutateAsync({
+        applicationId: getDefaultRequiredVal(
+          "",
+          amendmentApplication?.permitId,
+        ),
+        application: {
+          ...amendmentApplication,
+          permitData: {
+            ...amendmentApplication.permitData,
+            doingBusinessAs, // always set most recent company info DBA
+          },
         },
-      },
-      companyId: companyId as string,
-    });
+        companyId,
+      });
 
     if (savedApplication) {
       setAmendmentApplication(savedApplication);
@@ -112,6 +117,7 @@ export const AmendPermitReview = () => {
       <Breadcrumb links={getLinks()} />
 
       <PermitReview
+        reviewContext={PERMIT_REVIEW_CONTEXTS.AMEND}
         permitType={amendmentApplication?.permitType}
         permitNumber={permit?.permitNumber}
         applicationNumber={amendmentApplication?.applicationNumber}
@@ -127,9 +133,9 @@ export const AmendPermitReview = () => {
         continueBtnText="Continue"
         onEdit={back}
         onContinue={onSubmit}
-        allChecked={isChecked}
-        setAllChecked={setIsChecked}
-        hasAttemptedCheckboxes={isSubmitted}
+        allConfirmed={allConfirmed}
+        setAllConfirmed={setAllConfirmed}
+        hasAttemptedCheckboxes={hasAttemptedSubmission}
         powerUnitSubTypes={powerUnitSubTypesQuery.data}
         trailerSubTypes={trailerSubTypesQuery.data}
         vehicleDetails={amendmentApplication?.permitData?.vehicleDetails}
@@ -154,6 +160,7 @@ export const AmendPermitReview = () => {
         }}
         calculatedFee={`${amountToRefund}`}
         doingBusinessAs={doingBusinessAs}
+        loas={amendmentApplication?.permitData?.loas}
       >
         {amendmentApplication?.comment ? (
           <ReviewReason reason={amendmentApplication.comment} />

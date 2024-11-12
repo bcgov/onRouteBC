@@ -7,6 +7,8 @@ import { Nullable } from "../../../common/types/common";
 import { PermitApplicationOrigin } from "./PermitApplicationOrigin";
 import { PermitApprovalSource } from "./PermitApprovalSource";
 import { PermitData } from "./PermitData";
+import { ApplicationQueueStatus } from "../../queue/types/ApplicationQueueStatus";
+import { ApplicationRejectionHistory } from "./ApplicationRejectionHistory";
 
 /**
  * A partial permit type that consists of all common fields used for a permit.
@@ -38,6 +40,7 @@ export interface Application extends PartialApplication {
   updatedDateTime?: Nullable<Dayjs>;
   permitData: PermitData;
   applicant?: Nullable<string>;
+  rejectionHistory?: Nullable<ApplicationRejectionHistory[]>;
 }
 
 /**
@@ -58,9 +61,8 @@ type TransformPermitData<T> = {
 /**
  * Type for response data from fetching Application details.
  */
-export interface ApplicationResponseData extends TransformPermitData<
-  ReplaceDayjsWithString<Application>
->{};
+export interface ApplicationResponseData
+  extends TransformPermitData<ReplaceDayjsWithString<Application>> {}
 
 /**
  * Type for create application request payload.
@@ -76,7 +78,7 @@ export interface CreateApplicationRequestData {
   permitApplicationOrigin?: Nullable<PermitApplicationOrigin>;
   permitData: ReplaceDayjsWithString<PermitData>;
   comment?: Nullable<string>;
-};
+}
 
 /**
  * Type for update application request payload.
@@ -107,6 +109,9 @@ export interface ApplicationListItem {
   unitNumber?: Nullable<string>;
   vin?: Nullable<string>;
   plate?: Nullable<string>;
+  applicationQueueStatus?: ApplicationQueueStatus;
+  timeInQueue?: string;
+  claimedBy?: string;
 }
 
 /**
@@ -121,4 +126,15 @@ export interface ApplicationFormData {
   applicationNumber?: Nullable<string>;
   permitNumber?: Nullable<string>;
   permitData: PermitData;
+}
+
+/**
+ * Type used for determining query parameters when fetching applications
+ */
+export interface ApplicationFilters {
+  pendingPermitsOnly?: boolean;
+  applicationsInQueueOnly?: boolean;
+  claimedApplicationsOnly?: boolean;
+  unclaimedApplicationsOnly?: boolean;
+  getStaffQueue?: boolean;
 }

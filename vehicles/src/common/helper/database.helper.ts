@@ -1,4 +1,7 @@
-import { DataSource, SelectQueryBuilder } from 'typeorm';
+import { DataSource, QueryRunner, SelectQueryBuilder } from 'typeorm';
+import { IUserJWT } from '../interface/user-jwt.interface';
+import { Base } from '../../modules/common/entities/base.entity';
+import { Nullable } from '../types/common';
 
 export const callDatabaseSequence = async (
   databaseSequenceName: string,
@@ -77,4 +80,62 @@ export const paginate = <T>(
     // Preferable when no Joins are involved, avoiding the DISTINCT query.
     query.offset((page - 1) * take).limit(take);
   }
+};
+
+/**
+ * Sets the base properties of an entity based on the current user and operation type.
+ * If `update` is not provided or is false, it will only set the creation properties.
+ * Always sets the update properties regardless of the operation.
+ *
+ * @param entity - The entity to set the properties on.
+ * @param currentUser - The user who is making the current operation.
+ * @param update - Optional boolean flag indicating whether to update or create.
+ */
+export const setBaseEntityProperties = <T extends Base>({
+  entity,
+  currentUser,
+  update,
+}: {
+  entity: T;
+  currentUser: IUserJWT;
+  update?: Nullable<boolean>;
+}): void => {
+  if (!update) {
+    entity.createdUser = currentUser.userName;
+    entity.createdDateTime = new Date();
+    entity.createdUserDirectory = currentUser.orbcUserDirectory;
+    entity.createdUserGuid = currentUser.userGUID;
+  }
+
+  entity.updatedUser = currentUser.userName;
+  entity.updatedDateTime = new Date();
+  entity.updatedUserDirectory = currentUser.orbcUserDirectory;
+  entity.updatedUserGuid = currentUser.userGUID;
+};
+
+/**
+ * Retrieves or creates a QueryRunner instance and manages transaction state.
+ * If a QueryRunner is not provided, this method creates one, connects it,
+ * starts a transaction, and marks it as a locally managed (i.e., not passed in).
+ *
+ * @param queryRunner - The existing QueryRunner instance, if any.
+ * @param dataSource - The DataSource used to create a new QueryRunner if none is supplied.
+ * @returns An object containing the QueryRunner instance and a flag indicating
+ * whether it is locally managed (i.e., newly created in this function).
+ */
+export const getQueryRunner = async ({
+  queryRunner,
+  dataSource,
+}: {
+  queryRunner?: Nullable<QueryRunner>;
+  dataSource: DataSource;
+}): Promise<{ localQueryRunner: boolean; queryRunner: QueryRunner }> => {
+  let localQueryRunner = false;
+  if (!queryRunner) {
+    queryRunner = dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    localQueryRunner = true;
+  }
+  return { localQueryRunner, queryRunner };
 };

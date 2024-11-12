@@ -31,7 +31,7 @@ export const EditVehicleDashboard = React.memo(
   ({ vehicleType }: { vehicleType: VehicleType }) => {
     const navigate = useNavigate();
     const { vehicleId } = useParams();
-    const companyId = getDefaultRequiredVal("", getCompanyIdFromSession());
+    const companyId: number = applyWhenNotNullable(id => Number(id), getCompanyIdFromSession(), 0);
     const isTrailer = vehicleType === VEHICLE_TYPES.TRAILER;
 
     const { data: vehicleToEdit, isError } = useVehicleByIdQuery(

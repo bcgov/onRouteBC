@@ -39,6 +39,10 @@ export const getCacheKeyforEmailTemplate = (
       return CacheKey.EMAIL_TEMPLATE_COMPANY_SUSPEND;
     case NotificationTemplate.COMPANY_UNSUSPEND:
       return CacheKey.EMAIL_TEMPLATE_COMPANY_UNSUSPEND;
+    case NotificationTemplate.APPLICATION_APPROVED:
+      return CacheKey.EMAIL_TEMPLATE_APPLICATION_APPROVED;
+    case NotificationTemplate.APPLICATION_REJECTED:
+      return CacheKey.EMAIL_TEMPLATE_APPLICATION_REJECTED;
     default:
       throw new Error('Invalid template name');
   }

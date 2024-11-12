@@ -34,7 +34,7 @@ export const usePowerUnitSubTypesQuery = () => {
  * @returns Query object for fetching power units
  */
 export const usePowerUnitsQuery = (
-  companyId: string,
+  companyId: number,
   staleTime?: number,
 ) => {
   return useQuery({
@@ -100,7 +100,7 @@ export const useDeletePowerUnitsMutation = () => {
       companyId,
       vehicleIds,
     }: {
-      companyId: string;
+      companyId: number;
       vehicleIds: string[];
     }) => deletePowerUnits(vehicleIds, companyId),
     onSuccess: (response) => {

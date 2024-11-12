@@ -9,7 +9,7 @@ import { CART_API_ROUTES } from "./endpoints/endpoints";
  * @returns Response from backend containing application ids that were added successfully or failed
  */
 export const addToCart = async (
-  companyId: string,
+  companyId: number,
   applicationIds: string[],
 ): Promise<CartActionResponse> => {
   const response = await httpPOSTRequest(CART_API_ROUTES.ADD(companyId), {
@@ -26,7 +26,7 @@ export const addToCart = async (
  * @returns Response from backend with applications in the cart belonging to the company
  */
 export const fetchCart = async (
-  companyId: string,
+  companyId: number,
   fetchAllApplications?: boolean,
 ): Promise<CartItem[]> => {
   const response = await httpGETRequest(CART_API_ROUTES.GET(companyId, fetchAllApplications));
@@ -40,7 +40,7 @@ export const fetchCart = async (
  * @returns Response from backend containing application ids that were successfully removed from cart or failed
  */
 export const removeFromCart = async (
-  companyId: string,
+  companyId: number,
   applicationIds: string[],
 ): Promise<CartActionResponse> => {
   const response = await httpDELETERequest(CART_API_ROUTES.REMOVE(companyId), {
@@ -56,7 +56,7 @@ export const removeFromCart = async (
  * @returns Number of items currently in the cart
  */
 export const getCartCount = async (
-  companyId: string,
+  companyId: number,
 ): Promise<number> => {
   const response = await httpGETRequest(CART_API_ROUTES.COUNT(companyId));
   return response.data;

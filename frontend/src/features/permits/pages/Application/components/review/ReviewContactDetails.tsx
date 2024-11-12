@@ -4,10 +4,8 @@ import "./ReviewContactDetails.scss";
 import { DiffChip } from "./DiffChip";
 import { Nullable } from "../../../../../../common/types/common";
 import { PermitContactDetails } from "../../../../types/PermitContactDetails";
-import {
-  areValuesDifferent,
-  getDefaultRequiredVal,
-} from "../../../../../../common/helpers/util";
+import { getDefaultRequiredVal } from "../../../../../../common/helpers/util";
+import { areValuesDifferent } from "../../../../../../common/helpers/equality";
 
 const nameDisplay = (firstName?: Nullable<string>, lastName?: Nullable<string>) => {
   if (!firstName) return getDefaultRequiredVal("", lastName);

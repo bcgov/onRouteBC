@@ -119,3 +119,4 @@ Chart.lock
 
 #Loadtest Results
 loadtests/results
+loadtests/*/results

@@ -156,7 +156,7 @@ export class PermitService {
       await lastValueFrom(
         this.httpService
           .post(url, body, reqConfig)
-          .pipe(map((response) => response.data)),
+          .pipe(map((response) => response.data as JSON)),
       );
     } catch (error) {
       this.logger.error(`Error in calling ${url}: ${error}`);

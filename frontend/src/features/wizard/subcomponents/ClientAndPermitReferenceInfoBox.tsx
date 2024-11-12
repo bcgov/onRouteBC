@@ -2,6 +2,7 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, CardContent, CardMedia, Stack } from "@mui/material";
 import { BC_COLOURS } from "../../../themes/bcGovStyles";
+import { PPC_EMAIL, TOLL_FREE_NUMBER } from "../../../common/constants/constants";
 
 /**
  * React component to display an info box about how to locate
@@ -36,8 +37,8 @@ export const ClientAndPermitReferenceInfoBox = () => {
               If you need further assistance, please contact the
               <br />
               Provincial Permit Centre at{" "}
-              <strong>Toll-free: 1-800-559-9688</strong> or <br />{" "}
-              <strong>Email: ppcpermit@gov.bc.ca</strong>
+              <strong>Toll-free: {TOLL_FREE_NUMBER}</strong> or <br />{" "}
+              <strong>Email: {PPC_EMAIL}</strong>
             </div>
             <Stack spacing={3}>
               <CardMedia

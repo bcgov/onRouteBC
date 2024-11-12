@@ -1,6 +1,6 @@
 export type RegionSizeOverride = {
   region: string;
-  width?: number;
-  height?: number;
-  length?: number;
+  w?: number;
+  h?: number;
+  l?: number;
 };

@@ -16,6 +16,7 @@ import {
 import { differenceBetween } from './date-time.helper';
 import * as dayjs from 'dayjs';
 import { ApplicationStatus } from '../enum/application-status.enum';
+import { Nullable } from '../types/common';
 
 /**
  * Calculates the permit fee based on the application and old amount.
@@ -25,7 +26,11 @@ import { ApplicationStatus } from '../enum/application-status.enum';
  * @throws {NotAcceptableException} If the duration is invalid for TROS permit type.
  * @throws {BadRequestException} If the permit type is not recognized.
  */
-export const permitFee = (application: Permit, oldAmount?: number): number => {
+export const permitFee = (
+  application: Permit,
+  isNoFee?: Nullable<boolean>,
+  oldAmount?: Nullable<number>,
+): number => {
   let duration = calculateDuration(application);
   switch (application.permitType) {
     case PermitType.TERM_OVERSIZE: {
@@ -55,6 +60,7 @@ export const permitFee = (application: Permit, oldAmount?: number): number => {
         TROS_TERM,
         oldAmount,
         application.permitStatus,
+        isNoFee,
       );
     }
     case PermitType.TERM_OVERWEIGHT: {
@@ -84,6 +90,7 @@ export const permitFee = (application: Permit, oldAmount?: number): number => {
         TROW_TERM,
         oldAmount,
         application.permitStatus,
+        isNoFee,
       );
     }
     default:
@@ -147,14 +154,25 @@ export const currentPermitFee = (
   duration: number,
   pricePerTerm: number,
   allowedPermitTerm: number,
-  oldAmount?: number,
-  permitStatus?: ApplicationStatus,
+  oldAmount?: Nullable<number>,
+  permitStatus?: Nullable<ApplicationStatus>,
+  isNoFee?: Nullable<boolean>,
 ): number => {
-  let permitTerms = Math.ceil(duration / allowedPermitTerm); // ex: if duraion is 40 days then charge for 60 days.
+  // Calculate the number of permit terms based on the duration
+  const permitTerms =
+    permitStatus === ApplicationStatus.VOIDED
+      ? Math.floor(duration / allowedPermitTerm)
+      : Math.ceil(duration / allowedPermitTerm);
+
+  // Special fee calculation for void permit
   if (permitStatus === ApplicationStatus.VOIDED) {
-    permitTerms = Math.floor(duration / allowedPermitTerm); //ex: if duration is 40 days then refund only 30 days.
-    return pricePerTerm * permitTerms * -1;
+    // If the permit status is voided, return a refund of 0 for permit with no fees, or return the applicable refund amount
+    return oldAmount === 0 ? 0 : -pricePerTerm * permitTerms;
   }
+  // For non void new application (exclude amendment application), if no fee applies, set the price per term to 0 for new application
+  if ((isNoFee && oldAmount === undefined) || oldAmount === 0) return 0;
+  if (oldAmount === undefined) oldAmount = 0;
+  // Calculate fee for non void permit.
   return oldAmount > 0
     ? pricePerTerm * permitTerms - oldAmount
     : pricePerTerm * permitTerms + oldAmount;
@@ -181,4 +199,23 @@ export const calculatePermitAmount = (
   }
 
   return amount;
+};
+
+export const validAmount = (
+  calculatedAmount: number,
+  receivedAmount: number,
+  transactionType: TransactionType,
+): boolean => {
+  const isAmountValid =
+    receivedAmount.toFixed(2) === Math.abs(calculatedAmount).toFixed(2);
+
+  // For refund transactions, ensure the calculated amount is negative.
+  const isRefundValid =
+    calculatedAmount < 0 && transactionType === TransactionType.REFUND;
+
+  // Return true if the amounts are valid or if it's a valid refund transaction
+  return (
+    isAmountValid &&
+    (isRefundValid || transactionType !== TransactionType.REFUND)
+  );
 };

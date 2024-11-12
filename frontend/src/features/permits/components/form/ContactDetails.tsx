@@ -3,9 +3,15 @@ import { Box, Typography } from "@mui/material";
 import "./ContactDetails.scss";
 import { InfoBcGovBanner } from "../../../../common/components/banners/InfoBcGovBanner";
 import { CustomFormComponent } from "../../../../common/components/form/CustomFormComponents";
-import { requiredMessage } from "../../../../common/helpers/validationMessages";
+import {
+  invalidEmail,
+  invalidExtensionLength,
+  invalidPhoneLength,
+  requiredMessage,
+} from "../../../../common/helpers/validationMessages";
 import { PHONE_WIDTH, EXT_WIDTH } from "../../../../themes/orbcStyles";
 import { BANNER_MESSAGES } from "../../../../common/constants/bannerMessages";
+import isEmail from "validator/lib/isEmail";
 
 export const ContactDetails = ({ feature }: { feature: string }) => {
   return (
@@ -47,18 +53,33 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
               name: "permitData.contactDetails.phone1",
               rules: {
                 required: { value: true, message: requiredMessage() },
+                validate: {
+                  validatePhone: (phone: string) =>
+                    (phone.length >= 10 && phone.length <= 20) ||
+                    invalidPhoneLength(10, 20),
+                },
               },
+
               label: "Phone Number",
               width: PHONE_WIDTH,
             }}
           />
 
           <CustomFormComponent
-            type="input"
+            type="number"
             feature={feature}
             options={{
               name: "permitData.contactDetails.phone1Extension",
-              rules: { required: false },
+              rules: {
+                required: false,
+                validate: {
+                  validateExt1: (ext?: string) =>
+                    !ext ||
+                    ext.length === 0 ||
+                    ext.length <= 5 ||
+                    invalidExtensionLength(5),
+                },
+              },
               label: "Ext",
               width: EXT_WIDTH,
             }}
@@ -71,7 +92,16 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
             feature={feature}
             options={{
               name: "permitData.contactDetails.phone2",
-              rules: { required: false },
+              rules: {
+                required: false,
+                validate: {
+                  validatePhone: (phone?: string) =>
+                    !phone ||
+                    phone.length === 0 ||
+                    (phone.length >= 10 && phone.length <= 20) ||
+                    invalidPhoneLength(10, 20),
+                },
+              },
               label: "Alternate Number",
               width: PHONE_WIDTH,
             }}
@@ -82,7 +112,16 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
             feature={feature}
             options={{
               name: "permitData.contactDetails.phone2Extension",
-              rules: { required: false },
+              rules: {
+                required: false,
+                validate: {
+                  validateExt2: (ext?: string) =>
+                    !ext ||
+                    ext.length === 0 ||
+                    ext.length <= 5 ||
+                    invalidExtensionLength(5),
+                },
+              },
               label: "Ext",
               width: EXT_WIDTH,
             }}
@@ -98,6 +137,10 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
             name: "permitData.contactDetails.email",
             rules: {
               required: { value: true, message: requiredMessage() },
+              validate: {
+                validateEmail: (email: string) =>
+                  isEmail(email) || invalidEmail(),
+              },
             },
             label: "Company Email",
           }}
@@ -110,7 +153,16 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
           feature={feature}
           options={{
             name: "permitData.contactDetails.additionalEmail",
-            rules: { required: false },
+            rules: {
+              required: false,
+              validate: {
+                validateEmail: (email?: string) =>
+                  !email ||
+                  email.length === 0 ||
+                  isEmail(email) ||
+                  invalidEmail(),
+              },
+            },
             label: "Additional Email",
           }}
         />

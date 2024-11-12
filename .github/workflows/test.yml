@@ -1,0 +1,35 @@
+---
+name: Deploy Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
+        default: "test"
+  workflow_call:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
+        default: "test"
+  
+jobs:
+  deploy-test:
+    name: Deploys (TEST)
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      autoscaling: true
+      environment: test
+      release: test
+      tag: ${{ inputs.tag }}
+      params: |
+        --set-string global.license='c28f0c' \
+        --set-string global.zone='test' \
+        --set-string global.vault.role='nonprod' \
+        --set-string global.vault.zone='test' \
+        --set-string global.pr_num='${{ inputs.tag }}' \

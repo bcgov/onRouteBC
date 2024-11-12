@@ -1,47 +1,57 @@
 import { Box, Checkbox, Typography } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 import "./ConfirmationCheckboxes.scss";
 import { CustomInputHTMLAttributes } from "../../../../../../common/types/formElements";
 
 export const ConfirmationCheckboxes = ({
-  isSubmitted,
-  isChecked,
-  setIsChecked,
+  hasAttemptedSubmission,
+  areAllChecked,
+  setAreAllChecked,
+  shouldDisableCheckboxes,
 }: {
-  isSubmitted: boolean;
-  isChecked: boolean;
-  setIsChecked: Dispatch<SetStateAction<boolean>>;
+  hasAttemptedSubmission: boolean;
+  areAllChecked: boolean;
+  setAreAllChecked: (allChecked: boolean) => void;
+  shouldDisableCheckboxes: boolean;
 }) => {
   const checkboxes = [
     {
       description:
         "Confirm that this permit is issued to the registered owner (or lessee) of the vehicle being permitted.",
-      checked: false,
+      checked: shouldDisableCheckboxes,
     },
     {
       description:
         "Confirm compliance with the appropriate policy for the selected commodity(s).",
-      checked: false,
+      checked: shouldDisableCheckboxes,
     },
     {
       description: "Confirm the information in this application is correct.",
-      checked: false,
+      checked: shouldDisableCheckboxes,
     },
   ];
-  const [checked, setChecked] = useState(checkboxes);
+
+  const [confirmationCheckboxes, setConfirmationCheckboxes] =
+    useState(checkboxes);
 
   const handleCheck = (checkedName: string) => {
-    let isValid = true;
-    const updated = checked.map((item) => {
+    if (shouldDisableCheckboxes) return;
+
+    const updatedCheckboxes = confirmationCheckboxes.map((item) => {
+      if (shouldDisableCheckboxes) return item;
+
       if (item.description === checkedName) {
-        item.checked = !item.checked;
+        return {
+          description: item.description,
+          checked: !item.checked,
+        };
       }
-      if (!item.checked) isValid = false;
+
       return item;
     });
-    setChecked(updated);
-    setIsChecked(isValid);
+    setConfirmationCheckboxes(updatedCheckboxes);
+    setAreAllChecked(!updatedCheckboxes.some((updated) => !updated.checked));
   };
 
   return (
@@ -49,33 +59,38 @@ export const ConfirmationCheckboxes = ({
       <Typography className="confirmation-checkboxes__header" variant="h3">
         Please read the following carefully and check all to proceed.
       </Typography>
-      {checked.map((x) => (
-        <Box
-          key={x.description}
-          className="confirmation-checkboxes__attestation"
-        >
+
+      {confirmationCheckboxes.map(({ description, checked }) => (
+        <Box key={description} className="confirmation-checkboxes__attestation">
           <Checkbox
             className={
               "confirmation-checkboxes__checkbox " +
               `${
-                isSubmitted && !x.checked
+                hasAttemptedSubmission && !checked
                   ? "confirmation-checkboxes__checkbox--invalid"
                   : ""
               }`
             }
-            key={x.description}
-            checked={x.checked}
-            onChange={() => handleCheck(x.description)}
+            classes={{
+              root: "confirmation-checkboxes__checkbox",
+              disabled: "confirmation-checkboxes__checkbox--disabled",
+              checked: "confirmation-checkboxes__checkbox--checked",
+            }}
+            key={description}
+            checked={checked}
+            disabled={shouldDisableCheckboxes}
+            onChange={() => handleCheck(description)}
             inputProps={
               {
                 "data-testid": "permit-attestation-checkbox",
               } as CustomInputHTMLAttributes
             }
           />
-          {x.description}
+          {description}
         </Box>
       ))}
-      {isSubmitted && !isChecked ? (
+
+      {hasAttemptedSubmission && !areAllChecked ? (
         <Typography
           className="confirmation-checkboxes__error"
           data-testid="permit-attestation-checkbox-error"

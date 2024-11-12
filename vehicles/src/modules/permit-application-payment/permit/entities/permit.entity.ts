@@ -19,6 +19,8 @@ import { PermitTransaction } from '../../payment/entities/permit-transaction.ent
 import { PermitIssuedBy } from '../../../../common/enum/permit-issued-by.enum';
 import { User } from '../../../company-user-management/users/entities/user.entity';
 import { Company } from '../../../company-user-management/company/entities/company.entity';
+import { Case } from '../../../case-management/entities/case.entity';
+import { Nullable } from '../../../../common/types/common';
 
 @Entity({ name: 'permit.ORBC_PERMIT' })
 export class Permit extends Base {
@@ -239,4 +241,10 @@ export class Permit extends Base {
     (permitTransaction) => permitTransaction.permit,
   )
   public permitTransactions: PermitTransaction[];
+
+  @OneToMany(() => Case, (cases) => cases.permit, {
+    cascade: false,
+    eager: false,
+  })
+  public cases?: Nullable<Case[]>;
 }

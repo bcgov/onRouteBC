@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { addToCart, fetchCart, getCartCount, removeFromCart } from "../apiManager/cart";
 import { Nullable } from "../../../common/types/common";
-import { getDefaultRequiredVal } from "../../../common/helpers/util";
-import { getApplicationByPermitId } from "../apiManager/permitsAPI";
+import { getApplication } from "../apiManager/permitsAPI";
+import {
+  addToCart,
+  fetchCart,
+  getCartCount,
+  removeFromCart,
+} from "../apiManager/cart";
 
 const CART_KEY = "cart";
 const CART_COUNT_KEY = "cart-count";
@@ -20,7 +24,7 @@ export const useAddToCart = () => {
       companyId,
       applicationIds,
     }: {
-      companyId: string;
+      companyId: number;
       applicationIds: string[];
     }) => addToCart(companyId, applicationIds),
   });
@@ -33,7 +37,7 @@ export const useAddToCart = () => {
  * @returns Query object for fetching cart items
  */
 export const useFetchCart = (
-  companyId: string,
+  companyId: number,
   fetchAllApplications?: boolean,
 ) => {
   return useQuery({
@@ -56,7 +60,7 @@ export const useRemoveFromCart = () => {
       companyId,
       applicationIds,
     }: {
-      companyId: string;
+      companyId: number;
       applicationIds: string[];
     }) => removeFromCart(companyId, applicationIds),
   });
@@ -67,12 +71,10 @@ export const useRemoveFromCart = () => {
  * @param companyId id of company to get cart item count for
  * @returns Query object used for getting cart item count
  */
-export const useGetCartCount = (companyId?: Nullable<string>) => {
-  const cartCompanyId = getDefaultRequiredVal("", companyId);
-
+export const useGetCartCount = (companyId: number) => {
   return useQuery({
     queryKey: [CART_COUNT_KEY, companyId],
-    queryFn: () => getCartCount(cartCompanyId),
+    queryFn: () => getCartCount(companyId),
     enabled: Boolean(companyId),
     retry: false,
     refetchOnMount: "always",
@@ -81,17 +83,18 @@ export const useGetCartCount = (companyId?: Nullable<string>) => {
 };
 
 /**
- * Hook used to fetch the latest status of a cart item./
+ * Hook used to fetch the latest status of a cart item.
+ * @param companyId id of the company that the cart belongs to
  * @returns Latest status of selected cart item and method to fetch its latest status
  */
-export const useFetchCartItemStatus = () => {
+export const useFetchCartItemStatus = (companyId: number) => {
   const queryClient = useQueryClient();
   const [cartItemId, setCartItemId] = useState<Nullable<string>>();
 
   const cartItemDetailQuery = useQuery({
     queryKey: [CART_ITEM, cartItemId],
-    queryFn: () => getApplicationByPermitId(cartItemId),
-    enabled: Boolean(cartItemId),
+    queryFn: () => getApplication(companyId, cartItemId as string),
+    enabled: Boolean(companyId) && Boolean(cartItemId),
     retry: false,
     refetchOnMount: "always",
     refetchOnWindowFocus: false,

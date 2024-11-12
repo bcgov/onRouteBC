@@ -4,7 +4,7 @@ import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 
 import "./ReviewVehicleInfo.scss";
 import { DiffChip } from "./DiffChip";
-import { areValuesDifferent } from "../../../../../../common/helpers/util";
+import { areValuesDifferent } from "../../../../../../common/helpers/equality";
 import { Nullable } from "../../../../../../common/types/common";
 import { PermitVehicleDetails } from "../../../../types/PermitVehicleDetails";
 import {

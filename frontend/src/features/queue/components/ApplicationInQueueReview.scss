@@ -1,0 +1,8 @@
+@use "../../../common/components/dashboard/Dashboard";
+
+@include Dashboard.layout-box-style(".application-in-queue-review .breadcrumb");
+
+.application-in-queue-review {
+  display: flex;
+  flex-direction: column;
+}

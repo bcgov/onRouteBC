@@ -12,12 +12,14 @@ import { useIssuePermits, useStartTransaction } from "../../../hooks/hooks";
 import { isValidTransaction } from "../../../helpers/payment";
 import { hasPermitsActionFailed } from "../../../helpers/permitState";
 import { ERROR_ROUTES } from "../../../../../routes/constants";
-import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
+import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { DEFAULT_PERMIT_TYPE } from "../../../types/PermitType";
 
 export const AmendPermitFinish = () => {
   const navigate = useNavigate();
-  const { companyId } = useParams();
+  const { companyId: companyIdParam } = useParams();
+  const companyId: number = applyWhenNotNullable(id => Number(id), companyIdParam, 0);
+
   const {
     permit,
     amendmentApplication,
@@ -51,7 +53,7 @@ export const AmendPermitFinish = () => {
     useStartTransaction();
 
   const { mutation: issuePermitMutation, issueResults } =
-    useIssuePermits(companyId);
+    useIssuePermits();
 
   useEffect(() => {
     if (typeof transaction !== "undefined") {
@@ -62,10 +64,13 @@ export const AmendPermitFinish = () => {
         navigate(ERROR_ROUTES.UNEXPECTED);
       } else {
         // refund transaction successful, proceed to issue permit
-        issuePermitMutation.mutate([permitId]);
+        issuePermitMutation.mutate({
+          companyId,
+          applicationIds: [permitId],
+        });
       }
     }
-  }, [transaction]);
+  }, [transaction, permitId, companyId]);
 
   useEffect(() => {
     const issueFailed = hasPermitsActionFailed(issueResults);

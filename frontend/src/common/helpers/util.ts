@@ -123,25 +123,6 @@ export const getDefaultRequiredVal = <T>(
 };
 
 /**
- * Check if two nullable values are different.
- * @param val1 First nullable value to be compared
- * @param val2 Second nullable value to be compared
- * @returns boolean value indicating if values are different.
- */
-export const areValuesDifferent = <T>(
-  val1?: Nullable<T>,
-  val2?: Nullable<T>,
-): boolean => {
-  if (!val1 && !val2) return false; // both empty === equal
-
-  if ((val1 && !val2) || (!val1 && val2) || (val1 && val2 && val1 !== val2)) {
-    return true; // one empty, or both non-empty but different === different
-  }
-
-  return false; // values are equal otherwise
-};
-
-/**
  * Returns the file name for a file from API response.
  * @param headers The collection of headers in an API response.
  * @returns string | undefined.

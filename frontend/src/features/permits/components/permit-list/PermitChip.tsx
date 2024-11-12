@@ -5,6 +5,7 @@ import {
   PERMIT_STATUSES,
   isPermitInactive,
 } from "../../types/PermitStatus";
+import { APPLICATION_QUEUE_STATUSES } from "../../../queue/types/ApplicationQueueStatus";
 
 /**
  * Returns the theme name for the chip based on the permit status.
@@ -23,6 +24,12 @@ const getTheme = (permitStatus?: string) => {
       return "superseded";
     case PERMIT_EXPIRED:
       return "expired";
+    case APPLICATION_QUEUE_STATUSES.PENDING_REVIEW:
+      return "pending-review";
+    case APPLICATION_QUEUE_STATUSES.IN_REVIEW:
+      return "in-review";
+    case APPLICATION_QUEUE_STATUSES.CLOSED:
+      return "closed";
     default:
       return undefined;
   }
@@ -43,6 +50,12 @@ const getStatusText = (permitStatus?: string): string => {
       return "Superseded";
     case PERMIT_EXPIRED:
       return "Expired";
+    case APPLICATION_QUEUE_STATUSES.PENDING_REVIEW:
+      return "Pending Review";
+    case APPLICATION_QUEUE_STATUSES.IN_REVIEW:
+      return "In Review";
+    case APPLICATION_QUEUE_STATUSES.CLOSED:
+      return "Closed";
     default:
       return "";
   }

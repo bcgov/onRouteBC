@@ -30,7 +30,7 @@ const emptyUnitNumberToNull = (unitNumber?: Nullable<string>) => {
  * @return Response of all power units
  */
 export const getAllPowerUnits = async (
-  companyId: string,
+  companyId: number,
 ): Promise<PowerUnit[]> => {
   const url = VEHICLES_API.POWER_UNITS.ALL(companyId);
   return httpGETRequest(url).then((response) => response.data);
@@ -44,7 +44,7 @@ export const getAllPowerUnits = async (
  */
 export const getPowerUnit = async (
   powerUnitId: string,
-  companyId: string,
+  companyId: number,
 ): Promise<PowerUnit> => {
   const url = VEHICLES_API.POWER_UNITS.DETAIL(companyId, powerUnitId);
   return httpGETRequest(url).then((response) => response.data);
@@ -69,7 +69,7 @@ export const addPowerUnit = async ({
   companyId,
   powerUnit,
 }: {
-  companyId: string | number;
+  companyId: number;
   powerUnit: PowerUnitCreateData;
 }) => {
   const url = VEHICLES_API.POWER_UNITS.ADD(companyId);
@@ -95,7 +95,7 @@ export const updatePowerUnit = async ({
   powerUnit,
   powerUnitId,
 }: {
-  companyId: string;
+  companyId: number;
   powerUnit: PowerUnitUpdateData;
   powerUnitId: string;
 }) => {
@@ -114,7 +114,7 @@ export const updatePowerUnit = async ({
  * @param companyId Id of the company to fetch for.
  * @return Response of all trailers
  */
-export const getAllTrailers = async (companyId: string): Promise<Trailer[]> => {
+export const getAllTrailers = async (companyId: number): Promise<Trailer[]> => {
   const url = VEHICLES_API.TRAILERS.ALL(companyId);
   return httpGETRequest(url).then((response) => response.data);
 };
@@ -127,7 +127,7 @@ export const getAllTrailers = async (companyId: string): Promise<Trailer[]> => {
  */
 export const getTrailer = async (
   trailerId: string,
-  companyId: string,
+  companyId: number,
 ): Promise<Trailer> => {
   const url = VEHICLES_API.TRAILERS.DETAIL(companyId, trailerId);
   return httpGETRequest(url).then((response) => response.data);
@@ -152,7 +152,7 @@ export const addTrailer = async ({
   companyId,
   trailer,
 }: {
-  companyId: string;
+  companyId: number;
   trailer: TrailerCreateData;
 }) => {
   const url = VEHICLES_API.TRAILERS.ADD(companyId);
@@ -176,7 +176,7 @@ export const updateTrailer = async ({
   trailerId,
   trailer,
 }: {
-  companyId: string;
+  companyId: number;
   trailerId: string;
   trailer: TrailerUpdateData;
 }) => {
@@ -197,7 +197,7 @@ export const updateTrailer = async ({
  */
 export const deletePowerUnits = async (
   vehicleIds: string[],
-  companyId: string,
+  companyId: number,
 ) => {
   const url = VEHICLES_API.POWER_UNITS.DELETE(companyId);
   return await httpPOSTRequest(url, replaceEmptyValuesWithNull({ powerUnits: vehicleIds }));
@@ -211,7 +211,7 @@ export const deletePowerUnits = async (
  */
 export const deleteTrailers = async (
   vehicleIds: string[],
-  companyId: string,
+  companyId: number,
 ) => {
   const url = VEHICLES_API.TRAILERS.DELETE(companyId);
   return await httpPOSTRequest(url, replaceEmptyValuesWithNull({ trailers: vehicleIds }));

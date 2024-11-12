@@ -6,7 +6,7 @@ import { vehicleTypeDisplayText } from "../../../helpers/mappers";
 import { VehicleType } from "../../../../manageVehicles/types/Vehicle";
 import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { calculateFeeByDuration } from "../../../helpers/feeSummary";
-import { permitTypeDisplayText } from "../../../types/PermitType";
+import { getPermitTypeName } from "../../../types/PermitType";
 import {
   DATE_FORMATS,
   dayjsToLocalStr,
@@ -87,7 +87,7 @@ beforeAll(() => {
   // @ts-ignore
   window.scrollTo = vi.fn();
   listenToMockServer();
-  sessionStorage.setItem('onRouteBC.user.companyId', "74");
+  sessionStorage.setItem("onRouteBC.user.companyId", "74");
 });
 
 beforeEach(() => {
@@ -120,7 +120,7 @@ describe("Review and Confirm Application Details", () => {
         permitType,
       } = defaultApplicationData;
       expect(await applicationHeaderTitle()).toHaveTextContent(
-        permitTypeDisplayText(permitType),
+        getPermitTypeName(permitType),
       );
       expect(await applicationNumber()).toHaveTextContent(
         applicationNo as string,
@@ -343,7 +343,8 @@ describe("Review and Confirm Application Details", () => {
         provinceCode,
         vehicleType,
         vehicleSubType,
-      } = defaultApplicationData.permitData.vehicleDetails as PermitVehicleDetails;
+      } = defaultApplicationData.permitData
+        .vehicleDetails as PermitVehicleDetails;
       const unit = getDefaultRequiredVal("", unitNumber);
       const country = formatCountry(countryCode);
       const province = formatProvince(countryCode, provinceCode);
@@ -408,24 +409,16 @@ describe("Review and Confirm Application Details", () => {
 
     it("should display proper fee summary", async () => {
       // Arrange and Act
-      const applicationData = {
-        ...defaultApplicationData,
-        permitData: {
-          ...defaultApplicationData.permitData,
-          feeSummary: `${calculateFeeByDuration(
-            defaultApplicationData.permitType,
-            defaultApplicationData.permitData.permitDuration,
-          )}`,
-        },
-      };
-      renderTestComponent(applicationData);
+      renderTestComponent(defaultApplicationData);
 
       // Assert
-      const {
-        permitType,
-        permitData: { feeSummary },
-      } = applicationData;
-      const permitTypeStr = permitTypeDisplayText(permitType);
+      const feeSummary = `${calculateFeeByDuration(
+        defaultApplicationData.permitType,
+        defaultApplicationData.permitData.permitDuration,
+      )}`;
+      const permitTypeStr = getPermitTypeName(
+        defaultApplicationData.permitType,
+      );
       expect(await feeSummaryPermitType()).toHaveTextContent(permitTypeStr);
       expect(await feeSummaryPrice()).toHaveTextContent(`$${feeSummary}.00`);
       expect(await feeSummaryTotal()).toHaveTextContent(`$${feeSummary}.00`);

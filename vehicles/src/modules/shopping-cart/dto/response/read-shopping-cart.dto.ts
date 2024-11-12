@@ -77,14 +77,14 @@ export class ReadShoppingCartDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'The permit start date.',
+    description: 'The permit expiry date.',
     example: '2023-07-04T19:12:22Z',
   })
   expiryDate: string;
 
   @ApiProperty({
-    description: 'The permit fee',
-    example: 200,
+    description: 'The permit duration',
+    example: 30,
   })
-  fee: number;
+  duration: number;
 }

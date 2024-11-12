@@ -80,7 +80,7 @@ export const List = memo(
   }: {
     vehicleType: VehicleType;
     query: UseQueryResult<Vehicle[]>;
-    companyId: string;
+    companyId: number;
   }) => {
     const navigate = useNavigate();
     const {

@@ -29,7 +29,7 @@ export const useTrailerSubTypesQuery = () => {
  * @returns Query object for fetching trailers
  */
 export const useTrailersQuery = (
-  companyId: string,
+  companyId: number,
   staleTime?: number,
 ) => {
   return useQuery({
@@ -95,7 +95,7 @@ export const useDeleteTrailersMutation = () => {
       companyId,
       vehicleIds,
     }: {
-      companyId: string;
+      companyId: number;
       vehicleIds: string[];
     }) => deleteTrailers(vehicleIds, companyId),
     onSuccess: (response) => {

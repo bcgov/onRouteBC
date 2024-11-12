@@ -17,11 +17,27 @@
     margin-right: 80px;
   }
 
+  & &__info {
+    border-bottom: 1px solid $bc-border-grey;
+    margin-bottom: 1.5rem;
+    padding: 0 0 1.5rem 0;
+
+    .info {
+      &__body {
+        color: $bc-black;
+        font-size: 1rem;
+        margin: 0;
+      }
+    }
+  }
+
   & &__right-container {
     width: 33.3%;
     background-color: $bc-white;
     display: flex;
     flex-direction: column;
+    
+    padding-top: 1.5rem;
 
     .choose-payment-method {
       margin-bottom: 2.5rem;

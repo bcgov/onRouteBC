@@ -6,7 +6,7 @@
     flex-direction: row;
     align-items: center;
     padding: 1em;
-    color: orbcStyles.$bc-messages-gold-text;
+    color: orbcStyles.$bc-black;
     background-color: orbcStyles.$bc-background-light-grey;
     font-size: 1.2rem;
   }
@@ -19,7 +19,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: orbcStyles.$bc-messages-gold-text;
+    background-color: orbcStyles.$bc-black;
     margin-right: 0.5em;
 
     .warning-icon {

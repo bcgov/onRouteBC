@@ -1,5 +1,14 @@
 import { VEHICLE_TYPES } from "../../manageVehicles/types/Vehicle";
-import { EMPTY_PERMIT_TYPE_SELECT, PERMIT_TYPES, getPermitTypeName } from "../types/PermitType";
+import {
+  getPermitCategoryName,
+  PERMIT_CATEGORIES,
+  PermitCategory,
+} from "../types/PermitCategory";
+import {
+  PermitType,
+  TERM_PERMIT_LIST,
+  getPermitTypeShortName,
+} from "../types/PermitType";
 
 export const VEHICLE_CHOOSE_FROM = {
   UNIT_NUMBER: "unitNumber",
@@ -19,11 +28,44 @@ export const VEHICLE_TYPE_OPTIONS = [
   { value: VEHICLE_TYPES.TRAILER, label: "Trailer" },
 ];
 
-export const PERMIT_TYPE_CHOOSE_FROM_OPTIONS = [
-  { value: EMPTY_PERMIT_TYPE_SELECT, label: "Select" },
-  { value: PERMIT_TYPES.TROS, label: getPermitTypeName(PERMIT_TYPES.TROS) },
-  { value: PERMIT_TYPES.TROW, label: getPermitTypeName(PERMIT_TYPES.TROW) },
+export const ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS: PermitTypeChooseFromItem[] = [
+  {
+    value: PERMIT_CATEGORIES.TERM,
+    label: getPermitCategoryName(PERMIT_CATEGORIES.TERM),
+    items: TERM_PERMIT_LIST.map((permitType: PermitType) => ({
+      value: permitType,
+      label: getPermitTypeShortName(permitType),
+    })),
+  },
+  /* TODO uncomment these when required */
+  // {
+  //   value: PERMIT_CATEGORIES.SINGLE_TRIP,
+  //   label: getPermitCategoryName(PERMIT_CATEGORIES.SINGLE_TRIP),
+  //   items: SINGLE_TRIP_PERMIT_LIST.map((permitType: PermitType) => ({
+  //     value: permitType,
+  //     label: getPermitTypeShortName(permitType),
+  //   })),
+  // },
+  // {
+  //   value: PERMIT_CATEGORIES.NON_RESIDENT,
+  //   label: getPermitCategoryName(PERMIT_CATEGORIES.NON_RESIDENT),
+  //   items: NON_RESIDENT_PERMIT_LIST.map((permitType: PermitType) => ({
+  //     value: permitType,
+  //     label: getPermitTypeShortName(permitType),
+  //   })),
+  // },
+  // {
+  //   value: PERMIT_TYPES.MFP,
+  //   label: getPermitTypeShortName(PERMIT_TYPES.MFP),
+  // },
 ];
+
+export interface PermitTypeChooseFromItem {
+  value: PermitType | PermitCategory;
+  label: string;
+  items?: PermitTypeChooseFromItem[];
+  category?: string;
+}
 
 export const BASE_DAYS_IN_YEAR = 365;
 export const COMMON_MIN_DURATION = 30;

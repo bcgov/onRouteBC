@@ -7,7 +7,8 @@ export const trosOnly: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.companyName',
+          fact: 'permitData',
+          path: '$.companyName',
           operator: 'stringMinimumLength',
           value: 1,
         },
@@ -24,7 +25,8 @@ export const trosOnly: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.firstName',
+          fact: 'permitData',
+          path: '$.contactDetails.firstName',
           operator: 'stringMinimumLength',
           value: 1,
         },
@@ -42,7 +44,8 @@ export const trosOnly: PolicyDefinition = {
       conditions: {
         any: [
           {
-            fact: 'permitData.startDate',
+            fact: 'permitData',
+            path: '$.startDate',
             operator: 'dateLessThan',
             value: {
               fact: 'validationDate',
@@ -62,7 +65,8 @@ export const trosOnly: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.vin',
+          fact: 'permitData',
+          path: '$.vehicleDetails.vin',
           operator: 'regex',
           value: '^[a-zA-Z0-9]{6}$',
         },
@@ -93,14 +97,16 @@ export const trosOnly: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
@@ -121,7 +127,8 @@ export const trosOnly: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -145,11 +152,11 @@ export const trosOnly: PolicyDefinition = {
     trailers: [],
   },
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
   vehicleCategories: {
     trailerCategories: [],

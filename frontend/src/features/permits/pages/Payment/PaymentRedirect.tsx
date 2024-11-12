@@ -1,16 +1,20 @@
 import { useContext, useEffect, useRef } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
+import { Loading } from "../../../../common/pages/Loading";
+import { useCompleteTransaction, useIssuePermits } from "../../hooks/hooks";
+import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { DATE_FORMATS, toUtc } from "../../../../common/helpers/formatDate";
+import { hasPermitsActionFailed } from "../../helpers/permitState";
+import { PaymentCardTypeCode } from "../../../../common/types/paymentMethods";
+import { useAddToCart } from "../../hooks/cart";
+import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
+import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
 import {
   getPayBCPaymentDetails,
   usePaymentByTransactionIdQuery,
 } from "../../helpers/payment";
-import { Loading } from "../../../../common/pages/Loading";
-import { useCompleteTransaction, useIssuePermits } from "../../hooks/hooks";
-import { getDefaultRequiredVal } from "../../../../common/helpers/util";
-import { DATE_FORMATS, toUtc } from "../../../../common/helpers/formatDate";
-import { hasPermitsActionFailed } from "../../helpers/permitState";
-import { PaymentCardTypeCode } from "../../../../common/types/paymentMethods";
+
 import {
   ERROR_ROUTES,
   PERMITS_ROUTES,
@@ -21,8 +25,6 @@ import {
   CompleteTransactionRequestData,
   PayBCPaymentDetails,
 } from "../../types/payment";
-import { useAddToCart } from "../../hooks/cart";
-import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 
 /**
  * React component that handles the payment redirect and displays the payment status.
@@ -32,7 +34,13 @@ import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext
 export const PaymentRedirect = () => {
   const navigate = useNavigate();
   const completedTransaction = useRef(false);
-  const { companyId } = useContext(OnRouteBCContext);
+  const { companyId: companyIdFromContext } = useContext(OnRouteBCContext);
+  const companyId: number = getDefaultRequiredVal(
+    0,
+    companyIdFromContext,
+    applyWhenNotNullable(id => Number(id), getCompanyIdFromSession()),
+  );
+
   const issuedPermit = useRef(false);
   const [searchParams] = useSearchParams();
   const paymentDetails = getPayBCPaymentDetails(searchParams);
@@ -73,14 +81,17 @@ export const PaymentRedirect = () => {
 
       if (paymentApproved === true) {
         // Payment successful, proceed to issue permit
-        issuePermitsMutation.mutate(applicationIds);
+        issuePermitsMutation.mutate({
+          companyId,
+          applicationIds,
+        });
         issuedPermit.current = true;
       } else if (paymentApproved === false) {
         // Add back to cart and then redirect to shopping cart.
-        if (!addToCartMutation.isPending && addToCartMutation.isIdle) {
+        if (!addToCartMutation.isPending && addToCartMutation.isIdle && companyId) {
           addToCartMutation
             .mutateAsync({
-              companyId: `${companyId}`,
+              companyId,
               applicationIds,
             })
             .then(({ failure }) => {
@@ -103,7 +114,7 @@ export const PaymentRedirect = () => {
 
     if (transactionIdQuery?.isError)
       navigate(ERROR_ROUTES.UNEXPECTED, { replace: true });
-  }, [paymentApproved, transactionIdQuery]);
+  }, [paymentApproved, transactionIdQuery, companyId]);
 
   if (issueFailed) {
     return <Navigate to={`${ERROR_ROUTES.ISSUANCE}`} replace={true} />;

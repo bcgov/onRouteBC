@@ -7,13 +7,17 @@ import { PermitListItem } from "../../features/permits/types/permit";
 import { Nullable } from "../types/common";
 
 /**
- * Format a given datetime string to a format that we can display
- * @param rawDateTime
+ * Format a datetime string in a table cell to a given display format.
+ * @param rawDateTime Provided datetime string, if any
+ * @param isDateTimeLocal Whether or not the provided datetime is local
  * @returns datetime string for display or "NA" if invalid date given
  */
-export const formatCellValuetoDatetime = (rawDateTime: Nullable<string>) => {
+export const formatCellValuetoDatetime = (
+  rawDateTime: Nullable<string>,
+  isDateTimeLocal?: boolean,
+) => {
   return applyWhenNotNullable(
-    (dt) => toLocal(dt, DATE_FORMATS.DATEONLY_ABBR_MONTH),
+    (dt) => toLocal(dt, DATE_FORMATS.DATEONLY_ABBR_MONTH, isDateTimeLocal),
     rawDateTime,
     "NA",
   );

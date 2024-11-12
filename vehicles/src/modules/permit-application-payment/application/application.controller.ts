@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiInternalServerErrorResponse,
@@ -12,12 +20,21 @@ import { ApplicationService } from './application.service';
 import { Request } from 'express';
 import { ExceptionDto } from '../../../common/exception/exception.dto';
 import { ResultDto } from './dto/response/result.dto';
-import { PermitReceiptDocumentService } from '../permit-receipt-document/permit-receipt-document.service';
 import { JwtServiceAccountAuthGuard } from 'src/common/guard/jwt-sa-auth.guard';
 import { PermitIdDto } from 'src/modules/permit-application-payment/permit/dto/request/permit-id.dto';
+import { ApiPaginatedResponse } from '../../../common/decorator/api-paginate-response';
+import { Permissions } from '../../../common/decorator/permissions.decorator';
+import { IDIR_USER_ROLE_LIST } from '../../../common/enum/user-role.enum';
+import { PaginationDto } from '../../../common/dto/paginate/pagination';
+import { ReadApplicationMetadataDto } from './dto/response/read-application-metadata.dto';
+import { GetApplicationQueryParamsDto } from './dto/request/queryParam/getApplication.query-params.dto';
+import {
+  ApplicationQueueStatus,
+  convertApplicationQueueStatus,
+} from '../../../common/enum/case-status-type.enum';
 
 @ApiBearerAuth()
-@ApiTags('Application')
+@ApiTags('Application : API accessible exclusively to staff users and SA.')
 @Controller('/applications')
 @ApiNotFoundResponse({
   description: 'The Application Api Not Found Response',
@@ -32,10 +49,43 @@ import { PermitIdDto } from 'src/modules/permit-application-payment/permit/dto/r
   type: ExceptionDto,
 })
 export class ApplicationController {
-  constructor(
-    private readonly applicationService: ApplicationService,
-    private readonly permitReceiptDocumentService: PermitReceiptDocumentService,
-  ) {}
+  constructor(private readonly applicationService: ApplicationService) {}
+
+  @ApiPaginatedResponse(ReadApplicationMetadataDto)
+  @ApiOperation({
+    summary: 'Retrieve all applications with criteria',
+    description:
+      'Fetch paginated list of applications based on user-defined filters such as page, sorting order, search column, search string, and whether to include applications in queue. Accessible only to specific IDIR roles.',
+  })
+  @Permissions({
+    allowedIdirRoles: IDIR_USER_ROLE_LIST,
+  })
+  @Get()
+  async getApplications(
+    @Req() request: Request,
+    @Query()
+    {
+      page,
+      take,
+      orderBy,
+      searchColumn,
+      searchString,
+      applicationQueueStatus,
+    }: GetApplicationQueryParamsDto,
+  ): Promise<PaginationDto<ReadApplicationMetadataDto>> {
+    const currentUser = request.user as IUserJWT;
+    return await this.applicationService.findAllApplications({
+      page,
+      take,
+      orderBy,
+      currentUser,
+      searchColumn,
+      searchString,
+      applicationQueueStatus: convertApplicationQueueStatus(
+        (applicationQueueStatus?.split(',') as ApplicationQueueStatus[]) || [],
+      ),
+    });
+  }
 
   /**
    * A POST method defined with the @Post() decorator and a route of /scheduler/issue

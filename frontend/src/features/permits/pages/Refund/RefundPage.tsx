@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import "./RefundPage.scss";
-import { PermitType, permitTypeDisplayText } from "../../types/PermitType";
+import { getPermitTypeName, PermitType } from "../../types/PermitType";
 import { RefundFormData } from "./types/RefundFormData";
 import { requiredMessage } from "../../../../common/helpers/validationMessages";
 import { getErrorMessage } from "../../../../common/components/form/CustomFormComponents";
@@ -388,7 +388,7 @@ export const RefundPage = ({
           <div className="refund-fee-summary">
             <div className="refund-fee-summary__header">
               <div className="refund-fee-summary__title">
-                {permitTypeDisplayText(permitType)}
+                {getPermitTypeName(permitType)}
               </div>
               <div className="refund-fee-summary__permit-number">
                 <span>{permitActionText(permitAction)} Permit #: </span>

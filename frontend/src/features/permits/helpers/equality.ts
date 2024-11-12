@@ -5,6 +5,8 @@ import { PermitContactDetails } from "../types/PermitContactDetails";
 import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import { PermitData } from "../types/PermitData";
 import { PermitCondition } from "../types/PermitCondition";
+import { arePermitLOADetailsEqual, PermitLOA } from "../types/PermitLOA";
+import { doUniqueArraysHaveSameObjects } from "../../../common/helpers/equality";
 import {
   DATE_FORMATS,
   dayjsToLocalStr,
@@ -114,6 +116,31 @@ const areVehicleDetailsEqual = (
 };
 
 /**
+ * Compare whether or not the LOAs for two permits are equal.
+ * @param loas1 LOAs for first permit
+ * @param loas2 LOAs for second permit
+ * @returns true when the selected LOAs are the same, false otherwise
+ */
+export const arePermitLOAsEqual = (
+  loas1: Nullable<PermitLOA[]>,
+  loas2: Nullable<PermitLOA[]>,
+) => {
+  const isLoas1Empty = !loas1 || loas1.length === 0;
+  const isLoas2Empty = !loas2 || loas2.length === 0;
+
+  if (isLoas1Empty && isLoas2Empty) return true;
+  if ((isLoas1Empty && !isLoas2Empty) || (!isLoas1Empty && isLoas2Empty))
+    return false;
+
+  return doUniqueArraysHaveSameObjects(
+    loas1 as PermitLOA[],
+    loas2 as PermitLOA[],
+    (loa) => loa.loaNumber,
+    arePermitLOADetailsEqual,
+  );
+};
+
+/**
  * Compare whether or not two application data info are equal.
  * @param data1 first application data info
  * @param data2 second application data info
@@ -133,6 +160,7 @@ export const areApplicationDataEqual = (
     areVehicleDetailsEqual(data1.vehicleDetails, data2.vehicleDetails) &&
     areConditionsEqual(data1.commodities, data2.commodities) &&
     areMailingAddressesEqual(data1.mailingAddress, data2.mailingAddress) &&
+    arePermitLOAsEqual(data1.loas, data2.loas) &&
     ((!data1.companyName && !data2.companyName) ||
       data1.companyName === data2.companyName) &&
     ((!data1.doingBusinessAs && !data2.doingBusinessAs) ||

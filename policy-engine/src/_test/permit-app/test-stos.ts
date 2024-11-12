@@ -43,6 +43,33 @@ export const testStos: PermitApplication = {
       countryCode: 'CA',
       postalCode: 'V8B1A2',
     },
+    permittedCommodity: {
+      commodityType: 'EMPTYXX',
+      loadDescription: 'empty',
+    },
+    vehicleConfiguration: {
+      overallLength: 25,
+      overallWidth: 3,
+      overallHeight: 4.1,
+      frontProjection: 1,
+      rearProjection: 1,
+      trailers: [
+        {
+          vehicleSubType: 'JEEPSRG',
+        },
+        {
+          vehicleSubType: 'PLATFRM',
+        },
+      ],
+    },
+    permittedRoute: {
+      manualRoute: {
+        origin: 'Victoria, BC',
+        destination: 'Prince George, BC',
+        highwaySequence: ['1', '5'],
+      },
+      routeDetails: 'Just driving here',
+    },
     vehicleDetails: {
       vehicleId: '101',
       unitNumber: '321',
@@ -54,10 +81,12 @@ export const testStos: PermitApplication = {
       provinceCode: 'BC',
       vehicleType: 'powerUnit',
       vehicleSubType: 'TRKTRAC',
+      licensedGVW: 40000,
       saveVehicle: false,
     },
     feeSummary: '30',
     startDate: '2024-04-18',
     expiryDate: '2024-05-17',
+    applicationNotes: 'Call for credit card payment',
   },
 };

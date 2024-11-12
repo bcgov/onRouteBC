@@ -107,6 +107,8 @@ export const calculateAmountToRefund = (
   currPermitType: PermitType,
 ) => {
   const netPaid = calculateNetAmount(permitHistory);
+  if (isZeroAmount(netPaid)) return 0; // If total paid is $0 (eg. no-fee permits), then refund nothing
+
   const feeForCurrDuration = calculateFeeByDuration(currPermitType, currDuration);
   return netPaid - feeForCurrDuration;
 };
@@ -128,11 +130,15 @@ export const isZeroAmount = (amount: number) => {
  */
 export const calculateAmountForVoid = (
   permit: Permit,
+  transactionHistory: PermitHistory[],
 ) => {
   const permitState = getPermitState(permit);
   if (permitState === PERMIT_STATES.EXPIRED) {
     return 0;
   }
+
+  const netAmountPaid = calculateNetAmount(transactionHistory);
+  if (isZeroAmount(netAmountPaid)) return 0; // If existing net paid is $0 (eg. no-fee permits), then refund nothing
 
   const daysLeft = daysLeftBeforeExpiry(permit);
   const intervalDays = getDurationIntervalDays(permit.permitType);

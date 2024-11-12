@@ -15,7 +15,7 @@ import { AmendPermitFinish } from "./components/AmendPermitFinish";
 import { AmendPermitForm } from "./components/AmendPermitForm";
 import { ERROR_ROUTES, IDIR_ROUTES } from "../../../../routes/constants";
 import { hasPermitExpired } from "../../helpers/permitState";
-import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../../common/helpers/util";
 import { Application } from "../../types/application";
 import { Nullable } from "../../../../common/types/common";
 import {
@@ -64,8 +64,7 @@ const isAmendable = (permit: Permit) => {
 
 const isAmendableByUser = (role?: string) => {
   return (
-    role === USER_ROLE.PPC_CLERK ||
-    role === USER_ROLE.SYSTEM_ADMINISTRATOR
+    role === USER_ROLE.PPC_CLERK || role === USER_ROLE.SYSTEM_ADMINISTRATOR
   );
 };
 
@@ -74,7 +73,14 @@ const searchRoute =
   `&searchByFilter=${SEARCH_BY_FILTERS.PERMIT_NUMBER}&searchString=`;
 
 export const AmendPermit = () => {
-  const { permitId, companyId } = useParams();
+  const {
+    permitId: permitIdParam,
+    companyId: companyIdParam,
+  } = useParams();
+
+  const companyId: number = applyWhenNotNullable(id => Number(id), companyIdParam, 0);
+  const permitId = getDefaultRequiredVal("", permitIdParam);
+
   const { idirUserDetails } = useContext(OnRouteBCContext);
   const navigate = useNavigate();
 
@@ -82,16 +88,16 @@ export const AmendPermit = () => {
   const { data: permit } = usePermitDetailsQuery(companyId, permitId);
 
   // Get original permit id for the permit
-  const originalPermitId = permit?.originalPermitId;
+  const originalPermitId = getDefaultRequiredVal("", permit?.originalPermitId);
 
   // Get permit history for original permit id
-  const permitHistoryQuery = usePermitHistoryQuery(originalPermitId, companyId);
+  const permitHistoryQuery = usePermitHistoryQuery(companyId, originalPermitId);
   const permitHistory = getDefaultRequiredVal([], permitHistoryQuery.data);
 
   // Get latest amendment application for the permit, if any
   const { data: latestAmendmentApplication } = useAmendmentApplicationQuery(
-    originalPermitId,
     companyId,
+    originalPermitId,
   );
 
   const isLoadingState = () => {

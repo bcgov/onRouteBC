@@ -7,6 +7,7 @@ import { getOutdatedCartItems } from "../../../helpers/cart";
 import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
 
 export const useCheckOutdatedCart = (
+  companyId: number,
   cartFilterChanged: boolean,
   fetchedCartItems?: CartItem[],
 ) => {
@@ -18,13 +19,12 @@ export const useCheckOutdatedCart = (
     cartItemId: idOfCartItemToEdit,
     cartItemData: cartItemToEdit,
     fetchStatusFor,
-  } = useFetchCartItemStatus();
+  } = useFetchCartItemStatus(companyId);
   
   useEffect(() => {
     // Reset old cart items whenever radio button filter is changed
     setOldCartItems([]); 
   }, [
-    //showAllApplications
     cartFilterChanged
   ]);
 
@@ -40,7 +40,7 @@ export const useCheckOutdatedCart = (
 
   const outdatedApplicationNumbers = getOutdatedCartItems(
     oldCartItems,
-    getDefaultRequiredVal([], fetchedCartItems),//cartItems),
+    getDefaultRequiredVal([], fetchedCartItems),
   ).map(cartItem => cartItem.applicationNumber);
 
   return {

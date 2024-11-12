@@ -8,6 +8,7 @@ import {
 
 import { ORBC_FormTypes } from "../../../types/common";
 import "./CustomOutlinedInput.scss";
+import React from "react";
 
 /**
  * Properties of the onrouteBC customized OutlineInput MUI component
@@ -21,6 +22,8 @@ export interface CustomOutlinedInputProps<T extends FieldValues> {
   inputType?: "number"; // currently only support number, add "date", "email" and other types later
   disabled?: boolean;
   readOnly?: boolean;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onWheel?: (event: React.WheelEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -50,8 +53,7 @@ export const CustomOutlinedInput = <T extends ORBC_FormTypes>(
     updatedInputProps["pattern"] = "[0-9]*";
   }
 
-  const customInputClassName = 
-    `custom-input ${props.disabled ? "custom-input--disabled" : ""} ${props.invalid ? "custom-input--invalid" : ""}`;
+  const customInputClassName = `custom-input ${props.disabled ? "custom-input--disabled" : ""} ${props.invalid ? "custom-input--invalid" : ""}`;
 
   return (
     <OutlinedInput
@@ -65,6 +67,8 @@ export const CustomOutlinedInput = <T extends ORBC_FormTypes>(
       readOnly={props.readOnly}
       className={customInputClassName}
       {...register(props.name, props.rules)}
+      onFocus={props.onFocus}
+      onWheel={props.onWheel}
     />
   );
 };

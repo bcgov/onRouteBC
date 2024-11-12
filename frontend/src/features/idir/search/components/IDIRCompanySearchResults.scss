@@ -41,4 +41,10 @@
       text-decoration: none;
     }
   }
+
+  &__cell {
+    .status-chip {
+      margin-left: 0.5rem;
+    }
+  }
 }

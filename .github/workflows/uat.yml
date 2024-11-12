@@ -1,44 +1,35 @@
+---
 name: Deploy UAT
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: "Deployment environment - test --> vault secrets"
-        required: true
-        type: choice
-        options: ["test","tools"]
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
+        default: "test"
+  workflow_call:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
         default: "test"
   
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
-
 jobs:
-  uninstall-uat:
-    name: Uninstall (uat)
-    environment: ${{inputs.environment}}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: uninstall
-        run: |
-          oc login --token=${{ secrets.oc_token }} --server=${{ secrets.oc_server }}
-          oc project ${{ secrets.OC_NAMESPACE }} # Safeguard!
-          helm uninstall onroutebc-uat || true
   deploy-uat:
     name: Deploys (UAT)
     uses: ./.github/workflows/deploy.yml
-    needs: uninstall-uat
     secrets: inherit
     with:
       autoscaling: true
-      environment: ${{inputs.environment}}
-      tag: "test"
-      release: "uat"
+      environment: uat
+      tag: ${{inputs.tag}}
+      release: uat
       params: |
         --set-string global.license='c28f0c' \
         --set-string global.zone='test' \
         --set-string global.vault.role='nonprod' \
         --set-string global.vault.zone='uat' \
-        --set-string global.pr_num='${{ needs.vars.outputs.pr }}' \
+        --set-string global.pr_num='${{ inputs.tag }}' \

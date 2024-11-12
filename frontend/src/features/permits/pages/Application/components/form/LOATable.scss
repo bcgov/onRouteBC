@@ -1,0 +1,45 @@
+@import "../../../../../../themes/orbcStyles";
+
+.loa-table {
+  &#{&} {
+    box-shadow: none;
+  }
+
+  & &__table {
+    min-width: 36rem;
+    table-layout: fixed;
+  }
+
+  & &__header {
+    font-weight: bold;
+
+    &--loa-number {
+      padding-left: 0;
+    }
+  }
+
+  & &__cell {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    &--loa-number {
+      padding-left: 0;
+    }
+  }
+
+  & &__row {
+    &:last-child td, &:last-child th {
+      border: none;
+    }
+  }
+
+  & &__form-control#{&}__form-control--disabled {
+    .loa-checkbox {
+      color: $disabled-colour;
+    }
+
+    .loa-number {
+      color: $bc-black;
+    }
+  }
+}

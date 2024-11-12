@@ -1,4 +1,5 @@
 @use "../../../../../../themes/orbcStyles";
+@import "../../../../../../themes/orbcStyles";
 
 @include orbcStyles.permit-main-box-style(".review-permit-details");
 @include orbcStyles.permit-left-box-style(".review-permit-details__header");
@@ -17,6 +18,16 @@
 
     .permit-expiry-banner {
       width: 90%;
+    }
+
+    .permit-error-banner {
+      padding-top: 1.5rem;
+      
+      .bc-gov-alertbanner {
+        background-color: $bc-messages-red-background;
+        color: $bc-messages-red-text;
+        margin-bottom: 0;
+      }
     }
   }
 }

@@ -12,13 +12,13 @@ import { TrailerForm } from "../form/TrailerForm";
 import { VEHICLES_ROUTES } from "../../../../routes/constants";
 import { BANNER_MESSAGES } from "../../../../common/constants/bannerMessages";
 import { VEHICLE_TYPES, VehicleType } from "../../types/Vehicle";
-import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { applyWhenNotNullable } from "../../../../common/helpers/util";
 import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
 
 export const AddVehicleDashboard = React.memo(
   ({ vehicleType }: { vehicleType: VehicleType }) => {
     const navigate = useNavigate();
-    const companyId = getDefaultRequiredVal("", getCompanyIdFromSession());
+    const companyId: number = applyWhenNotNullable(id => Number(id), getCompanyIdFromSession(), 0);
     const isTrailer = vehicleType === VEHICLE_TYPES.TRAILER;
     
     const backToVehicleInventory = () => {

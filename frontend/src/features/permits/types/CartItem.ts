@@ -17,12 +17,13 @@ export interface CartItem {
   plate: string;
   startDate: string;
   expiryDate: string;
-  fee: number;
+  duration: number;
 };
 
 export interface SelectableCartItem extends CartItem {
   selected: boolean;
   isSelectable: boolean;
+  fee: number;
 }
 
 export interface CartActionResponse extends PermitsActionResponse {}

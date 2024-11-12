@@ -16,7 +16,7 @@ import { DEFAULT_NO_FEE_PERMIT_TYPE, NoFeePermitType } from "../../types/Special
 import { NoFeePermitsSection } from "../../components/SpecialAuthorizations/NoFeePermits/NoFeePermitsSection";
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { LCVSection } from "../../components/SpecialAuthorizations/LCV/LCVSection";
-import { downloadLOA } from "../../apiManager/specialAuthorization";
+import { downloadLOA } from "../../apiManager/loa";
 import {
   useFetchSpecialAuthorizations,
   useUpdateLCV,
@@ -46,9 +46,9 @@ export const SpecialAuthorizations = ({
   const isLcvAllowed = getDefaultRequiredVal(false, specialAuthorizations?.isLcvAllowed);
 
   const [showExpiredLOAs, setShowExpiredLOAs] = useState<boolean>(false);
-  const [loaToDelete, setLoaToDelete] = useState<RequiredOrNull<string>>(null);
+  const [loaToDelete, setLoaToDelete] = useState<RequiredOrNull<number>>(null);
   const [showLOASteps, setShowLOASteps] = useState<boolean>(false);
-  const [loaToEdit, setLoaToEdit] = useState<RequiredOrNull<string>>(null);
+  const [loaToEdit, setLoaToEdit] = useState<RequiredOrNull<number>>(null);
 
   const {
     userClaims,
@@ -143,7 +143,7 @@ export const SpecialAuthorizations = ({
     setLoaToEdit(null);
   };
 
-  const handleEditLOA = (loaId: string) => {
+  const handleEditLOA = (loaId: number) => {
     if (!canWriteLOA) return;
     setShowLOASteps(true);
     setLoaToEdit(loaId);
@@ -156,7 +156,7 @@ export const SpecialAuthorizations = ({
     expiredLOAsQuery.refetch();
   };
 
-  const handleOpenDeleteModal = (loaId: string) => {
+  const handleOpenDeleteModal = (loaId: number) => {
     if (!canWriteLOA) return;
     setLoaToDelete(loaId);
   };
@@ -165,7 +165,7 @@ export const SpecialAuthorizations = ({
     setLoaToDelete(null);
   };
 
-  const handleDeleteLOA = async (loaId: string) => {
+  const handleDeleteLOA = async (loaId: number) => {
     try {
       if (canWriteLOA) {
         await removeLOAMutation.mutateAsync({
@@ -182,7 +182,7 @@ export const SpecialAuthorizations = ({
     }
   };
 
-  const handleDownloadLOA = async (loaId: string) => {
+  const handleDownloadLOA = async (loaId: number) => {
     if (loaId && canReadLOA) {
       try {
         const { blobObj: blobObjWithoutType } = await downloadLOA(

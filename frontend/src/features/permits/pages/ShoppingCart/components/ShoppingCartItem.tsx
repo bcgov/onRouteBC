@@ -1,7 +1,7 @@
 import { Checkbox } from "@mui/material";
 
 import "./ShoppingCartItem.scss";
-import { CartItem } from "../../../types/CartItem";
+import { SelectableCartItem } from "../../../types/CartItem";
 import { DATE_FORMATS, toLocal } from "../../../../../common/helpers/formatDate";
 import { CustomActionLink } from "../../../../../common/components/links/CustomActionLink";
 import { feeSummaryDisplayText } from "../../../helpers/feeSummary";
@@ -14,7 +14,7 @@ export const ShoppingCartItem = ({
   onDeselect,
   onEditCartItem,
 }: {
-  cartItemData: CartItem;
+  cartItemData: SelectableCartItem;
   isSelected: boolean;
   isDisabled?: boolean;
   onSelect: (id: string) => void;
@@ -83,7 +83,7 @@ export const ShoppingCartItem = ({
               <span
                 className="shopping-cart-item__info shopping-cart-item__info--start-date"
               >
-                {toLocal(cartItemData.startDate, DATE_FORMATS.DATEONLY_ABBR_MONTH)}
+                {toLocal(cartItemData.startDate, DATE_FORMATS.DATEONLY_ABBR_MONTH, true)}
               </span>
             </div>
           </div>
@@ -113,7 +113,7 @@ export const ShoppingCartItem = ({
               <span
                 className="shopping-cart-item__info shopping-cart-item__info--end-date"
               >
-                {toLocal(cartItemData.expiryDate, DATE_FORMATS.DATEONLY_ABBR_MONTH)}
+                {toLocal(cartItemData.expiryDate, DATE_FORMATS.DATEONLY_ABBR_MONTH, true)}
               </span>
             </div>
           </div>

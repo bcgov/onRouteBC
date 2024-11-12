@@ -3,10 +3,7 @@ import { Box, Typography } from "@mui/material";
 import "./ApplicationSummary.scss";
 import { getDefaultRequiredVal } from "../../../../../../common/helpers/util";
 import { Nullable } from "../../../../../../common/types/common";
-import {
-  PermitType,
-  permitTypeDisplayText,
-} from "../../../../types/PermitType";
+import { getPermitTypeName, PermitType } from "../../../../types/PermitType";
 
 export const ApplicationSummary = ({
   permitType,
@@ -15,7 +12,7 @@ export const ApplicationSummary = ({
   permitType?: Nullable<PermitType>;
   applicationNumber?: Nullable<string>;
 }) => {
-  const applicationName = permitTypeDisplayText(
+  const applicationName = getPermitTypeName(
     getDefaultRequiredVal("", permitType),
   );
 

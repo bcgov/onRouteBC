@@ -2,6 +2,7 @@ import { Cache } from 'cache-manager';
 import { CacheKey } from '../enum/cache-key.enum';
 import { getFromCache } from './cache.helper';
 import { FeatureFlagValue } from '../enum/feature-flag-value.enum';
+import { IDP } from '../enum/idp.enum';
 
 /**
  * Evaluates the given predicate and returns the value if the predicate is true or the value is not null, otherwise returns undefined.
@@ -47,4 +48,10 @@ export const isFeatureEnabled = async (
   }
 
   return true;
+};
+
+export const isCVClient = (identityProvider: IDP): boolean => {
+  return (
+    identityProvider !== IDP.IDIR && identityProvider !== IDP.SERVICE_ACCOUNT
+  );
 };

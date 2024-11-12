@@ -80,6 +80,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "4"
+
       - name: Clean up Helm Releases
         run: |
           # Clean up Helm Releases

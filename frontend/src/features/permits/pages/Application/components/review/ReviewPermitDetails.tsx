@@ -1,22 +1,20 @@
 import { Box, Typography } from "@mui/material";
 import { Dayjs } from "dayjs";
-
-import "./ReviewPermitDetails.scss";
+import { ErrorBcGovBanner } from "../../../../../../common/components/banners/ErrorBcGovBanner";
 import { PermitExpiryDateBanner } from "../../../../../../common/components/banners/PermitExpiryDateBanner";
-import { ReviewConditionsTable } from "./ReviewConditionsTable";
-import { DiffChip } from "./DiffChip";
-import { Nullable } from "../../../../../../common/types/common";
-import { PermitCondition } from "../../../../types/PermitCondition";
-import { BASE_DAYS_IN_YEAR } from "../../../../constants/constants";
-import {
-  applyWhenNotNullable,
-  areValuesDifferent,
-} from "../../../../../../common/helpers/util";
-
+import { areValuesDifferent } from "../../../../../../common/helpers/equality";
 import {
   DATE_FORMATS,
   dayjsToLocalStr,
 } from "../../../../../../common/helpers/formatDate";
+import { applyWhenNotNullable } from "../../../../../../common/helpers/util";
+import { Nullable } from "../../../../../../common/types/common";
+import { BASE_DAYS_IN_YEAR } from "../../../../constants/constants";
+import { PermitCondition } from "../../../../types/PermitCondition";
+import { DiffChip } from "./DiffChip";
+import { ReviewConditionsTable } from "./ReviewConditionsTable";
+import "./ReviewPermitDetails.scss";
+import { pastStartOrExpiryDate } from "../../../../../../common/helpers/validationMessages";
 
 export const ReviewPermitDetails = ({
   startDate,
@@ -26,6 +24,7 @@ export const ReviewPermitDetails = ({
   showChangedFields = false,
   oldStartDate,
   oldDuration,
+  showDateErrorBanner,
 }: {
   startDate?: Nullable<Dayjs>;
   permitDuration?: Nullable<number>;
@@ -34,6 +33,7 @@ export const ReviewPermitDetails = ({
   showChangedFields?: boolean;
   oldStartDate?: Nullable<Dayjs>;
   oldDuration?: Nullable<number>;
+  showDateErrorBanner?: Nullable<boolean>;
 }) => {
   const changedFields = showChangedFields
     ? {
@@ -90,7 +90,8 @@ export const ReviewPermitDetails = ({
             data-testid="permit-duration"
           >
             {applyWhenNotNullable(
-              (duration) => duration === BASE_DAYS_IN_YEAR ? "1 Year" : `${duration} Days`,
+              (duration) =>
+                duration === BASE_DAYS_IN_YEAR ? "1 Year" : `${duration} Days`,
               permitDuration,
               "",
             )}
@@ -105,6 +106,12 @@ export const ReviewPermitDetails = ({
             )}
           />
         </Box>
+
+        {showDateErrorBanner && (
+          <Box className="permit-error-banner">
+            <ErrorBcGovBanner msg={pastStartOrExpiryDate()} />
+          </Box>
+        )}
         <Box className="permit-conditions">
           <Typography variant="h3">
             Selected commodities and their respective CVSE forms.

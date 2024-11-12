@@ -3,6 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ApplicationStatus } from 'src/common/enum/application-status.enum';
 import { PermitApplicationOrigin } from 'src/common/enum/permit-application-origin.enum';
 import { PermitType } from 'src/common/enum/permit-type.enum';
+import { ApplicationQueueStatus } from '../../../../../common/enum/case-status-type.enum';
+import { Nullable } from '../../../../../common/types/common';
+import { IDIR_USER_ROLE_LIST } from '../../../../../common/enum/user-role.enum';
 
 export class ReadApplicationMetadataDto {
   @AutoMap()
@@ -124,4 +127,29 @@ export class ReadApplicationMetadataDto {
     required: false,
   })
   plate: string;
+
+  @AutoMap()
+  @ApiProperty({
+    description:
+      'Indicates the current status of the application within the queue.',
+    example: ApplicationQueueStatus.PENDING_REVIEW,
+    required: false,
+  })
+  applicationQueueStatus?: Nullable<ApplicationQueueStatus>;
+
+  @AutoMap()
+  @ApiProperty({
+    description: `Duration for which the application has been in queue, formatted as hh:mm. This field is only visible to users with the following roles: ${Object.values(IDIR_USER_ROLE_LIST).join(', ')}.`,
+    example: '01:22',
+    required: false,
+  })
+  timeInQueue?: Nullable<string>;
+
+  @AutoMap()
+  @ApiProperty({
+    description: `The staff member who has claimed the application in the queue. This field is only visible to users with the following roles: ${Object.values(IDIR_USER_ROLE_LIST).join(', ')}.`,
+    example: 'JANEDOE',
+    required: false,
+  })
+  claimedBy?: Nullable<string>;
 }

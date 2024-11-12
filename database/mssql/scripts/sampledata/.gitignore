@@ -1,2 +1,3 @@
 # Ensure the unencrypted TPS test data is kept out of git
 tps.*
+_private_sql/

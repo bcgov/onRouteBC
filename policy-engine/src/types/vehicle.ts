@@ -7,14 +7,22 @@ import {
 
 export type Vehicle = SelfIssuable & {
   type: string;
-  canFollow: Array<string>;
-  sizeDimensions?: Array<SizeDimension>;
 };
 
-export type PowerUnit = Vehicle & {
+export type VehicleSizeConfiguration = Vehicle & {
+  trailers: Array<TrailerSize>;
+};
+
+export type TrailerSize = Vehicle & {
+  sizeDimensions?: Array<SizeDimension>;
+  jeep: boolean;
+  booster: boolean;
+};
+
+export type PowerUnitWeight = Vehicle & {
   weightDimensions?: Array<PowerUnitWeightDimension>;
 };
 
-export type Trailer = Vehicle & {
+export type TrailerWeight = Vehicle & {
   weightDimensions?: Array<TrailerWeightDimension>;
 };

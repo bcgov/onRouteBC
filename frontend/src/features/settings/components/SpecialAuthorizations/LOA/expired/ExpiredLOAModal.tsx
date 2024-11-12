@@ -4,7 +4,7 @@ import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
 import "./ExpiredLOAModal.scss";
 import { LOAList } from "../list/LOAList";
-import { LOADetail } from "../../../../types/SpecialAuthorization";
+import { LOADetail } from "../../../../types/LOADetail";
 
 export const ExpiredLOAModal = ({
   showModal,
@@ -17,8 +17,8 @@ export const ExpiredLOAModal = ({
   showModal: boolean;
   allowEditLOA: boolean;
   handleCancel: () => void;
-  handleEdit: (loaId: string) => void;
-  handleDownload: (loaId: string) => void;
+  handleEdit: (loaId: number) => void;
+  handleDownload: (loaId: number) => void;
   expiredLOAs: LOADetail[];
 }) => {
   return (

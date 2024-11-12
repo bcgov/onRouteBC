@@ -17,18 +17,16 @@ import { CustomFormComponent } from "../../../../../../../common/components/form
 import { InfoBcGovBanner } from "../../../../../../../common/components/banners/InfoBcGovBanner";
 import { mapToVehicleObjectById } from "../../../../../helpers/mappers";
 import { getDefaultRequiredVal } from "../../../../../../../common/helpers/util";
-import { sortVehicleSubTypes } from "../../../../../helpers/sorter";
-import { filterVehicleSubtypes } from "../../../../../helpers/permitVehicles";
 import { CustomInputHTMLAttributes } from "../../../../../../../common/types/formElements";
 import { SelectUnitOrPlate } from "./customFields/SelectUnitOrPlate";
 import { SelectVehicleDropdown } from "./customFields/SelectVehicleDropdown";
 import { BANNER_MESSAGES } from "../../../../../../../common/constants/bannerMessages";
 import { PermitVehicleDetails } from "../../../../../types/PermitVehicleDetails";
-import { EMPTY_VEHICLE_SUBTYPE } from "../../../../../../manageVehicles/helpers/vehicleSubtypes";
+import { selectedVehicleSubtype } from "../../../../../../manageVehicles/helpers/vehicleSubtypes";
+import { disableMouseWheelInputOnNumberField } from "../../../../../../../common/helpers/disableMouseWheelInputOnNumberField";
 import {
   PowerUnit,
   Trailer,
-  BaseVehicle,
   VehicleSubType,
   VEHICLE_TYPES,
   Vehicle,
@@ -50,69 +48,12 @@ import {
   requiredMessage,
 } from "../../../../../../../common/helpers/validationMessages";
 
-const selectedVehicleSubtype = (vehicle: BaseVehicle) => {
-  switch (vehicle.vehicleType) {
-    case VEHICLE_TYPES.POWER_UNIT:
-      return (vehicle as PowerUnit).powerUnitTypeCode;
-    case VEHICLE_TYPES.TRAILER:
-      return (vehicle as Trailer).trailerTypeCode;
-    default:
-      return "";
-  }
-};
-
-// Returns correct subtype options based on vehicle type
-const getSubtypeOptions = (
-  vehicleType: string,
-  powerUnitSubtypes: VehicleSubType[],
-  trailerSubtypes: VehicleSubType[],
-) => {
-  if (vehicleType === VEHICLE_TYPES.POWER_UNIT) {
-    return [...powerUnitSubtypes];
-  }
-  if (vehicleType === VEHICLE_TYPES.TRAILER) {
-    return [...trailerSubtypes];
-  }
-  return [EMPTY_VEHICLE_SUBTYPE];
-};
-
-// Returns eligible subset of subtype options to be used by select field for vehicle subtype
-const getEligibleSubtypeOptions = (
-  powerUnitSubtypes: VehicleSubType[],
-  trailerSubtypes: VehicleSubType[],
-  ineligiblePowerUnitSubtypes: VehicleSubType[],
-  ineligibleTrailerSubtypes: VehicleSubType[],
-  vehicleType?: string,
-) => {
-  if (
-    vehicleType !== VEHICLE_TYPES.POWER_UNIT &&
-    vehicleType !== VEHICLE_TYPES.TRAILER
-  ) {
-    return [EMPTY_VEHICLE_SUBTYPE];
-  }
-
-  // Sort vehicle subtypes alphabetically
-  const sortedVehicleSubtypes = sortVehicleSubTypes(
-    vehicleType,
-    getSubtypeOptions(vehicleType, powerUnitSubtypes, trailerSubtypes),
-  );
-
-  return filterVehicleSubtypes(
-    sortedVehicleSubtypes,
-    vehicleType,
-    ineligiblePowerUnitSubtypes,
-    ineligibleTrailerSubtypes,
-  );
-};
-
 export const VehicleDetails = ({
   feature,
   vehicleFormData,
   vehicleOptions,
-  powerUnitSubtypes,
-  trailerSubtypes,
-  ineligiblePowerUnitSubtypes,
-  ineligibleTrailerSubtypes,
+  subtypeOptions,
+  isSelectedLOAVehicle,
   onSetSaveVehicle,
   onSetVehicle,
   onClearVehicle,
@@ -120,10 +61,8 @@ export const VehicleDetails = ({
   feature: string;
   vehicleFormData: PermitVehicleDetails;
   vehicleOptions: Vehicle[];
-  powerUnitSubtypes: VehicleSubType[];
-  trailerSubtypes: VehicleSubType[];
-  ineligiblePowerUnitSubtypes: VehicleSubType[];
-  ineligibleTrailerSubtypes: VehicleSubType[];
+  subtypeOptions: VehicleSubType[];
+  isSelectedLOAVehicle: boolean;
   onSetSaveVehicle: (saveVehicle: boolean) => void;
   onSetVehicle: (vehicleDetails: PermitVehicleDetails) => void;
   onClearVehicle: (saveVehicle: boolean) => void;
@@ -160,29 +99,6 @@ export const VehicleDetails = ({
   };
 
   const disableVehicleTypeSelect = shouldDisableVehicleTypeSelect();
-
-  // Options for the vehicle subtype field (based on vehicle type)
-  const [subtypeOptions, setSubtypeOptions] = useState<VehicleSubType[]>([
-    EMPTY_VEHICLE_SUBTYPE,
-  ]);
-
-  useEffect(() => {
-    // Update subtype options when vehicle type changes
-    const subtypes = getEligibleSubtypeOptions(
-      powerUnitSubtypes,
-      trailerSubtypes,
-      ineligiblePowerUnitSubtypes,
-      ineligibleTrailerSubtypes,
-      vehicleType,
-    );
-    setSubtypeOptions(subtypes);
-  }, [
-    powerUnitSubtypes,
-    trailerSubtypes,
-    ineligiblePowerUnitSubtypes,
-    ineligibleTrailerSubtypes,
-    vehicleType,
-  ]);
 
   // Set the "Save to Inventory" radio button to false on render
   useEffect(() => {
@@ -257,6 +173,13 @@ export const VehicleDetails = ({
     }
   };
 
+  // If the selected vehicle is an LOA vehicle, it should not be edited/saved to inventory
+  useEffect(() => {
+    if (isSelectedLOAVehicle) {
+      setSaveVehicle(false);
+    }
+  }, [isSelectedLOAVehicle]);
+
   return (
     <Box className="vehicle-details">
       <Box className="vehicle-details__header">
@@ -305,8 +228,6 @@ export const VehicleDetails = ({
                 vehicleOptions={vehicleOptions}
                 handleClearVehicle={() => onClearVehicle(saveVehicle)}
                 handleSelectVehicle={onSelectVehicle}
-                ineligiblePowerUnitSubtypes={ineligiblePowerUnitSubtypes}
-                ineligibleTrailerSubtypes={ineligibleTrailerSubtypes}
               />
             </Box>
 
@@ -324,6 +245,8 @@ export const VehicleDetails = ({
                 width: formFieldStyle.width,
                 customHelperText: "last 6 digits",
               }}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <CustomFormComponent
@@ -338,6 +261,8 @@ export const VehicleDetails = ({
                 label: "Plate",
                 width: formFieldStyle.width,
               }}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <CustomFormComponent
@@ -352,11 +277,14 @@ export const VehicleDetails = ({
                 label: "Make",
                 width: formFieldStyle.width,
               }}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <CustomFormComponent
               type="input"
               feature={feature}
+              onFocus={disableMouseWheelInputOnNumberField}
               options={{
                 name: "permitData.vehicleDetails.year",
                 rules: {
@@ -372,6 +300,8 @@ export const VehicleDetails = ({
                 label: "Year",
                 width: formFieldStyle.width,
               }}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <CountryAndProvince
@@ -380,13 +310,15 @@ export const VehicleDetails = ({
               provinceField="permitData.vehicleDetails.provinceCode"
               isProvinceRequired={true}
               width={formFieldStyle.width}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <CustomFormComponent
               type="select"
               feature={feature}
-              readOnly={disableVehicleTypeSelect}
-              disabled={disableVehicleTypeSelect}
+              readOnly={disableVehicleTypeSelect || isSelectedLOAVehicle}
+              disabled={disableVehicleTypeSelect || isSelectedLOAVehicle}
               options={{
                 name: "permitData.vehicleDetails.vehicleType",
                 rules: {
@@ -430,6 +362,8 @@ export const VehicleDetails = ({
                   {subtype.type}
                 </MenuItem>
               ))}
+              readOnly={isSelectedLOAVehicle}
+              disabled={isSelectedLOAVehicle}
             />
 
             <FormControl>
@@ -459,6 +393,8 @@ export const VehicleDetails = ({
                             "data-testid": "save-vehicle-yes",
                           } as CustomInputHTMLAttributes
                         }
+                        readOnly={isSelectedLOAVehicle}
+                        disabled={isSelectedLOAVehicle}
                       />
                     }
                     label="Yes"
@@ -473,6 +409,8 @@ export const VehicleDetails = ({
                             "data-testid": "save-vehicle-no",
                           } as CustomInputHTMLAttributes
                         }
+                        readOnly={isSelectedLOAVehicle}
+                        disabled={isSelectedLOAVehicle}
                       />
                     }
                     label="No"

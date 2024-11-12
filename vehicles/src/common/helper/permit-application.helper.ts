@@ -16,6 +16,9 @@ import { IDIR_USER_ROLE_LIST, UserRole } from '../enum/user-role.enum';
 import { PPC_FULL_TEXT } from '../constants/api.constant';
 import { User } from '../../modules/company-user-management/users/entities/user.entity';
 import { ApplicationStatus } from '../enum/application-status.enum';
+import { PermitType } from '../enum/permit-type.enum';
+import { PERMIT_TYPES_FOR_QUEUE } from '../constants/permit.constant';
+import * as dayjs from 'dayjs';
 
 /**
  * Fetches and resolves various types of names associated with a permit using cache.
@@ -248,4 +251,29 @@ export const isAmendmentApplication = ({
     originalPermitId !== permitId &&
     revision > 0
   );
+};
+
+/**
+ * Checks if the given permit type is eligible to be added to a specific processing queue.
+ * This method essentially acts as a filter, determining whether the provided permit type
+ * exists in a predefined list of types that require additional processing in a queue.
+
+ * @param {PermitType} permitType - The type of the permit being checked.
+ * @returns {boolean} - Returns true if the permit type is in the list of types
+ * that are eligible for the queue, otherwise returns false.
+ */
+export const isPermitTypeEligibleForQueue = (
+  permitType: PermitType,
+): boolean => {
+  return PERMIT_TYPES_FOR_QUEUE.includes(permitType);
+};
+
+export const validApplicationDates = (
+  application: Permit,
+  timezone: string,
+): boolean => {
+  const todayUTC = dayjs(new Date());
+  const todayPacific = todayUTC.tz(timezone).format('YYYY-MM-DD');
+  const { startDate, expiryDate } = application.permitData;
+  return startDate >= todayPacific && startDate <= expiryDate;
 };

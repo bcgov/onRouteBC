@@ -1,0 +1,24 @@
+@use "../list/List";
+@import "../../../../themes/orbcStyles";
+
+.applications-in-review-list {
+  .applications-in-review-banner {
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+
+  & &__top-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+
+  & &__row {
+    &:hover {
+      // remove MRT row/cell color change on hover
+      td::after {
+        background-color: $white
+      }
+    }
+  }
+}

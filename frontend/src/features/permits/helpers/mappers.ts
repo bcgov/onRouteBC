@@ -99,6 +99,7 @@ export const clonePermit = (permit: Permit): Permit => {
         ...permit.permitData.vehicleDetails,
       },
       commodities: [...permit.permitData.commodities],
+      loas: [...getDefaultRequiredVal([], permit.permitData.loas)],
       mailingAddress: {
         ...permit.permitData.mailingAddress,
       },

@@ -10,7 +10,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  Brackets,
+  DataSource,
+  In,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CreateApplicationDto } from './dto/request/create-application.dto';
 import { ReadApplicationDto } from './dto/response/read-application.dto';
 import { Permit } from '../permit/entities/permit.entity';
@@ -20,7 +26,12 @@ import { PermitApplicationOrigin } from './entities/permit-application-origin.en
 import { PermitApprovalSource } from './entities/permit-approval-source.entity';
 import { PermitApplicationOrigin as PermitApplicationOriginEnum } from '../../../common/enum/permit-application-origin.enum';
 import { PermitApprovalSource as PermitApprovalSourceEnum } from '../../../common/enum/permit-approval-source.enum';
-import { paginate, sortQuery } from '../../../common/helper/database.helper';
+import {
+  getQueryRunner,
+  paginate,
+  setBaseEntityProperties,
+  sortQuery,
+} from '../../../common/helper/database.helper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DopsService } from '../../common/dops.service';
@@ -48,8 +59,34 @@ import { IUserJWT } from '../../../common/interface/user-jwt.interface';
 import {
   generateApplicationNumber,
   generatePermitNumber,
+  isPermitTypeEligibleForQueue,
 } from '../../../common/helper/permit-application.helper';
 import { PaymentService } from '../payment/payment.service';
+import { CaseManagementService } from '../../case-management/case-management.service';
+import { ReadCaseEvenDto } from '../../case-management/dto/response/read-case-event.dto';
+import { CaseActivityType } from '../../../common/enum/case-activity-type.enum';
+import { Nullable } from '../../../common/types/common';
+import { DataNotFoundException } from '../../../common/exception/data-not-found.exception';
+import { throwUnprocessableEntityException } from '../../../common/helper/exception.helper';
+import { ApplicationSearch } from '../../../common/enum/application-search.enum';
+
+import { CaseStatusType } from '../../../common/enum/case-status-type.enum';
+import { INotificationDocument } from '../../../common/interface/notification-document.interface';
+import { validateEmailandFaxList } from '../../../common/helper/notification.helper';
+import { NotificationTemplate } from '../../../common/enum/notification-template.enum';
+import { PermitData } from '../../../common/interface/permit.template.interface';
+import { ApplicationApprovedNotification } from '../../../common/interface/application-approved.notification.interface';
+import { ApplicationRejectedNotification } from '../../../common/interface/application-rejected.notification.interface';
+import {
+  convertUtcToPt,
+  differenceBetween,
+} from '../../../common/helper/date-time.helper';
+import { ReadCaseActivityDto } from '../../case-management/dto/response/read-case-activity.dto';
+import * as dayjs from 'dayjs';
+import { ReadPermitLoaDto } from './dto/response/read-permit-loa.dto';
+import { CreatePermitLoaDto } from './dto/request/create-permit-loa.dto';
+import { PermitLoa } from './entities/permit-loa.entity';
+import { LoaDetail } from 'src/modules/special-auth/entities/loa-detail.entity';
 
 @Injectable()
 export class ApplicationService {
@@ -58,6 +95,10 @@ export class ApplicationService {
     @InjectMapper() private readonly classMapper: Mapper,
     @InjectRepository(Permit)
     private permitRepository: Repository<Permit>,
+    @InjectRepository(PermitLoa)
+    private permitLoaRepository: Repository<PermitLoa>,
+    @InjectRepository(LoaDetail)
+    private loaDetail: Repository<LoaDetail>,
     private dataSource: DataSource,
     private readonly dopsService: DopsService,
     private readonly paymentService: PaymentService,
@@ -67,6 +108,7 @@ export class ApplicationService {
     private permitApprovalSourceRepository: Repository<PermitApprovalSource>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly caseManagementService: CaseManagementService,
   ) {}
 
   /**
@@ -240,7 +282,6 @@ export class ApplicationService {
     return await permitQB.getMany();
   }
 
-  /* Get single application By Permit ID*/
   @LogAsyncMethodExecution()
   async findApplication(
     applicationId: string,
@@ -248,6 +289,16 @@ export class ApplicationService {
     companyId?: number,
   ): Promise<ReadApplicationDto> {
     const application = await this.findOne(applicationId, companyId);
+    let readCaseActivityList: ReadCaseActivityDto[];
+    if (isPermitTypeEligibleForQueue(application?.permitType)) {
+      readCaseActivityList =
+        await this.caseManagementService.fetchActivityHistory({
+          applicationId,
+          currentUser,
+          caseActivityType: CaseActivityType.REJECTED,
+        });
+    }
+
     const readPermitApplicationdto = await this.classMapper.mapAsync(
       application,
       Permit,
@@ -255,6 +306,7 @@ export class ApplicationService {
       {
         extraArgs: () => ({
           currentUserRole: currentUser?.orbcUserRole,
+          readCaseActivityList: readCaseActivityList,
         }),
       },
     );
@@ -262,9 +314,20 @@ export class ApplicationService {
   }
 
   /**
-   * Retrieves applications based on user GUID, and company ID. It allows for sorting, pagination, and filtering of the applications results.
-   * @param getApplicationQueryParamsDto - DTO containing query parameters such as companyId, orderBy, page, and take for filtering and pagination.
-   * @param userGUID - Unique identifier for the user. If provided, the query
+   * Retrieves applications based on multiple optional filters including user GUID, company ID, pending permits status, applications queue status, and a search string.
+   * The function supports sorting by various columns and includes pagination for efficient retrieval.
+   * @param findAllApplicationsOptions - Contains multiple optional parameters: pagination, sorting, filtering by company ID, user GUID, and other search filters.
+   * - page: The current page number for pagination.
+   * - take: Number of records to display per page.
+   * - orderBy: Column to sort the results by (e.g., applicationNumber, startDate, etc.).
+   * - pendingPermits: Whether to filter by pending permits.
+   * - companyId: The ID of the company to filter applications by.
+   * - userGUID: The GUID of the user whose applications to filter.
+   * - currentUser: The current logged-in user's JWT payload.
+   * - applicationQueueStatus: Status filter for applications that are in the queue.
+   * - searchColumn: The specific column to search within (e.g., plate, application number).
+   * - searchString: The input keyword to use for searching.
+   * @returns A paginated result containing filtered and sorted ReadApplicationMetadataDto objects.
    */
   @LogAsyncMethodExecution()
   async findAllApplications(findAllApplicationsOptions?: {
@@ -275,6 +338,9 @@ export class ApplicationService {
     companyId?: number;
     userGUID?: string;
     currentUser?: IUserJWT;
+    applicationQueueStatus?: Nullable<CaseStatusType[]>;
+    searchColumn?: Nullable<ApplicationSearch>;
+    searchString?: Nullable<string>;
   }): Promise<PaginationDto<ReadApplicationMetadataDto>> {
     // Construct the base query to find applications
     const applicationsQB = this.buildApplicationQuery(
@@ -282,6 +348,9 @@ export class ApplicationService {
       findAllApplicationsOptions.companyId,
       findAllApplicationsOptions.pendingPermits,
       findAllApplicationsOptions.userGUID,
+      findAllApplicationsOptions.searchColumn,
+      findAllApplicationsOptions.searchString,
+      findAllApplicationsOptions.applicationQueueStatus,
     );
     // total number of items
     const totalItems = await applicationsQB.getCount();
@@ -337,6 +406,9 @@ export class ApplicationService {
           extraArgs: () => ({
             currentUserRole:
               findAllApplicationsOptions?.currentUser?.orbcUserRole,
+            currentDateTime: new Date(),
+            applicationQueueStatus:
+              findAllApplicationsOptions.applicationQueueStatus,
           }),
         },
       );
@@ -349,7 +421,18 @@ export class ApplicationService {
     companyId?: number,
     pendingPermits?: boolean,
     userGUID?: string,
+    searchColumn?: Nullable<ApplicationSearch>,
+    searchString?: Nullable<string>,
+    applicationQueueStatus?: Nullable<CaseStatusType[]>,
   ): SelectQueryBuilder<Permit> {
+    // Ensure that pendingPermits and applicationQueueStatus are not set at the same time
+    if (pendingPermits !== undefined && applicationQueueStatus?.length) {
+      throw new InternalServerErrorException(
+        'Both pendingPermits and applicationQueueStatus cannot be set at the same time.',
+      );
+    }
+
+    // Build initial query to retrieve permit data, including relationships to company, permitData, owner contact details, etc.
     let permitsQuery = this.permitRepository
       .createQueryBuilder('permit')
       .leftJoinAndSelect('permit.company', 'company')
@@ -359,6 +442,17 @@ export class ApplicationService {
         'applicationOwner.userContact',
         'applicationOwnerContact',
       );
+
+    // Include cases and the assigned case user only if applications are in queue
+    if (applicationQueueStatus?.length) {
+      permitsQuery = permitsQuery.innerJoinAndSelect('permit.cases', 'cases');
+      permitsQuery = permitsQuery.leftJoinAndSelect(
+        'cases.assignedUser',
+        'assignedCaseUser',
+      );
+    }
+
+    // Filter permits without permit numbers (i.e., applications)
     permitsQuery = permitsQuery.where('permit.permitNumber IS NULL');
 
     // Filter by companyId if provided
@@ -368,8 +462,23 @@ export class ApplicationService {
       });
     }
 
-    // Handle pending permits query condition
-    if (pendingPermits) {
+    // Handle various status filters depending on the provided flags
+    if (applicationQueueStatus?.length) {
+      // If retrieving applications in queue, we filter those with "IN_QUEUE" status and open/in-progress cases
+      permitsQuery = permitsQuery.andWhere(
+        'permit.permitStatus = :permitStatus',
+        {
+          permitStatus: ApplicationStatus.IN_QUEUE,
+        },
+      );
+      permitsQuery = permitsQuery.andWhere(
+        'cases.caseStatusType IN (:...caseStatuses)',
+        {
+          caseStatuses: applicationQueueStatus,
+        },
+      );
+    } else if (pendingPermits) {
+      // Filter applications based on pending permit statuses (e.g., awaiting payment completion)
       permitsQuery = permitsQuery.andWhere(
         new Brackets((qb) => {
           qb.where('permit.permitStatus IN (:...statuses)', {
@@ -378,6 +487,7 @@ export class ApplicationService {
         }),
       );
     } else if (pendingPermits === false) {
+      // Filter active applications based on ACTIVE_APPLICATION_STATUS
       permitsQuery = permitsQuery.andWhere(
         new Brackets((qb) => {
           qb.where('permit.permitStatus IN (:...statuses)', {
@@ -385,7 +495,11 @@ export class ApplicationService {
           });
         }),
       );
-    } else if (pendingPermits === undefined) {
+    } else if (
+      pendingPermits === undefined ||
+      !applicationQueueStatus?.length
+    ) {
+      // Filter all applications based on ALL_APPLICATION_STATUS
       permitsQuery = permitsQuery.andWhere(
         new Brackets((qb) => {
           qb.where('permit.permitStatus IN (:...statuses)', {
@@ -395,7 +509,7 @@ export class ApplicationService {
       );
     }
 
-    // Filter by userGUID if provided
+    // Filter by userGUID if provided, targeting the application owner
     if (userGUID) {
       permitsQuery = permitsQuery.andWhere(
         'applicationOwner.userGUID = :userGUID',
@@ -405,6 +519,45 @@ export class ApplicationService {
       );
     }
 
+    // Handle search conditions based on specified search column and search string
+    if (searchColumn) {
+      // Apply column-specific search filters
+      switch (searchColumn) {
+        case ApplicationSearch.PLATE:
+          permitsQuery = permitsQuery.andWhere(
+            'permitData.plate like :searchString',
+            {
+              searchString: `%${searchString}%`,
+            },
+          );
+          break;
+        case ApplicationSearch.APPLICATION_NUMBER:
+          permitsQuery = permitsQuery.andWhere(
+            'permit.applicationNumber like :searchString',
+            {
+              searchString: `%${searchString}%`,
+            },
+          );
+          break;
+      }
+    }
+
+    // If only searchString is provided without a specific search column, search across plate and unit number
+    if (!searchColumn && searchString) {
+      permitsQuery = permitsQuery.andWhere(
+        new Brackets((query) => {
+          query
+            .where('permitData.plate like :searchString', {
+              searchString: `%${searchString}%`,
+            })
+            .orWhere('permitData.unitNumber like :searchString', {
+              searchString: `%${searchString}%`,
+            });
+        }),
+      );
+    }
+
+    // Return the constructed query
     return permitsQuery;
   }
 
@@ -423,11 +576,30 @@ export class ApplicationService {
   ): Promise<ReadApplicationDto> {
     const existingApplication = await this.findOne(applicationId, companyId);
 
-    // Enforce that application is editable only if it is currently IN_PROGRESS
-    if (existingApplication.permitStatus !== ApplicationStatus.IN_PROGRESS) {
+    // Enforce that the application is editable only if it is currently IN_PROGRESS or if the user has an appropriate IDIR role and the application is IN_QUEUE
+    if (
+      existingApplication.permitStatus !== ApplicationStatus.IN_PROGRESS &&
+      !(
+        doesUserHaveRole(currentUser.orbcUserRole, IDIR_USER_ROLE_LIST) &&
+        existingApplication.permitStatus === ApplicationStatus.IN_QUEUE
+      )
+    ) {
       throw new BadRequestException(
-        'Only an Application currently in progress can be modified.',
+        'Only an Application currently in progress can be modified or must have correct authorization.',
       );
+    }
+
+    if (
+      isPermitTypeEligibleForQueue(existingApplication.permitType) &&
+      existingApplication.permitStatus === ApplicationStatus.IN_QUEUE
+    ) {
+      const permitData = JSON.parse(
+        existingApplication?.permitData?.permitData,
+      ) as PermitData;
+      const currentDate = dayjs(new Date().toISOString())?.format('YYYY-MM-DD');
+      if (differenceBetween(permitData?.startDate, currentDate, 'days') > 0) {
+        throwUnprocessableEntityException('Start Date is in the past.');
+      }
     }
 
     const newApplication = this.classMapper.map(
@@ -766,5 +938,357 @@ export class ApplicationService {
 
     // Return the response DTO
     return deleteDto;
+  }
+
+  @LogAsyncMethodExecution()
+  async addApplicationToQueue({
+    currentUser,
+    companyId,
+    applicationId,
+  }: {
+    currentUser: IUserJWT;
+    companyId: number;
+    applicationId: string;
+  }): Promise<ReadCaseEvenDto> {
+    const application = await this.findOne(applicationId, companyId);
+    if (!application) {
+      throw new DataNotFoundException();
+    } else if (!isPermitTypeEligibleForQueue(application.permitType)) {
+      throwUnprocessableEntityException(
+        'Invalid permit type. Ineligible for queue.',
+      );
+    } else if (application.permitStatus !== ApplicationStatus.IN_PROGRESS) {
+      throwUnprocessableEntityException('Invalid status.');
+    }
+    const { queryRunner } = await getQueryRunner({
+      dataSource: this.dataSource,
+    });
+    try {
+      application.permitStatus = ApplicationStatus.IN_QUEUE;
+      setBaseEntityProperties({
+        entity: application,
+        currentUser,
+        update: true,
+      });
+      await queryRunner.manager.save<Permit>(application);
+      const result = await this.caseManagementService.openCase({
+        currentUser: currentUser,
+        applicationId,
+        queryRunner,
+      });
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * Updates the status of an application in queue based on the specified activity type.
+   * The function first checks for the validity of the application before performing any updates or workflow operations.
+   *
+   * Procedure steps:
+   * - If `caseActivityType` is `WITHDRAWN`, it starts the case withdrawal process.
+   * - If `caseActivityType` is any other state, it completes the case workflow.
+   *
+   * Input:
+   *  @param currentUser: User information making the request including JWT details.
+   *  @param companyId: The ID of the company owning the application.
+   *  @param applicationId: Unique identifier for the application to update.
+   *  @param caseActivityType: Type of case activity which determines the flow (e.g., WITHDRAWN, APPROVED).
+   *  @param comment (optional): Additional comments or descriptions associated with the activity.
+   *
+   * Output:
+   *  @returns the final result after updating the case or performing the workflow.
+   *
+   * Possible exceptions:
+   *  @throws DataNotFoundException: In case the application is not found.
+   *  @throws UnprocessableEntityException: If the permit type/status does not allow queue operations.
+   */
+  @LogAsyncMethodExecution()
+  async updateApplicationQueueStatus({
+    currentUser,
+    companyId,
+    applicationId,
+    caseActivityType,
+    comment,
+  }: {
+    currentUser: IUserJWT;
+    companyId: number;
+    applicationId: string;
+    caseActivityType: CaseActivityType;
+    comment?: Nullable<string>;
+  }): Promise<ReadCaseEvenDto> {
+    let result: ReadCaseEvenDto;
+    const application = await this.findOne(applicationId, companyId);
+    if (!application) {
+      throw new DataNotFoundException();
+    } else if (!isPermitTypeEligibleForQueue(application.permitType)) {
+      throwUnprocessableEntityException(
+        'Invalid permit type. Ineligible for queue.',
+      );
+    } else if (application.permitStatus !== ApplicationStatus.IN_QUEUE) {
+      throwUnprocessableEntityException('Invalid status.');
+    }
+
+    const { queryRunner } = await getQueryRunner({
+      dataSource: this.dataSource,
+    });
+    try {
+      if (caseActivityType === CaseActivityType.WITHDRAWN) {
+        result = await this.caseManagementService.caseWithdrawn({
+          currentUser,
+          applicationId,
+          queryRunner,
+        });
+      } else {
+        if (CaseActivityType.APPROVED === caseActivityType) {
+          const permitData = JSON.parse(
+            application?.permitData?.permitData,
+          ) as PermitData;
+          const currentDate = dayjs(new Date().toISOString())?.format(
+            'YYYY-MM-DD',
+          );
+
+          if (
+            application.permitStatus === ApplicationStatus.IN_QUEUE &&
+            (differenceBetween(permitData?.startDate, currentDate, 'days') >
+              0 ||
+              differenceBetween(permitData?.expiryDate, currentDate, 'days') >
+                0)
+          ) {
+            throwUnprocessableEntityException(
+              'Start Date and/or Permit Expiry Date is in the past.',
+            );
+          }
+        }
+
+        result = await this.caseManagementService.workflowEnd({
+          currentUser,
+          applicationId,
+          caseActivityType,
+          comment,
+          queryRunner,
+        });
+      }
+      await queryRunner.manager.update(
+        Permit,
+        { permitId: applicationId },
+        {
+          permitStatus:
+            caseActivityType === CaseActivityType.APPROVED
+              ? ApplicationStatus.IN_CART
+              : ApplicationStatus.IN_PROGRESS,
+          updatedDateTime: new Date(),
+          updatedUser: currentUser.userName,
+          updatedUserDirectory: currentUser.orbcUserDirectory,
+          updatedUserGuid: currentUser.userGUID,
+        },
+      );
+      await queryRunner.commitTransaction();
+      try {
+        if (
+          caseActivityType === CaseActivityType.APPROVED ||
+          caseActivityType === CaseActivityType.REJECTED
+        ) {
+          let notificationTemplate: NotificationTemplate;
+          let subject: string;
+          let notificationData:
+            | ApplicationApprovedNotification
+            | ApplicationRejectedNotification;
+
+          const permitData = JSON.parse(
+            application.permitData.permitData,
+          ) as PermitData;
+
+          if (caseActivityType === CaseActivityType.APPROVED) {
+            notificationTemplate = NotificationTemplate.APPLICATION_APPROVED;
+            subject = `onRouteBC Permit Application ${application?.applicationNumber} for Plate ${permitData?.vehicleDetails?.plate} Approved`;
+            notificationData = {
+              applicationNumber: application?.applicationNumber,
+              companyName: application?.company?.legalName,
+              plate: permitData?.vehicleDetails?.plate,
+            } as ApplicationApprovedNotification;
+          } else {
+            notificationTemplate = NotificationTemplate.APPLICATION_REJECTED;
+            subject = `onRouteBC Permit Application ${application?.applicationNumber} for Plate ${permitData?.vehicleDetails?.plate} Rejected`;
+            notificationData = {
+              rejectedDateTime: convertUtcToPt(
+                new Date(),
+                'MMM. D, YYYY, hh:mm a Z',
+              ),
+              rejectedReason: comment,
+            } as ApplicationRejectedNotification;
+          }
+
+          const emailList = [
+            permitData?.contactDetails?.email,
+            permitData?.contactDetails?.additionalEmail,
+            application?.company?.email,
+          ];
+          const notificationDocument: INotificationDocument = {
+            templateName: notificationTemplate,
+            to: validateEmailandFaxList(emailList),
+            subject: subject,
+            data: notificationData,
+          };
+
+          await this.dopsService.notificationWithDocumentsFromDops(
+            currentUser,
+            notificationDocument,
+            false,
+          );
+          await queryRunner.startTransaction();
+          await this.caseManagementService.createNotificationEvent({
+            currentUser,
+            applicationId,
+            queryRunner,
+          });
+
+          await queryRunner.commitTransaction();
+        }
+      } catch (error) {
+        if (queryRunner.isTransactionActive) {
+          await queryRunner.rollbackTransaction();
+        }
+        this.logger.error(error); //Swallow Notification error
+      }
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * Assigns an application that is currently in queue to a case manager.
+   * Performs validation on the application's status and type before assignment.
+   *
+   * Input:
+   * - @param currentUser: IUserJWT - The user performing the operation.
+   * - @param companyId: number - The ID of the company associated with the application.
+   * - @param applicationId: string - The ID of the application to be assigned.
+   *
+   * Output:
+   * - @returns Promise<ReadCaseEvenDto> - The result from the case assignment process.
+   *
+   * Throws exceptions:
+   * - DataNotFoundException: When the application is not found.
+   * - UnprocessableEntityException: If the application is ineligible for queue.
+   *
+   */
+  @LogAsyncMethodExecution()
+  async assingApplicationInQueue({
+    currentUser,
+    companyId,
+    applicationId,
+  }: {
+    currentUser: IUserJWT;
+    companyId: number;
+    applicationId: string;
+  }): Promise<ReadCaseEvenDto> {
+    const application = await this.findOne(applicationId, companyId);
+    if (!application) {
+      throw new DataNotFoundException();
+    } else if (!isPermitTypeEligibleForQueue(application.permitType)) {
+      throwUnprocessableEntityException(
+        'Invalid permit type. Ineligible for queue.',
+      );
+    } else if (application.permitStatus !== ApplicationStatus.IN_QUEUE) {
+      throwUnprocessableEntityException('Invalid status.');
+    }
+    const result = await this.caseManagementService.assignCase({
+      currentUser: currentUser,
+      applicationId,
+    });
+
+    return result;
+  }
+  @LogAsyncMethodExecution()
+  async createPermitLoa(
+    currentUser: IUserJWT,
+    permitId: string,
+    createPermitLoaDto: CreatePermitLoaDto,
+  ): Promise<ReadPermitLoaDto[]> {
+    const { loaIds: inputLoaIds } = createPermitLoaDto;
+    const existingPermitLoa = await this.findAllPermitLoa(permitId);
+    const permit = await this.findOne(permitId);
+    const existingLoaIds = existingPermitLoa.map((x) => x.loaId);
+    const loaIdsToDelete = existingLoaIds.filter(
+      (value) => !inputLoaIds.includes(value),
+    );
+    const loaIdsToInsert = inputLoaIds.filter(
+      (value) => !existingLoaIds.includes(value),
+    );
+
+    if (loaIdsToInsert.length) {
+      const loaDetails = await this.loaDetail.find({
+        where: {
+          loaId: In(loaIdsToInsert),
+          company: { companyId: permit.company.companyId },
+        },
+      });
+      if (loaDetails.length != loaIdsToInsert.length)
+        throw new BadRequestException('One or more loa(s) does not exist');
+      // Transform the permit LOA IDs from an array of numbers into individual records.
+      const singlePermitLoa = loaIdsToInsert.map((loaId) => ({
+        permitId,
+        loaIds: [loaId],
+      }));
+
+      const permitLoas = await this.classMapper.mapArrayAsync(
+        singlePermitLoa,
+        CreatePermitLoaDto,
+        PermitLoa,
+        {
+          extraArgs: () => ({
+            permitId,
+            userName: currentUser.userName,
+            userGUID: currentUser.userGUID,
+            timestamp: new Date(),
+            directory: currentUser.orbcUserDirectory,
+          }),
+        },
+      );
+
+      // Save new PermitLoas in bulk
+      await this.permitLoaRepository.save(permitLoas);
+    }
+
+    // Delete old PermitLoas in a single query
+    if (loaIdsToDelete?.length)
+      await this.permitLoaRepository.delete({
+        permitId: permitId,
+        loa: { loaId: In(loaIdsToDelete) },
+      });
+    return await this.findAllPermitLoa(permitId);
+  }
+  @LogAsyncMethodExecution()
+  async findAllPermitLoa(permitId: string): Promise<ReadPermitLoaDto[]> {
+    const savedPermitLoa = await this.permitLoaRepository
+      .createQueryBuilder('permitLoa')
+      .innerJoinAndSelect('permitLoa.loa', 'loa')
+      .innerJoinAndSelect('loa.company', 'company')
+      .innerJoinAndSelect('loa.loaVehicles', 'loaVehicles')
+      .innerJoinAndSelect('loa.loaPermitTypes', 'loaPermitTypes')
+      .where('permitLoa.permitId = :permitId', {
+        permitId: permitId,
+      })
+      .getMany();
+    const readPermitLoaDto: ReadPermitLoaDto[] =
+      await this.classMapper.mapArrayAsync(
+        savedPermitLoa,
+        PermitLoa,
+        ReadPermitLoaDto,
+      );
+    return readPermitLoaDto;
   }
 }

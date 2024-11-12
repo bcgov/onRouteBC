@@ -113,8 +113,7 @@ export const IDIRPermitSearchRowActions = ({
    * The role for the current user (eg. PPCCLERK or EOFFICER)
    */
   userRole?: string;
-
-  companyId?: string;
+  companyId: number;
 }) => {
   const [openResendDialog, setOpenResendDialog] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -129,7 +128,11 @@ export const IDIRPermitSearchRowActions = ({
     if (selectedOption === PERMIT_ACTION_TYPES.RESEND) {
       setOpenResendDialog(() => true);
     } else if (selectedOption === PERMIT_ACTION_TYPES.VIEW_RECEIPT) {
-      viewReceiptPdf(permitId, companyId);
+      viewReceiptPdf(
+        companyId,
+        permitId,
+        () => navigate(routes.ERROR_ROUTES.DOCUMENT_UNAVAILABLE),
+      );
     } else if (selectedOption === PERMIT_ACTION_TYPES.VOID_REVOKE) {
       navigate(`${routes.PERMITS_ROUTES.VOID(companyId, permitId)}`);
     } else if (selectedOption === PERMIT_ACTION_TYPES.AMEND) {

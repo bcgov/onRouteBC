@@ -8,7 +8,7 @@ import { List } from "../list/List";
 import { DoesUserHaveClaimWithContext } from "../../../../common/authentication/util";
 import { CLAIMS } from "../../../../common/authentication/types";
 import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
-import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { applyWhenNotNullable } from "../../../../common/helpers/util";
 import { VEHICLES_DASHBOARD_TABS } from "../../../../routes/constants";
 import { VEHICLE_TYPES } from "../../types/Vehicle";
 import { usePowerUnitsQuery } from "../../hooks/powerUnits";
@@ -35,7 +35,12 @@ const useTabIndexFromURL = (): number => {
  * React component to render the vehicle inventory
  */
 export const ManageVehiclesDashboard = memo(() => {
-  const companyId = getDefaultRequiredVal("", getCompanyIdFromSession());
+  const companyId: number = applyWhenNotNullable(
+    id => Number(id),
+    getCompanyIdFromSession(),
+    0,
+  );
+  
   const staleTime = 5000;
   const powerUnitsQuery = usePowerUnitsQuery(companyId, staleTime);
   const trailersQuery = useTrailersQuery(companyId, staleTime);

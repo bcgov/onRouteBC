@@ -41,7 +41,6 @@ export class LoaDetail extends Base {
     name: 'EXPIRY_DATE',
     nullable: true,
   })
-
   expiryDate?: Date;
 
   @AutoMap()

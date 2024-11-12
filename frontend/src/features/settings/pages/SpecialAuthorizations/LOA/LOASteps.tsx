@@ -26,7 +26,7 @@ export const LOASteps = ({
   companyId,
   onExit,
 }: {
-  loaId?: Nullable<string>;
+  loaId?: Nullable<number>;
   companyId: number;
   onExit: () => void;
 }) => {

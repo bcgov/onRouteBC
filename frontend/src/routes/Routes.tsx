@@ -32,6 +32,9 @@ import { ManageSettings } from "../features/settings/ManageSettings";
 import { IssuanceErrorPage } from "../common/pages/IssuanceErrorPage";
 import IDPRedirect from "../common/components/idpredirect/IDPRedirect";
 import { ShoppingCartDashboard } from "../features/permits/ShoppingCartDashboard";
+import { DocumentUnavailable } from "../common/pages/DocumentUnavailable";
+import { StaffDashboard } from "../features/idir/StaffDashboard";
+import { ReviewApplicationInQueue } from "../features/queue/pages/ReviewApplicationInQueue";
 
 export const AppRoutes = () => {
   return (
@@ -54,6 +57,10 @@ export const AppRoutes = () => {
       <Route
         path={routes.ERROR_ROUTES.ISSUANCE}
         element={<IssuanceErrorPage />}
+      />
+      <Route
+        path={routes.ERROR_ROUTES.DOCUMENT_UNAVAILABLE}
+        element={<DocumentUnavailable />}
       />
       <Route path="*" element={<UniversalUnexpected />} />
 
@@ -110,6 +117,34 @@ export const AppRoutes = () => {
         element={
           <IDIRAuthWall
             permissionMatrixKeys={{
+              permissionMatrixFeatureKey: "STAFF_HOME_SCREEN",
+              permissionMatrixFunctionKey: "VIEW_QUEUE",
+            }}
+          />
+        }
+      >
+        <Route
+          path={routes.IDIR_ROUTES.STAFF_HOME}
+          element={<StaffDashboard />}
+        />
+
+        <Route
+          path={routes.APPLICATION_QUEUE_ROUTES.REVIEW()}
+          element={<ReviewApplicationInQueue />}
+        />
+        {
+          // TODO: placeholder route for edit step
+          /* <Route
+          path={`${routes.APPLICATION_QUEUE_ROUTES.EDIT()}`}
+          element={<EditApplicationInQueue />}
+        /> */
+        }
+      </Route>
+
+      <Route
+        element={
+          <IDIRAuthWall
+            permissionMatrixKeys={{
               permissionMatrixFeatureKey: "GLOBAL_SEARCH",
               permissionMatrixFunctionKey: "VOID_PERMIT",
             }}
@@ -117,7 +152,7 @@ export const AppRoutes = () => {
         }
       >
         <Route
-          path={`companies/:companyId/permits/:permitId/void`}
+          path={routes.PERMITS_ROUTES.VOID()}
           element={<VoidPermit />}
         />
       </Route>
@@ -133,7 +168,7 @@ export const AppRoutes = () => {
         }
       >
         <Route
-          path={`companies/:companyId/permits/:permitId/amend`}
+          path={routes.PERMITS_ROUTES.AMEND()}
           element={<AmendPermit />}
         />
       </Route>

@@ -94,6 +94,7 @@ export class LoaService {
       companyId,
       savedLoaDetail.loaId,
     );
+
     const readLoaDto = await this.classMapper.mapAsync(
       refreshedLoaDetailsEntity,
       LoaDetail,
@@ -173,7 +174,6 @@ export class LoaService {
       where: {
         loaId: loaId,
         company: { companyId: companyId },
-        isActive: true,
       },
       relations: ['company', 'loaVehicles', 'loaPermitTypes'],
     });
@@ -311,6 +311,7 @@ export class LoaService {
             companyId: companyId,
             documentId: documentId,
             isActive: true,
+            loaNumber: existingLoaDetail.loaNumber,
             previousLoaId: existingLoaDetail.loaId,
             originalLoaId: existingLoaDetail.originalLoaId,
             userName: currentUser.userName,

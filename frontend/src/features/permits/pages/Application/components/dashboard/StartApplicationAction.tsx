@@ -1,56 +1,167 @@
-import { useNavigate } from "react-router-dom";
+import { Box, Button, FormLabel, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
-import { Box, MenuItem, SelectChangeEvent, Button } from "@mui/material";
-
-import "./StartApplicationAction.scss";
-import { PERMIT_TYPE_CHOOSE_FROM_OPTIONS } from "../../../../constants/constants";
-import { SelectPermitType } from "./SelectPermitType";
+import { useNavigate } from "react-router-dom";
+import { NestedMenuItem } from "mui-nested-menu";
 import { APPLICATIONS_ROUTES } from "../../../../../../routes/constants";
-import { DEFAULT_PERMIT_TYPE, EMPTY_PERMIT_TYPE_SELECT, PermitType } from "../../../../types/PermitType";
+import {
+  ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS,
+  PermitTypeChooseFromItem,
+} from "../../../../constants/constants";
+import {
+  EMPTY_PERMIT_TYPE_SELECT,
+  PermitType,
+  getFormattedPermitTypeName,
+} from "../../../../types/PermitType";
+import "./StartApplicationAction.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-/**
- *
- * Code taken largely from MUI MenuList Composition
- * https://mui.com/material-ui/react-menu/#menulist-composition
- *
- *
- */
 export const StartApplicationAction = () => {
   const navigate = useNavigate();
-  const [chooseFrom, setChooseFrom] = useState<PermitType | typeof EMPTY_PERMIT_TYPE_SELECT>(
-    DEFAULT_PERMIT_TYPE
-  );
+  const [chooseFrom, setChooseFrom] = useState<
+    PermitType | typeof EMPTY_PERMIT_TYPE_SELECT
+  >(EMPTY_PERMIT_TYPE_SELECT);
 
-  const handleChooseFrom = (event: SelectChangeEvent) => {
-    setChooseFrom(event.target.value as PermitType | typeof EMPTY_PERMIT_TYPE_SELECT);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  const handleChooseFrom = (
+    _event: React.MouseEvent<HTMLElement>,
+    item: PermitTypeChooseFromItem,
+  ) => {
+    setIsError(false);
+    setChooseFrom(item.value as PermitType);
+    handleClose();
   };
 
   const handleStartButtonClicked = () => {
     if (chooseFrom !== EMPTY_PERMIT_TYPE_SELECT) {
       navigate(APPLICATIONS_ROUTES.START_APPLICATION(chooseFrom));
+    } else {
+      setIsError(true);
     }
   };
 
+  // Update the structure of menuItems to ensure the callback is applied correctly
+  const menuItems = ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS.map(
+    (item: PermitTypeChooseFromItem) => ({
+      ...item,
+      callback: (event: React.MouseEvent<HTMLElement>) =>
+        handleChooseFrom(event, item),
+      // Correctly set the nested item's callback
+      items: item?.items?.map((nestedItem) => ({
+        ...nestedItem,
+        callback: (event: React.MouseEvent<HTMLElement>) =>
+          handleChooseFrom(event, nestedItem),
+      })),
+    }),
+  );
+
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>();
+  const open = Boolean(anchorEl);
+
+  const handleClick = (e: any) =>
+    setAnchorEl(e.currentTarget as HTMLDivElement);
+  const handleClose = () => setAnchorEl(null);
+
+  const inputClass = "start-application-action__input";
+  const inputOpenClass = "start-application-action__input--open";
+  const inputErrorClass = "start-application-action__input--error";
+  const menuClass = "start-application-action__menu-container";
+  const menuOpenClass = "start-application-action__menu-container--open";
+
   return (
     <Box className="start-application-action">
-      <SelectPermitType
-        value={chooseFrom}
-        label={"Select Permit Type"}
-        onChange={handleChooseFrom}
-        menuItems={PERMIT_TYPE_CHOOSE_FROM_OPTIONS.map((data) => (
-          <MenuItem key={data.value} value={data.value}>
-            {data.label}
-          </MenuItem>
-        ))}
-      />
+      <FormLabel className="start-application-action__label">
+        Select Permit Type
+      </FormLabel>
+      <div className="start-application-action__control">
+        <Tooltip
+          className="start-application-action__input-tooltip"
+          title={
+            chooseFrom !== EMPTY_PERMIT_TYPE_SELECT
+              ? getFormattedPermitTypeName(chooseFrom)
+              : EMPTY_PERMIT_TYPE_SELECT
+          }
+        >
+          <Button
+            className={`${inputClass} ${open ? inputOpenClass : ""} ${isError ? inputErrorClass : ""}`}
+            onClick={handleClick}
+          >
+            <span className="start-application-action__input-text">
+              {chooseFrom !== EMPTY_PERMIT_TYPE_SELECT
+                ? getFormattedPermitTypeName(chooseFrom)
+                : EMPTY_PERMIT_TYPE_SELECT}
+            </span>
+            <FontAwesomeIcon
+              className="start-application__input-icon"
+              icon={faChevronDown}
+            />
+          </Button>
+        </Tooltip>
 
-      <Button
-        className="start-application-action__btn"
-        variant="contained"
-        onClick={handleStartButtonClicked}
-      >
-        Start Application
-      </Button>
+        <Menu
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          open={open}
+          slotProps={{
+            paper: {
+              className: `${menuClass} ${open ? menuOpenClass : ""}`,
+            },
+          }}
+          MenuListProps={{
+            className: "start-application-action__menu-list",
+          }}
+        >
+          {menuItems.map((item) =>
+            item.items ? (
+              <NestedMenuItem
+                className="start-application-action__menu-item"
+                label={item.label}
+                parentMenuOpen={open}
+                key={item.value}
+                MenuProps={{
+                  MenuListProps: {
+                    className: "start-application-action__nested-menu-list",
+                  },
+                  slotProps: {
+                    paper: {
+                      className:
+                        "start-application-action__nested-menu-container",
+                    },
+                  },
+                }}
+              >
+                {item.items.map((nestedItem) => (
+                  <MenuItem
+                    className="start-application-action__nested-menu-item"
+                    key={nestedItem.value}
+                    onClick={nestedItem.callback}
+                  >
+                    {nestedItem.label}
+                  </MenuItem>
+                ))}
+              </NestedMenuItem>
+            ) : (
+              <MenuItem key={item.label} onClick={item.callback}>
+                {item.label}
+              </MenuItem>
+            ),
+          )}
+        </Menu>
+
+        <Button
+          className="start-application-action__btn"
+          variant="contained"
+          onClick={handleStartButtonClicked}
+        >
+          Start Application
+        </Button>
+      </div>
+      {isError ? (
+        <span className="start-application-action__error-msg">
+          Select a permit type.
+        </span>
+      ) : null}
     </Box>
   );
 };

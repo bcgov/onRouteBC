@@ -1,6 +1,6 @@
 import { MRT_ColumnDef, MRT_Row } from "material-react-table";
 
-import { LOADetail } from "../../../../types/SpecialAuthorization";
+import { LOADetail } from "../../../../types/LOADetail";
 import { DATE_FORMATS, toLocal } from "../../../../../../common/helpers/formatDate";
 import { applyWhenNotNullable } from "../../../../../../common/helpers/util";
 import { LOANumberCell } from "./LOANumberCell";
@@ -8,8 +8,8 @@ import { LOADownloadCell } from "./LOADownloadCell";
 
 export const LOAListColumnDef = (
   allowEditLOA: boolean,
-  onEditLOA: (loaId: string) => void,
-  onDownload: (loaId: string) => void,
+  onEditLOA: (loaId: number) => void,
+  onDownload: (loaId: number) => void,
 ): MRT_ColumnDef<LOADetail>[] => [
   {
     Cell: (
@@ -36,7 +36,7 @@ export const LOAListColumnDef = (
   },
   {
     accessorFn: (originalRow) => {
-      return toLocal(originalRow.startDate, DATE_FORMATS.DATEONLY_SLASH);
+      return toLocal(originalRow.startDate, DATE_FORMATS.DATEONLY_SLASH, true);
     },
     id: "startDate",
     header: "Start Date",
@@ -54,7 +54,7 @@ export const LOAListColumnDef = (
   {
     accessorFn: (originalRow) =>
       applyWhenNotNullable(
-        (expiryDate) => toLocal(expiryDate, DATE_FORMATS.DATEONLY_SLASH),
+        (expiryDate) => toLocal(expiryDate, DATE_FORMATS.DATEONLY_SLASH, true),
         originalRow.expiryDate,
         "Never expires",
       ) as string,

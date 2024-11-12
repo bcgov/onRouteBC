@@ -43,9 +43,9 @@ const getColumns = (
 };
 
 export const ApplicationsInProgressList = ({
-  onCountChange,
+  companyId,
 }: {
-  onCountChange: (count: number) => void;
+  companyId: number;
 }) => {
   const {
     applicationsInProgressQuery,
@@ -53,13 +53,13 @@ export const ApplicationsInProgressList = ({
     setPagination,
     sorting,
     setSorting,
-  } = useApplicationsInProgressQuery();
+  } = useApplicationsInProgressQuery(companyId);
 
   const {
     pendingPermits,
     pagination: pendingPermitPagination,
     setPagination: setPendingPermitPagination,
-  } = usePendingPermitsQuery();
+  } = usePendingPermitsQuery(companyId);
 
   const {
     data: applicationsInProgress,
@@ -82,7 +82,6 @@ export const ApplicationsInProgressList = ({
       applicationsInProgress?.meta?.totalItems,
     );
     setShowAIPTable(totalCount > 0);
-    onCountChange(totalCount);
   }, [applicationsInProgress?.meta?.totalItems]);
 
   const { idirUserDetails, userDetails } = useContext(OnRouteBCContext);
@@ -109,7 +108,7 @@ export const ApplicationsInProgressList = ({
 
   const onConfirmApplicationDelete = async () => {
     const applicationIds: string[] = Object.keys(rowSelection);
-    const response = await deleteApplications(applicationIds);
+    const response = await deleteApplications(companyId, applicationIds);
     if (response.status === 200) {
       const responseBody = response.data;
       setIsDeleteDialogOpen(() => false);

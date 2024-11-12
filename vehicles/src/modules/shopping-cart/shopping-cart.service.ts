@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotBrackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { In, NotBrackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { LogAsyncMethodExecution } from '../../common/decorator/log-async-method-execution.decorator';
 import { ApplicationStatus } from '../../common/enum/application-status.enum';
 import { Directory } from '../../common/enum/directory.enum';
 import {
+  CLIENT_USER_ROLE_LIST,
   ClientUserRole,
   IDIR_USER_ROLE_LIST,
   UserRole,
@@ -18,6 +19,7 @@ import { doesUserHaveRole } from '../../common/helper/auth.helper';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ReadShoppingCartDto } from './dto/response/read-shopping-cart.dto';
+import { isPermitTypeEligibleForQueue } from '../../common/helper/permit-application.helper';
 
 @Injectable()
 export class ShoppingCartService {
@@ -43,18 +45,43 @@ export class ShoppingCartService {
     { applicationIds, companyId }: AddToShoppingCartDto & { companyId: number },
   ): Promise<ResultDto> {
     const { orbcUserRole } = currentUser;
+    const applications = await this.applicationRepository.find({
+      where: {
+        permitId: In(applicationIds),
+      },
+    });
+
+    const applicationsForQueue = applications
+      ?.filter(({ permitType }) => isPermitTypeEligibleForQueue(permitType))
+      ?.map(({ permitId }) => permitId);
+
+    let shouldConcatResult = false;
     if (
-      orbcUserRole === ClientUserRole.COMPANY_ADMINISTRATOR ||
-      doesUserHaveRole(orbcUserRole, IDIR_USER_ROLE_LIST)
+      doesUserHaveRole(currentUser.orbcUserRole, CLIENT_USER_ROLE_LIST) &&
+      applicationsForQueue?.length
     ) {
-      return await this.updateApplicationStatus(
+      applicationIds = applicationIds.filter(
+        (item) => !applicationsForQueue.includes(item),
+      );
+      shouldConcatResult = true;
+    }
+    let result: ResultDto;
+    if (
+      applicationIds?.length &&
+      (orbcUserRole === ClientUserRole.COMPANY_ADMINISTRATOR ||
+        doesUserHaveRole(orbcUserRole, IDIR_USER_ROLE_LIST))
+    ) {
+      result = await this.updateApplicationStatus(
         { applicationIds, companyId },
         ApplicationStatus.IN_CART,
         currentUser,
       );
-    } else if (orbcUserRole === ClientUserRole.PERMIT_APPLICANT) {
+    } else if (
+      applicationIds?.length &&
+      orbcUserRole === ClientUserRole.PERMIT_APPLICANT
+    ) {
       const { userGUID } = currentUser;
-      return await this.updateApplicationStatus(
+      result = await this.updateApplicationStatus(
         {
           applicationIds,
           companyId,
@@ -64,8 +91,12 @@ export class ShoppingCartService {
         currentUser,
       );
     } else {
-      return { failure: applicationIds, success: [] };
+      result = { failure: applicationIds, success: [] };
     }
+    if (shouldConcatResult) {
+      result.failure.push(...applicationsForQueue);
+    }
+    return result;
   }
 
   /**
@@ -288,7 +319,7 @@ export class ShoppingCartService {
       affected: number;
     };
     if (affected === applicationIds.length) {
-      success.concat(applicationIds);
+      success.push(...applicationIds);
     } else {
       const selectResult = await this.applicationRepository
         .createQueryBuilder('application')
@@ -300,13 +331,13 @@ export class ShoppingCartService {
         })
         .getMany();
 
-      failure.concat(
-        selectResult
+      failure.push(
+        ...selectResult
           .filter(({ permitStatus }) => permitStatus !== statusToUpdateTo)
           .map(({ permitId: applicationId }) => applicationId),
       );
-      success.concat(
-        applicationIds.filter(
+      success.push(
+        ...applicationIds.filter(
           (applicationId) => !failure.includes(applicationId),
         ),
       );

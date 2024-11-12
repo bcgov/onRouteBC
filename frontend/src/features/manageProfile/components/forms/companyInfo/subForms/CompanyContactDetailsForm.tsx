@@ -60,7 +60,7 @@ export const CompanyContactDetailsForm = ({
         className="company-contact-details-form__input company-contact-details-form__input--left"
       />
       <CustomFormComponent
-        type="input"
+        type="number"
         feature={feature}
         options={{
           name: "extension",

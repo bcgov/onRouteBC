@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 
 import { BCeIDUserDetailContext } from "../../../common/authentication/OnRouteBCContext";
-import { getMandatoryConditions, sortConditions } from "./conditions";
+import { getMandatoryConditions } from "./conditions";
 import { Nullable } from "../../../common/types/common";
 import { PERMIT_STATUSES } from "../types/PermitStatus";
 import { calculateFeeByDuration } from "./feeSummary";
@@ -9,12 +9,9 @@ import { PermitType } from "../types/PermitType";
 import { getExpiryDate } from "./permitState";
 import { PermitMailingAddress } from "../types/PermitMailingAddress";
 import { PermitContactDetails } from "../types/PermitContactDetails";
-import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import { Application, ApplicationFormData } from "../types/application";
 import { minDurationForPermitType } from "./dateSelection";
-import { PermitCondition } from "../types/PermitCondition";
-import { LCV_CONDITION } from "../constants/constants";
-import { isVehicleSubtypeLCV } from "../../manageVehicles/helpers/vehicleSubtypes";
+import { getDefaultVehicleDetails } from "./permitVehicles";
 import {
   getEndOfDate,
   getStartOfDate,
@@ -100,27 +97,6 @@ export const getDefaultMailingAddress = (
         postalCode: getDefaultRequiredVal("", alternateAddress?.postalCode),
       };
 
-/**
- * Gets default values for vehicle details, or populate with values from existing vehicle details.
- * @param vehicleDetails existing vehicle details, if any
- * @returns default values for vehicle details
- */
-export const getDefaultVehicleDetails = (
-  vehicleDetails?: Nullable<PermitVehicleDetails>,
-) => ({
-  vehicleId: getDefaultRequiredVal("", vehicleDetails?.vehicleId),
-  unitNumber: getDefaultRequiredVal("", vehicleDetails?.unitNumber),
-  vin: getDefaultRequiredVal("", vehicleDetails?.vin),
-  plate: getDefaultRequiredVal("", vehicleDetails?.plate),
-  make: getDefaultRequiredVal("", vehicleDetails?.make),
-  year: applyWhenNotNullable((year) => year, vehicleDetails?.year, null),
-  countryCode: getDefaultRequiredVal("", vehicleDetails?.countryCode),
-  provinceCode: getDefaultRequiredVal("", vehicleDetails?.provinceCode),
-  vehicleType: getDefaultRequiredVal("", vehicleDetails?.vehicleType),
-  vehicleSubType: getDefaultRequiredVal("", vehicleDetails?.vehicleSubType),
-  saveVehicle: false,
-});
-
 export const getDurationOrDefault = (
   defaultDuration: number,
   duration?: Nullable<number | string>,
@@ -153,87 +129,6 @@ export const getExpiryDateOrDefault = (
     expiryDate,
     getExpiryDate(startDateOrDefault, durationOrDefault),
   );
-};
-
-/**
- * Applying LCV designation to application data.
- * @param applicationData Existing application data
- * @param isLcvDesignated Whether or not the LCV designation is to be used
- * @returns Application data after applying the LCV check
- */
-export const applyLCVToApplicationData = <T extends Nullable<ApplicationFormData | Application>>(
-  applicationData: T,
-  isLcvDesignated: boolean,
-): T => {
-  // If application doesn't exist, no need to apply LCV at all
-  if (!applicationData) return applicationData;
-
-  if (!isLcvDesignated) {
-    // If LCV not designated, remove LCV condition from application data
-    const filteredConditions = applicationData.permitData.commodities.filter(
-      ({ condition }: PermitCondition) => condition !== LCV_CONDITION.condition,
-    );
-
-    if (isVehicleSubtypeLCV(applicationData.permitData.vehicleDetails.vehicleSubType)) {
-      // Furthermore, if selected vehicle has LCV subtype, clear the vehicle
-      return {
-        ...applicationData,
-        permitData: {
-          ...applicationData.permitData,
-          commodities: [...filteredConditions],
-          vehicleDetails: getDefaultVehicleDetails(),
-        },
-      };
-    }
-
-    // Otherwise, keep the existing vehicle
-    return {
-      ...applicationData,
-      permitData: {
-        ...applicationData.permitData,
-        commodities: [...filteredConditions],
-      },
-    };
-  }
-  
-  // If LCV is designated, and vehicle subtype in the application isn't LCV but conditions have LCV,
-  // then remove that LCV condition from the application
-  if (
-    !isVehicleSubtypeLCV(applicationData.permitData.vehicleDetails.vehicleSubType)
-    && applicationData.permitData.commodities.some(({ condition }) => condition === LCV_CONDITION.condition)
-  ) {
-    const filteredConditions = applicationData.permitData.commodities.filter(
-      ({ condition }: PermitCondition) => condition !== LCV_CONDITION.condition,
-    );
-
-    return {
-      ...applicationData,
-      permitData: {
-        ...applicationData.permitData,
-        commodities: [...filteredConditions],
-      },
-    };
-  }
-
-  // If LCV is designated, and vehicle subtype in the application is LCV but conditions don't have LCV,
-  // then add that LCV condition into the application
-  if (
-    isVehicleSubtypeLCV(applicationData.permitData.vehicleDetails.vehicleSubType)
-    && !applicationData.permitData.commodities.some(({ condition }) => condition === LCV_CONDITION.condition)
-  ) {
-    const conditionsWithLCV = sortConditions([...applicationData.permitData.commodities, LCV_CONDITION]);
-
-    return {
-      ...applicationData,
-      permitData: {
-        ...applicationData.permitData,
-        commodities: [...conditionsWithLCV],
-      },
-    };
-  }
-
-  // In other cases, the application data is valid
-  return applicationData;
 };
 
 /**
@@ -329,6 +224,7 @@ export const getDefaultValues = (
         applicationData?.permitData?.vehicleDetails,
       ),
       feeSummary: `${calculateFeeByDuration(defaultPermitType, durationOrDefault)}`,
+      loas: getDefaultRequiredVal([], applicationData?.permitData?.loas),
     },
   };
 };

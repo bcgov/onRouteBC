@@ -14,4 +14,8 @@ export class PaymentMethodType {
   @AutoMap()
   @Column({ name: 'DESCRIPTION', nullable: true, length: 50 })
   description: string;
+
+  @AutoMap()
+  @Column({ name: 'GL_PROJ_CODE', nullable: true, length: 7 })
+  glProjCode: string;
 }

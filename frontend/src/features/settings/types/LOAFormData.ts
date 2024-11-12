@@ -3,7 +3,7 @@ import { Dayjs } from "dayjs";
 import { Nullable } from "../../../common/types/common";
 import { PERMIT_TYPES } from "../../permits/types/PermitType";
 import { LOAVehicle } from "./LOAVehicle";
-import { LOADetail } from "./SpecialAuthorization";
+import { LOADetail } from "./LOADetail";
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,

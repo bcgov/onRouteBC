@@ -1,4 +1,4 @@
-export { Commodity } from './commodity';
+export { Commodity, CommoditySize, CommodityWeight } from './commodity';
 export { CostRule } from './cost-rule';
 export { DimensionModifier } from './dimension-modifier';
 export { PermitFacts } from './facts';
@@ -22,7 +22,13 @@ export {
   TrailerType,
   VehicleTypes,
 } from './vehicle-type';
-export { Vehicle, PowerUnit, Trailer } from './vehicle';
+export {
+  Vehicle,
+  VehicleSizeConfiguration,
+  TrailerSize,
+  PowerUnitWeight,
+  TrailerWeight,
+} from './vehicle';
 export {
   WeightDimension,
   PowerUnitWeightDimension,

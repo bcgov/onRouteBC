@@ -5,8 +5,7 @@ import { IsNumberString, ArrayMinSize } from 'class-validator';
 export class IssuePermitDto {
   @AutoMap()
   @ApiProperty({
-    description:
-      'Application Ids. Note: Bulk issuance is not yet implemented even though we capture multiple Application Ids',
+    description: 'Application Ids.',
     isArray: true,
     type: String,
     example: ['1'],

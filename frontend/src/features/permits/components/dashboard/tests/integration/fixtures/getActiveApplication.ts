@@ -192,6 +192,7 @@ export const getDefaultApplication = () => {
       vehicleDetails,
       commodities: conditions,
       mailingAddress,
+      loas: [],
     },
   };
 };

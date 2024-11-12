@@ -109,6 +109,22 @@ export class AppService {
       ),
     );
 
+    await addToCache(
+      this.cacheManager,
+      CacheKey.EMAIL_TEMPLATE_APPLICATION_APPROVED,
+      this.convertFileToString(
+        assetsPath + 'templates/application-approved.email.hbs',
+      ),
+    );
+
+    await addToCache(
+      this.cacheManager,
+      CacheKey.EMAIL_TEMPLATE_APPLICATION_REJECTED,
+      this.convertFileToString(
+        assetsPath + 'templates/application-rejected.email.hbs',
+      ),
+    );
+
     const featureFlags = await this.featureFlagsService.findAll();
     await addToCache(
       this.cacheManager,

@@ -1,0 +1,17 @@
+@import "../../../../themes/orbcStyles";
+
+.permit-chip {
+  display: inline-block;
+  margin-left: 0.5rem;
+  
+  &--pending-review {
+    background-color: $bc-messages-blue-background;
+    color: $bc-primary-blue;
+  }
+
+  &--in-review {
+    background-color: $bc-messages-gold-background;
+    color: $bc-messages-gold-text;
+  }
+
+}

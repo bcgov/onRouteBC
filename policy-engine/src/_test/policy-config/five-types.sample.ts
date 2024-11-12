@@ -4,15 +4,15 @@ export const fiveTypes: PolicyDefinition = {
   version: '2024.03.18.001',
   geographicRegions: [
     {
-      id: 'lm',
+      id: 'LMN',
       name: 'Lower Mainland',
     },
     {
-      id: 'kootenay',
+      id: 'KTN',
       name: 'Kootenay',
     },
     {
-      id: 'peace',
+      id: 'PCE',
       name: 'Peace',
     },
   ],
@@ -20,7 +20,8 @@ export const fiveTypes: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.companyName',
+          fact: 'permitData',
+          path: '$.companyName',
           operator: 'stringMinimumLength',
           value: 1,
         },
@@ -36,7 +37,8 @@ export const fiveTypes: PolicyDefinition = {
       conditions: {
         any: [
           {
-            fact: 'permitData.startDate',
+            fact: 'permitData',
+            path: '$.startDate',
             operator: 'dateLessThan',
             value: {
               fact: 'validationDate',
@@ -54,7 +56,8 @@ export const fiveTypes: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.vin',
+          fact: 'permitData',
+          path: '$.vehicleDetails.vin',
           operator: 'regex',
           value: '^[a-zA-Z0-9]{6}$',
         },
@@ -89,14 +92,16 @@ export const fiveTypes: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
@@ -171,13 +176,7 @@ export const fiveTypes: PolicyDefinition = {
         'poletrailer',
         'hiboyexpando',
       ],
-      allowedCommodities: [
-        'bridgebeams',
-        'empty',
-        'fixed',
-        'intermodalcontainers',
-        'laminatedbeams',
-      ],
+      allowedCommodities: ['NONEXXX', 'DOGLOGG', 'GRTBBUK'],
     },
     {
       id: 'STWS',
@@ -262,11 +261,11 @@ export const fiveTypes: PolicyDefinition = {
     ],
   },
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
   vehicleCategories: {
     trailerCategories: [
@@ -363,558 +362,1291 @@ export const fiveTypes: PolicyDefinition = {
   vehicleTypes: {
     powerUnitTypes: [
       {
-        id: 'trucktractor',
-        name: 'Truck Tractor',
+        id: 'BUSCRUM',
+        name: 'Buses/Crummies',
         category: 'powerunit',
-        defaultWeightDimensions: [
-          {
-            axles: 11,
-          },
-          {
-            axles: 12,
-          },
-          {
-            axles: 13,
-          },
-          {
-            axles: 22,
-          },
-          {
-            axles: 23,
-          },
-        ],
       },
       {
-        id: 'pickertrucktractor',
-        name: 'Picker Truck Tractor',
+        id: 'BUSTRLR',
+        name: 'Inter-City Bus (Pulling Pony Trailer)',
         category: 'powerunit',
-        defaultWeightDimensions: [
-          {
-            axles: 11,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 9100,
-            daPermittable: 9100,
-          },
-          {
-            axles: 12,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 17000,
-            daPermittable: 17000,
-          },
-          {
-            axles: 13,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 24000,
-            daPermittable: 24000,
-          },
-          {
-            axles: 22,
-            saLegal: 17000,
-            saPermittable: 17000,
-            daLegal: 17000,
-            daPermittable: 17000,
-          },
-          {
-            axles: 23,
-            saLegal: 15200,
-            saPermittable: 15200,
-            daLegal: 24000,
-            daPermittable: 24000,
-          },
-        ],
       },
       {
-        id: 'truck',
-        name: 'Truck',
+        id: 'CONCRET',
+        name: 'Concrete Pumper Trucks',
         category: 'powerunit',
-        defaultWeightDimensions: [
-          {
-            axles: 11,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 9100,
-            daPermittable: 11000,
-          },
-          {
-            axles: 12,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 17000,
-            daPermittable: 23000,
-          },
-          {
-            axles: 13,
-            saLegal: 9100,
-            saPermittable: 9100,
-            daLegal: 24000,
-            daPermittable: 28000,
-          },
-          {
-            axles: 22,
-            saLegal: 17000,
-            saPermittable: 17000,
-            daLegal: 17000,
-            daPermittable: 23000,
-          },
-          {
-            axles: 23,
-            saLegal: 13600,
-            saPermittable: 15200,
-            daLegal: 24000,
-            daPermittable: 28000,
-          },
-        ],
+      },
+      {
+        id: 'CRAFTAT',
+        name: 'Cranes, Rubber-Tired Loaders, Firetrucks - All Terrain',
+        category: 'powerunit',
+      },
+      {
+        id: 'CRAFTMB',
+        name: 'Cranes, Rubber-Tired Loaders, Firetrucks - Mobile',
+        category: 'powerunit',
+      },
+      {
+        id: 'DDCKBUS',
+        name: 'Double Decker Buses',
+        category: 'powerunit',
+      },
+      {
+        id: 'FARMVEH',
+        name: 'Farm Vehicles',
+        category: 'powerunit',
+      },
+      {
+        id: 'GRADERS',
+        name: 'Fixed Equipment - Trucks/Graders etc.',
+        category: 'powerunit',
+      },
+      {
+        id: 'LCVRMDB',
+        name: 'Long Combination Vehicles (LCV) - Rocky Mountain Doubles',
+        category: 'powerunit',
+      },
+      {
+        id: 'LCVTPDB',
+        name: 'Long Combination Vehicles (LCV) - Turnpike Doubles',
+        category: 'powerunit',
+      },
+      {
+        id: 'LOGGING',
+        name: 'Logging Trucks',
+        category: 'powerunit',
+      },
+      {
+        id: 'LOGOFFH',
+        name: 'Logging Trucks - Off-Highway',
+        category: 'powerunit',
+      },
+      {
+        id: 'LWBTRCT',
+        name: 'Long Wheelbase Truck Tractors Exceeding 6.2 m up to 7.25 m',
+        category: 'powerunit',
+      },
+      {
+        id: 'MUNFITR',
+        name: 'Municipal Fire Trucks',
+        category: 'powerunit',
+      },
+      {
+        id: 'OGBEDTK',
+        name: 'Oil and Gas - Bed Trucks',
+        category: 'powerunit',
+      },
+      {
+        id: 'OGOILSW',
+        name: 'Oil and Gas - Oilfield Sows',
+        category: 'powerunit',
+      },
+      {
+        id: 'OGSERVC',
+        name: 'Oil and Gas - Service Rigs',
+        category: 'powerunit',
+      },
+      {
+        id: 'OGSRRAH',
+        name: 'Oil and Gas - Service Rigs and Rathole Augers Only Equipped with Heavy Front Projected Crane (must exceed 14,000 kg tare weight)',
+        category: 'powerunit',
+      },
+      {
+        id: 'PICKRTT',
+        name: 'Picker Truck Tractors',
+        category: 'powerunit',
+      },
+      {
+        id: 'PLOWBLD',
+        name: 'Trucks Equipped with Front or Underbody Plow Blades',
+        category: 'powerunit',
+      },
+      {
+        id: 'PUTAXIS',
+        name: 'Taxis',
+        category: 'powerunit',
+      },
+      {
+        id: 'REGTRCK',
+        name: 'Trucks',
+        category: 'powerunit',
+      },
+      {
+        id: 'SCRAPER',
+        name: 'Scrapers',
+        category: 'powerunit',
+      },
+      {
+        id: 'SPAUTHV',
+        name: 'Specially Authorized Vehicles',
+        category: 'powerunit',
+      },
+      {
+        id: 'STINGER',
+        name: 'Truck Tractors - Stinger Steered',
+        category: 'powerunit',
+      },
+      {
+        id: 'TOWVEHC',
+        name: 'Tow Vehicles',
+        category: 'powerunit',
+      },
+      {
+        id: 'TRKTRAC',
+        name: 'Truck Tractors',
+        category: 'powerunit',
       },
     ],
     trailerTypes: [
       {
-        id: 'poletrailer',
-        name: 'Pole Trailer',
-        category: 'semitrailer',
+        id: 'BOOSTER',
+        name: 'Boosters',
+        category: 'accessory',
       },
       {
-        id: 'expando',
-        name: 'Expando Semi-Trailer',
-        category: 'semitrailer',
+        id: 'DBTRBTR',
+        name: 'Tandem/Tridem Drive B-Train (Super B-Train)',
+        category: 'trailer',
       },
       {
-        id: 'ogoilfieldsemi',
-        name: 'Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailer',
-        category: 'semitrailer',
+        id: 'DOLLIES',
+        name: 'Dollies',
+        category: 'trailer',
       },
       {
-        id: 'platform',
-        name: 'Platform Trailer',
-        category: 'semitrailer',
+        id: 'EXPANDO',
+        name: 'Expando Semi-Trailers',
+        category: 'trailer',
       },
       {
-        id: 'semi',
-        name: 'Semi-Trailer',
-        category: 'semitrailer',
+        id: 'FEBGHSE',
+        name: 'Fixed Equipment - Portable Asphalt Baghouses',
+        category: 'trailer',
       },
       {
-        id: 'hiboyexpando',
-        name: 'Semi-Trailer - Hiboy/Expando',
-        category: 'semitrailer',
+        id: 'FECVYER',
+        name: 'Fixed Equipment - Conveyors (Semi-Trailers)',
+        category: 'trailer',
       },
       {
-        id: 'hiboyflatdeck',
-        name: 'Semi-Trailer - Hiboy/Flat Deck',
-        category: 'semitrailer',
+        id: 'FECVYPT',
+        name: 'Fixed Equipment - Conveyors (Pony Trailers)',
+        category: 'trailer',
       },
       {
-        id: 'drop',
-        name: 'Semi-Trailer - Single Drop, Double Drop, Step Deck, Lowbed, Expando, etc.',
-        category: 'semitrailer',
+        id: 'FEDRMMX',
+        name: 'Fixed Equipment - Counter Flow Asphalt Drum Mixers',
+        category: 'trailer',
       },
       {
-        id: 'steering',
-        name: 'Semi-Trailer - Steering Trailer',
-        category: 'semitrailer',
+        id: 'FEPNYTR',
+        name: 'Fixed Equipment - Pony Trailers',
+        category: 'trailer',
       },
       {
-        id: 'wheeler',
-        name: 'Semi-Trailer - Wheeler',
+        id: 'FESEMTR',
+        name: 'Fixed Equipment - Semi-Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'FEWHELR',
+        name: 'Fixed Equipment - Wheeler Semi-Trailers',
         category: 'wheeler',
       },
       {
-        id: 'widewheeler',
-        name: 'Semi-Trailer - Wide Wheeler',
+        id: 'FLOATTR',
+        name: 'Float Trailers',
         category: 'wheeler',
       },
       {
-        id: 'semicrane',
-        name: 'Semi-Trailer with Crane',
-        category: 'semitrailer',
+        id: 'FULLLTL',
+        name: 'Full Trailers',
+        category: 'trailer',
       },
       {
-        id: 'widetandem',
-        name: 'Semi-Trailer - Widespread Tandem',
-        category: 'semitrailer',
-        defaultWeightDimensions: [
-          {
-            axles: 2,
-            legal: 9100,
-            permittable: 18200,
-          },
-        ],
+        id: 'HIBOEXP',
+        name: 'Semi-Trailers - Hiboys/Expandos',
+        category: 'trailer',
       },
       {
-        id: 'pony',
-        name: 'Pony Trailer',
-        category: 'semitrailer',
-        defaultWeightDimensions: [
-          {
-            axles: 1,
-          },
-          {
-            axles: 2,
-            legal: 17000,
-            permittable: 21000,
-          },
-          {
-            axles: 3,
-            legal: 21000,
-            permittable: 21000,
-          },
-        ],
+        id: 'HIBOFLT',
+        name: 'Semi-Trailers - Hiboys/Flat Decks',
+        category: 'trailer',
       },
       {
-        id: 'fixedwheeler',
-        name: 'Fixed Equipment - Wheeler Semi-Trailer',
-        category: 'semitrailer',
-        defaultWeightDimensions: [
-          {
-            axles: 2,
-            legal: 17000,
-            permittable: 31000,
-            canSelfIssue: false,
-          },
-          {
-            axles: 3,
-            legal: 24000,
-            permittable: 40000,
-            canSelfIssue: false,
-          },
-        ],
+        id: 'JEEPSRG',
+        name: 'Jeeps',
+        category: 'accessory',
       },
       {
-        id: 'booster',
-        name: 'Booster',
-        category: 'Booster',
-        defaultWeightDimensions: [
-          {
-            axles: 1,
-          },
-          {
-            axles: 2,
-          },
-          {
-            axles: 3,
-          },
-          {
-            axles: 1,
-            modifiers: [
-              {
-                position: 'before',
-                category: 'semitrailer',
-                axles: 3,
-                minInterAxleSpacing: 0,
-                maxInterAxleSpacing: 419,
-              },
-            ],
-            legal: 9100,
-            permittable: 9100,
-          },
-        ],
+        id: 'LOGDGLG',
+        name: 'Legacy Logging Trailer Combinations - Tandem Pole Trailers, Dogloggers',
+        category: 'trailer',
       },
       {
-        id: 'jeep',
-        name: 'Jeep',
-        category: 'Jeep',
-        defaultWeightDimensions: [
-          {
-            axles: 1,
-          },
-          {
-            axles: 2,
-          },
-          {
-            axles: 3,
-          },
-        ],
+        id: 'LOGLGCY',
+        name: 'Legacy Logging Trailer Combinations',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGFULL',
+        name: 'Logging Trailer - Full Trailers, Tri Axle, Quad Axle',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGNTAC',
+        name: 'Legacy Logging Trailer Combinations - Non-TAC B-Trains',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGOWBK',
+        name: 'Logging Trailer - Overwidth Bunks',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGSMEM',
+        name: 'Logging Semi-Trailer - Empty, 3.2 m Bunks',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGTNDM',
+        name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tandem Axle Pole Trailers, Dogloggers',
+        category: 'trailer',
+      },
+      {
+        id: 'LOGTRIX',
+        name: 'Legacy Logging Trailer Combinations - Single Axle Jeeps, Tri Axle Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'MHMBSHG',
+        name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW) with Attached Axles',
+        category: 'trailer',
+      },
+      {
+        id: 'MHMBSHL',
+        name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW) with Attached Axles',
+        category: 'trailer',
+      },
+      {
+        id: 'ODTRLEX',
+        name: 'Overdimensional Trailers and Semi-Trailers (For Export)',
+        category: 'trailer',
+      },
+      {
+        id: 'OGOSFDT',
+        name: 'Oil and Gas - Oversize Oilfield Flat Deck Semi-Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'PLATFRM',
+        name: 'Platform Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'PMHWAAX',
+        name: 'Park Model Homes with Attached Axles',
+        category: 'trailer',
+      },
+      {
+        id: 'POLETRL',
+        name: 'Pole Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'PONYTRL',
+        name: 'Pony Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'REDIMIX',
+        name: 'Ready Mix Concrete Pump Semi-Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'SEMITRL',
+        name: 'Semi-Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'STACTRN',
+        name: 'Semi-Trailers - A-Trains and C-Trains',
+        category: 'trailer',
+      },
+      {
+        id: 'STBTRAN',
+        name: 'Semi-Trailers - B-Trains',
+        category: 'trailer',
+      },
+      {
+        id: 'STCHIPS',
+        name: 'Semi-Trailers - Walled B-Trains (Chip Trucks)',
+        category: 'trailer',
+      },
+      {
+        id: 'STCRANE',
+        name: 'Semi-Trailers with Crane',
+        category: 'trailer',
+      },
+      {
+        id: 'STINGAT',
+        name: 'Stinger Steered Automobile Transporters',
+        category: 'trailer',
+      },
+      {
+        id: 'STLOGNG',
+        name: 'Semi-Trailers - Logging',
+        category: 'trailer',
+      },
+      {
+        id: 'STNTSHC',
+        name: 'Semi-Trailers - Non-Tac Short Chassis',
+        category: 'trailer',
+      },
+      {
+        id: 'STREEFR',
+        name: 'Semi-Trailers - Insulated Vans with Reefer/Refrigeration Units',
+        category: 'trailer',
+      },
+      {
+        id: 'STROPRT',
+        name: 'Steering Trailers - Manned',
+        category: 'trailer',
+      },
+      {
+        id: 'STRSELF',
+        name: 'Steering Trailers - Self/Remote',
+        category: 'trailer',
+      },
+      {
+        id: 'STSDBDK',
+        name: 'Semi-Trailers - Single Drop, Double Drop, Step Decks, Lowbed, Expandos, etc.',
+        category: 'trailer',
+      },
+      {
+        id: 'STSTEER',
+        name: 'Semi-Trailers - Steering Trailers',
+        category: 'trailer',
+      },
+      {
+        id: 'STSTNGR',
+        name: 'Semi-Trailers - Stinger Steered Automobile Transporters',
+        category: 'trailer',
+      },
+      {
+        id: 'STWDTAN',
+        name: 'Semi-Trailers - Spread Tandems',
+        category: 'trailer',
+      },
+      {
+        id: 'STWHELR',
+        name: 'Semi-Trailers - Wheelers',
+        category: 'trailer',
+      },
+      {
+        id: 'STWIDWH',
+        name: 'Semi-Trailers - Wide Wheelers',
+        category: 'trailer',
+      },
+      {
+        id: 'NONEXXX',
+        name: 'None',
+        category: 'pseudo',
       },
     ],
   },
   commodities: [
     {
-      id: 'bridgebeams',
-      name: 'Bridge Beams',
-      powerUnits: [
-        {
-          type: 'trucktractor',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'jeep',
-          canFollow: ['trucktractor'],
-        },
-        {
-          type: 'booster',
-          canFollow: ['poletrailer'],
-        },
-        {
-          type: 'poletrailer',
-          canFollow: ['jeep', 'trucktractor'],
-          sizeDimensions: [
-            {
-              frontProjection: 3,
-              rearProjection: 6.5,
-              width: 2.6,
-              height: 4.15,
-              length: 31,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'empty',
-      name: 'Empty',
-      powerUnits: [
-        {
-          type: 'trucktractor',
-          canFollow: [],
-        },
-        {
-          type: 'pickertrucktractor',
-          canFollow: [],
-        },
-        {
-          type: 'truck',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'jeep',
-          canFollow: ['trucktractor', 'pickertrucktractor'],
-        },
-        {
-          type: 'booster',
-          canFollow: [
-            'poletrailer',
-            'expando',
-            'ogoilfieldsemi',
-            'semi',
-            'hiboyexpando',
-            'hiboyflatdeck',
-            'drop',
-            'steering',
-            'wheeler',
-            'widewheeler',
-            'semicrane',
-          ],
-        },
-        {
-          type: 'poletrailer',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'expando',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-          sizeDimensions: [
-            {
-              frontProjection: 3,
-              rearProjection: 6.5,
-              width: 2.6,
-              height: 4.4,
-              length: 31,
-              regions: [
-                {
-                  region: 'peace',
-                  height: 5.33,
-                },
-              ],
-              modifiers: [
-                {
-                  position: 'first',
-                  type: 'trucktractor',
-                },
-              ],
-            },
-            {
-              frontProjection: 3,
-              rearProjection: 6.5,
-              width: 2.6,
-              height: 4.4,
-              length: 25,
-              regions: [
-                {
-                  region: 'peace',
-                  height: 5.33,
-                  length: 27.5,
-                },
-              ],
-              modifiers: [
-                {
-                  position: 'first',
-                  type: 'pickertrucktractor',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'ogoilfieldsemi',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'platform',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'semi',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'hiboyexpando',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'hiboyflatdeck',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'drop',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'steering',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'wheeler',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'widewheeler',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-        {
-          type: 'semicrane',
-          canFollow: ['trucktractor', 'pickertrucktractor', 'jeep'],
-        },
-      ],
-    },
-    {
-      id: 'fixed',
-      name: 'Fixed Equipment',
-      powerUnits: [
-        {
-          type: 'trucktractor',
-          canFollow: [],
-        },
-        {
-          type: 'truck',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'jeep',
-          canFollow: ['trucktractor'],
-        },
-        {
-          type: 'booster',
-          canFollow: [
-            'fixedcounterasphalt',
-            'fixedportableasphalt',
-            'fixedsemi',
-            'fixedwheeler',
-          ],
-        },
-        {
-          type: 'fixedconveyor',
-          canFollow: ['trucktractor', 'truck', 'jeep'],
-        },
-        {
-          type: 'fixedcounterasphalt',
-          canFollow: ['trucktractor', 'jeep'],
-        },
-        {
-          type: 'fixedportableasphalt',
-          canFollow: ['trucktractor', 'jeep'],
-        },
-        {
-          type: 'fixedsemi',
-          canFollow: ['trucktractor', 'jeep'],
-        },
-        {
-          type: 'fixedwheeler',
-          canFollow: ['trucktractor', 'jeep'],
-        },
-        {
-          type: 'widetandem',
-          canFollow: ['trucktractor', 'jeep'],
-        },
-        {
-          type: 'fixedpony',
-          canFollow: ['truck'],
-        },
-        {
-          type: 'pony',
-          canFollow: ['truck'],
-        },
-      ],
-    },
-    {
-      id: 'intermodalcontainers',
-      name: 'Intermodal Containers without Sides',
-      powerUnits: [
-        {
-          type: 'trucktractor',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'jeep',
-          canFollow: ['trucktractor'],
-        },
-        {
-          type: 'booster',
-          canFollow: ['drop'],
-        },
-        {
-          type: 'drop',
-          canFollow: ['jeep', 'trucktractor'],
-        },
-      ],
-    },
-    {
-      id: 'laminatedbeams',
-      name: 'Laminated Beams',
-      powerUnits: [
-        {
-          type: 'trucktractor',
-          canFollow: [],
-        },
-      ],
-      trailers: [],
-    },
-    {
-      id: 'manufacturedhomes',
-      name: 'Manufactured Homes, Modular Buildings, Structures and Houseboats (>5.0m OAW)',
-    },
-    {
-      id: 'nonreducible',
-      name: 'Non-Reducible Loads',
-    },
-    {
-      id: 'none',
+      id: 'NONEXXX',
       name: 'None',
+      size: {
+        powerUnits: [
+          {
+            type: 'CONCRET',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    l: 15.5,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'CRAFTAT',
+            trailers: [
+              {
+                type: 'DOLLIES',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 10,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.3,
+                    l: 25,
+                  },
+                ],
+              },
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 10,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.3,
+                    l: 14,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        l: 15,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'CRAFTMB',
+            trailers: [
+              {
+                type: 'DOLLIES',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 10,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.3,
+                    l: 25,
+                  },
+                ],
+              },
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 10,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.3,
+                    l: 14,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        l: 15,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'DDCKBUS',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.42,
+                    regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.3,
+                      },
+                      {
+                        region: 'KTN',
+                        h: 4.3,
+                      },
+                      {
+                        region: 'PCE',
+                        h: 4.3,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'GRADERS',
+            trailers: [
+              {
+                type: 'FEPNYTR',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 4,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 31,
+                  },
+                ],
+              },
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    w: 3.5,
+                    h: 4.4,
+                    l: 12.5,
+                    regions: [
+                      {
+                        region: 'LMN',
+                        h: 4.3,
+                      },
+                      {
+                        region: 'KTN',
+                        h: 4.3,
+                      },
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'BUSTRLR',
+            trailers: [
+              {
+                type: 'PONYTRL',
+                jeep: false,
+                booster: false,
+                selfIssue: false,
+                sizeDimensions: [{}],
+              },
+            ],
+          },
+          {
+            type: 'LOGOFFH',
+            trailers: [
+              {
+                type: 'STLOGNG',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 4.4,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'LCVRMDB',
+            trailers: [
+              {
+                type: 'SEMITRL',
+                jeep: false,
+                booster: false,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    l: 32,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        l: 31,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'LCVTPDB',
+            trailers: [
+              {
+                type: 'SEMITRL',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    l: 41,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'LWBTRCT',
+            trailers: [
+              {
+                type: 'SEMITRL',
+                jeep: true,
+                booster: true,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    w: 2.6,
+                    h: 4.15,
+                    l: 23,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'PICKRTT',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 16,
+                  },
+                ],
+              },
+              {
+                type: 'STCRANE',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 2.6,
+                    h: 4.15,
+                    l: 25,
+                  },
+                ],
+              },
+              {
+                type: 'STROPRT',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 5,
+                    h: 4.88,
+                    l: 40,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'STRSELF',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 5,
+                    h: 4.88,
+                    l: 36,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'SCRAPER',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    l: 12.5,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'TRKTRAC',
+            trailers: [
+              {
+                type: 'FECVYER',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 4,
+                    rp: 9.5,
+                    w: 3.8,
+                    h: 4.72,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'FEDRMMX',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.72,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'FEBGHSE',
+                jeep: true,
+                booster: true,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 4.26,
+                    h: 4.72,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'FESEMTR',
+                jeep: true,
+                booster: true,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.72,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'FEWHELR',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 5,
+                    h: 4.88,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'ODTRLEX',
+                jeep: false,
+                booster: false,
+                selfIssue: false,
+                sizeDimensions: [
+                  {
+                    w: 3.65,
+                  },
+                ],
+              },
+              {
+                type: 'REDIMIX',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                  },
+                ],
+              },
+              {
+                type: 'HIBOFLT',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    h: 4.3,
+                    l: 31,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'STREEFR',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.3,
+                  },
+                ],
+              },
+              {
+                type: 'STNTSHC',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [{}],
+              },
+              {
+                type: 'STSDBDK',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.5,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 27.5,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        l: 32,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'STROPRT',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.15,
+                    l: 40,
+                  },
+                ],
+              },
+              {
+                type: 'STRSELF',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    l: 36,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'REGTRCK',
+            trailers: [
+              {
+                type: 'FECVYPT',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 4,
+                    rp: 9.5,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 31,
+                  },
+                ],
+              },
+              {
+                type: 'FEPNYTR',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 4,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 31,
+                  },
+                ],
+              },
+              {
+                type: 'FULLLTL',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 6.5,
+                    w: 3.8,
+                    h: 4.3,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'MHMBSHL',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 1,
+                    rp: 6.9,
+                    h: 4.88,
+                    l: 31.5,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                        l: 36,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'MHMBSHG',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 1,
+                    rp: 6.9,
+                    h: 4.88,
+                    l: 31.5,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                        l: 36,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 1,
+                    rp: 6.5,
+                    w: 3.2,
+                    h: 4.3,
+                    l: 16,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 4.4,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'ODTRLEX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 3.65,
+                  },
+                ],
+              },
+              {
+                type: 'PMHWAAX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    fp: 3,
+                    rp: 6.9,
+                    w: 4.4,
+                    h: 4.88,
+                    l: 31.5,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'PONYTRL',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 6.5,
+                    w: 3.2,
+                    h: 4.3,
+                    regions: [
+                      {
+                        region: 'PCE',
+                        h: 5.33,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'PLOWBLD',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 3.2,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
     {
-      id: 'oilfieldequipment',
-      name: 'Oil Field Equipment',
+      id: 'DOGLOGG',
+      name: 'Doglogger/Sjostrum Trailers (decked)',
+      size: {
+        powerUnits: [
+          {
+            type: 'TRKTRAC',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 5,
+                    l: 13.5,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
     {
-      id: 'reducibleloads',
-      name: 'Reducible Loads',
+      id: 'GRTBBUK',
+      name: 'Grader, Tractor Blades, Buckets',
+      size: {
+        powerUnits: [
+          {
+            type: 'GRADERS',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    w: 4.4,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
     {
-      id: 'scrapers',
-      name: 'Scrapers on Dollies',
+      id: 'HAYRACK',
+      name: 'Hayrack Semi-Trailer with a Folded Chassis/Empty Piggyback',
+      size: {
+        powerUnits: [
+          {
+            type: 'TRKTRAC',
+            trailers: [
+              {
+                type: 'STLOGNG',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    rp: 5,
+                    h: 4.15,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
     {
-      id: 'tow',
-      name: 'Tow Trucks and Disabled Vehicles',
+      id: 'IMCONTN',
+      name: 'Intermodal Containers',
+      size: {
+        powerUnits: [
+          {
+            type: 'TRKTRAC',
+            trailers: [
+              {
+                type: 'STACTRN',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.4,
+                    l: 26,
+                  },
+                ],
+              },
+              {
+                type: 'STBTRAN',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.4,
+                    l: 27.5,
+                  },
+                ],
+              },
+              {
+                type: 'HIBOFLT',
+                jeep: true,
+                booster: true,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.4,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'REGTRCK',
+            trailers: [
+              {
+                type: 'NONEXXX',
+                jeep: false,
+                booster: false,
+                selfIssue: true,
+                sizeDimensions: [
+                  {
+                    h: 4.4,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     },
   ],
 };

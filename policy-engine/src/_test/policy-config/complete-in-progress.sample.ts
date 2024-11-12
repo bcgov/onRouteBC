@@ -15,10 +15,6 @@ export const completePolicyConfig: PolicyDefinition = {
       id: 'PCE',
       name: 'Peace',
     },
-    {
-      id: 'BCD',
-      name: 'BC Default',
-    },
   ],
   rangeMatrices: [
     {
@@ -293,9 +289,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.companyName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.companyName',
         },
       },
       event: {
@@ -310,9 +307,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.firstName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.firstName',
         },
       },
       event: {
@@ -327,9 +325,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.lastName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.lastName',
         },
       },
       event: {
@@ -344,9 +343,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.phone1',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.phone1',
         },
       },
       event: {
@@ -361,9 +361,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.email',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.email',
         },
       },
       event: {
@@ -379,11 +380,12 @@ export const completePolicyConfig: PolicyDefinition = {
       conditions: {
         any: [
           {
-            fact: 'permitData.startDate',
+            fact: 'permitData',
             operator: 'dateLessThan',
             value: {
               fact: 'validationDate',
             },
+            path: '$.startDate',
           },
         ],
       },
@@ -399,9 +401,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.vin',
+          fact: 'permitData',
           operator: 'regex',
           value: '^[a-zA-Z0-9]{6}$',
+          path: '$.vehicleDetails.vin',
         },
       },
       event: {
@@ -417,9 +420,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.plate',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.plate',
         },
       },
       event: {
@@ -434,9 +438,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.make',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.make',
         },
       },
       event: {
@@ -451,9 +456,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.year',
+          fact: 'permitData',
           operator: 'greaterThan',
           value: 1900,
+          path: '$.vehicleDetails.year',
         },
       },
       event: {
@@ -468,9 +474,10 @@ export const completePolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.countryCode',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.countryCode',
         },
       },
       event: {
@@ -553,18 +560,20 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
                   },
+                  path: '$.permitDuration',
                 },
               },
             ],
@@ -581,7 +590,8 @@ export const completePolicyConfig: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -640,14 +650,16 @@ export const completePolicyConfig: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
+                  path: '$.permitDuration',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
@@ -668,7 +680,8 @@ export const completePolicyConfig: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
+              path: '$.vehicleDetails.vehicleSubType',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
@@ -728,16 +741,18 @@ export const completePolicyConfig: PolicyDefinition = {
             any: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'lessThanInclusive',
                   value: 7,
+                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'greaterThan',
                   value: 0,
+                  path: '$.permitDuration',
                 },
               },
             ],
@@ -754,19 +769,36 @@ export const completePolicyConfig: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
-              operator: 'in',
-              value: {
-                fact: 'allowedVehicles',
-              },
+              fact: 'configurationIsValid',
+              operator: 'equal',
+              value: true,
             },
           },
           event: {
             type: 'violation',
             params: {
-              message: 'Vehicle type not permittable for this permit type',
+              message:
+                'Vehicle configuration is not permittable for this commodity',
               code: 'field-validation-error',
-              fieldReference: 'permitData.vehicleDetails.vehicleSubType',
+              fieldReference: 'permitData.vehicleConfiguration.trailers',
+            },
+          },
+        },
+        {
+          conditions: {
+            not: {
+              fact: 'permitData',
+              operator: 'stringMinimumLength',
+              value: 1,
+              path: '$.permittedCommodity.loadDescription',
+            },
+          },
+          event: {
+            type: 'violation',
+            params: {
+              message: 'Commodity load description is required',
+              code: 'field-validation-error',
+              fieldReference: 'permitData.permittedCommodity.loadDescription',
             },
           },
         },
@@ -816,7 +848,7 @@ export const completePolicyConfig: PolicyDefinition = {
       },
       {
         id: 'BUSTRLR',
-        name: 'Intercity Buses (Pulling Pony Trailers)',
+        name: 'Inter-City Bus (Pulling Pony Trailer)',
         category: 'powerunit',
       },
       {
@@ -973,7 +1005,12 @@ export const completePolicyConfig: PolicyDefinition = {
       },
       {
         id: 'FECVYER',
-        name: 'Fixed Equipment - Conveyors',
+        name: 'Fixed Equipment - Conveyors (Semi-Trailers)',
+        category: 'trailer',
+      },
+      {
+        id: 'FECVYPT',
+        name: 'Fixed Equipment - Conveyors (Pony Trailers)',
         category: 'trailer',
       },
       {
@@ -1027,8 +1064,13 @@ export const completePolicyConfig: PolicyDefinition = {
         category: 'trailer',
       },
       {
+        id: 'LOGLGCY',
+        name: 'Legacy Logging Trailer Combinations',
+        category: 'trailer',
+      },
+      {
         id: 'LOGFULL',
-        name: 'Logging Trailers - Full Trailers, Tri Axle, Quad Axle',
+        name: 'Logging Trailer - Full Trailers, Tri Axle, Quad Axle',
         category: 'trailer',
       },
       {
@@ -1038,7 +1080,7 @@ export const completePolicyConfig: PolicyDefinition = {
       },
       {
         id: 'LOGOWBK',
-        name: 'Logging Trailers - Overwidth Bunks',
+        name: 'Logging Trailer - Overwidth Bunks',
         category: 'trailer',
       },
       {
@@ -1188,709 +1230,4630 @@ export const completePolicyConfig: PolicyDefinition = {
       },
       {
         id: 'NONEXXX',
-        name: 'No trailer',
+        name: 'None',
         category: 'pseudo',
       },
     ],
   },
   commodities: [
     {
-      id: 'WODWIDB',
-      name: 'Wood on wide bunks',
-    },
-    {
-      id: 'LEGALLO',
-      name: 'Legal loads',
-    },
-    {
-      id: 'GRADERS',
-      name: 'Grader',
-    },
-    {
-      id: 'HUSBAND',
-      name: 'Implements of husbandry',
-    },
-    {
-      id: 'OILFILD',
-      name: 'Oil field equipment',
-    },
-    {
-      id: 'ROKTRUK',
-      name: 'Rock truck',
-    },
-    {
-      id: 'TIRESXX',
-      name: 'Tires',
-    },
-    {
-      id: 'SRVCRIG',
-      name: 'Service rig',
-    },
-    {
-      id: 'BUNCHER',
-      name: 'Buncher',
-    },
-    {
-      id: 'CONVEYR',
-      name: 'Conveyor',
-    },
-    {
-      id: 'SKIDUNT',
-      name: 'Oil field skid unit',
-    },
-    {
-      id: 'EMPTYXX',
-      name: 'Empty',
-      powerUnits: [
-        {
-          type: 'TRKTRAC',
-          canFollow: [],
-        },
-        {
-          type: 'PICKRTT',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'JEEPSRG',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-        },
-        {
-          type: 'BOOSTER',
-          canFollow: [
-            'OGOSFDT',
-            'PLATFRM',
-            'HIBOEXP',
-            'STWHELR',
-            'STWIDWH',
-            'STCRANE',
-            'HIBOFLT',
-            'STSDBDK',
-            'BOOSTER',
-          ],
-        },
-        {
-          type: 'LOGOWBK',
-          canFollow: ['TRKTRAC'],
-          sizeDimensions: [
-            {
-              width: 3.2,
-              length: 23,
-            },
-          ],
-        },
-        {
-          type: 'OGOSFDT',
-          canFollow: ['PICKRTT', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.3,
-              length: 23,
-            },
-          ],
-        },
-        {
-          type: 'PLATFRM',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-          canSelfIssue: false,
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.88,
-              length: 27.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'HIBOEXP',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              height: 4.4,
-              length: 25,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                  length: 27.5,
-                },
-              ],
-              modifiers: [
-                {
-                  position: 'first',
-                  type: 'PICKRTT',
-                },
-              ],
-            },
-            {
-              height: 4.4,
-              length: 31,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-              modifiers: [
-                {
-                  position: 'first',
-                  type: 'TRKTRAC',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'STWHELR',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-          canSelfIssue: false,
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.88,
-              length: 27.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'STWIDWH',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-          canSelfIssue: false,
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.88,
-              length: 27.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'STCRANE',
-          canFollow: ['TRKTRAC', 'PICKRTT', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.88,
-              length: 27.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'HIBOFLT',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              height: 4.4,
-              length: 27.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'STSDBDK',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              width: 3.2,
-              height: 4.4,
-              length: 31,
-              regions: [
-                {
-                  region: 'PCE',
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'GENERAL',
-      name: 'General commodities',
-    },
-    {
-      id: 'CULVERT',
-      name: 'Culverts',
-    },
-    {
-      id: 'RAMPSXX',
-      name: 'Ramps',
-    },
-    {
-      id: 'REBARXX',
-      name: 'Rebar',
-    },
-    {
-      id: 'RESTEEL',
-      name: 'Reinforcing steel',
-    },
-    {
-      id: 'STSTEEL',
-      name: 'Structural steel',
-    },
-    {
-      id: 'PIPEXXX',
-      name: 'Pipe',
-    },
-    {
-      id: 'GRBBINS',
-      name: 'Garbage bins',
-    },
-    {
-      id: 'BOATSXX',
-      name: 'Boats',
-    },
-    {
-      id: 'BOOMSTK',
-      name: 'Boomsticks',
-    },
-    {
-      id: 'CONTANR',
-      name: 'Containers',
-    },
-    {
-      id: 'HAYROND',
-      name: 'Hay bales round',
-    },
-    {
-      id: 'HAYLREC',
-      name: 'Hay bales large rectangular',
-    },
-    {
-      id: 'HAYBALE',
-      name: 'Hay bales',
-    },
-    {
-      id: 'HAYSREC',
-      name: 'Hay bales small rectangular',
-    },
-    {
-      id: 'BUILDNG',
-      name: 'House or building',
-    },
-    {
-      id: 'LONGLOG',
-      name: 'Long logs',
-    },
-    {
-      id: 'PILINGS',
-      name: 'Piling',
-    },
-    {
-      id: 'POLESXX',
-      name: 'Poles',
-    },
-    {
-      id: 'RUGHLUM',
-      name: 'Rough cut lumber',
-    },
-    {
-      id: 'VENEERX',
-      name: 'Veneer',
-    },
-    {
-      id: 'MODULAR',
-      name: 'Modular building',
-    },
-    {
-      id: 'MOBHOME',
-      name: 'Mobile home manufactured',
-    },
-    {
-      id: 'PARKTRL',
-      name: 'Park model trailers',
-    },
-    {
-      id: 'AIRCRFT',
-      name: 'Aircraft',
-    },
-    {
-      id: 'BACKHOE',
-      name: 'Backhoes',
-    },
-    {
-      id: 'BRIDGES',
-      name: 'Bridges',
-    },
-    {
-      id: 'BRGBEAM',
-      name: 'Bridge beams',
-      powerUnits: [
-        {
-          type: 'TRKTRAC',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'JEEPSRG',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-        },
-        {
-          type: 'BOOSTER',
-          canFollow: ['POLETRL', 'BOOSTER'],
-        },
-        {
-          type: 'POLETRL',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-        },
-      ],
-    },
-    {
-      id: 'BARGESX',
-      name: 'Barges',
-    },
-    {
-      id: 'BLADESX',
-      name: 'Blades',
-    },
-    {
-      id: 'BUCKETS',
-      name: 'Buckets',
-    },
-    {
-      id: 'CATCRLR',
-      name: 'Cat or crawler',
-    },
-    {
-      id: 'COALTRK',
-      name: 'Coal truck',
-    },
-    {
-      id: 'CMPRSOR',
-      name: 'Compressor',
-    },
-    {
-      id: 'CRANESX',
-      name: 'Cranes',
-    },
-    {
-      id: 'CRAWLER',
-      name: 'Crawler',
-    },
-    {
-      id: 'CRUSHER',
-      name: 'Crusher parts',
-    },
-    {
-      id: 'EXCVATR',
-      name: 'Excavator',
-    },
-    {
-      id: 'FORKLFT',
-      name: 'Fork lifts',
-    },
-    {
-      id: 'GENRTOR',
-      name: 'Generator',
-    },
-    {
-      id: 'LOADERX',
-      name: 'Loader',
-    },
-    {
-      id: 'LOGGING',
-      name: 'Logging machinery',
-    },
-    {
-      id: 'LOGLODR',
-      name: 'Log loader',
-    },
-    {
-      id: 'MINEMAC',
-      name: 'Mine machinery',
-    },
-    {
-      id: 'MILLMAC',
-      name: 'Mill machinery',
-    },
-    {
-      id: 'NONREDU',
-      name: 'Non reducible loads',
-    },
-    {
-      id: 'OILDRRG',
-      name: 'Oil drill rig',
-    },
-    {
-      id: 'OREBOXS',
-      name: 'Ore boxes',
-    },
-    {
-      id: 'PLSTEEL',
-      name: 'Plate steel',
-    },
-    {
-      id: 'STBEAMS',
-      name: 'Steel beams',
-    },
-    {
-      id: 'SHOVELS',
-      name: 'Shovels',
-    },
-    {
-      id: 'SKIDDER',
-      name: 'Skidder',
-    },
-    {
-      id: 'TRUSSES',
-      name: 'Trusses',
-    },
-    {
-      id: 'TANKSXX',
-      name: 'Tanks',
-    },
-    {
-      id: 'TRNSFRM',
-      name: 'Transformer',
-    },
-    {
-      id: 'TWRTUBE',
-      name: 'Tower tube',
-    },
-    {
-      id: 'VESSELS',
-      name: 'Vessels',
-    },
-    {
-      id: 'LMBEAMS',
-      name: 'Laminated beams',
-    },
-    {
-      id: 'YARDERX',
-      name: 'Yarder',
-    },
-    {
-      id: 'SKDSTAK',
-      name: 'Skid stack',
-    },
-    {
-      id: 'OTHERVE',
-      name: 'Other vehicle',
-    },
-    {
-      id: 'SCRAPER',
-      name: 'Scrapers',
-    },
-    {
-      id: 'BMCRANE',
-      name: 'Booms (cranes)',
-    },
-    {
-      id: 'GENVEHC',
-      name: 'General - vehicle and loads',
-    },
-    {
-      id: 'GENMOHO',
-      name: 'General - mobile homes',
-    },
-    {
-      id: 'AUTOCRR',
-      name: 'Auto carrier, campers and boats (stinger steered)',
-      powerUnits: [
-        {
-          type: 'STINGER',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'STSTNGR',
-          canFollow: ['STINGER'],
-          sizeDimensions: [
-            {
-              frontProjection: 1,
-              rearProjection: 1.2,
-              width: 2.6,
-              height: 4.4,
-              length: 25,
-              regions: [
-                {
-                  region: 'LMN',
-                  height: 4.3,
-                },
-                {
-                  region: 'KTN',
-                  height: 4.3,
-                },
-                {
-                  region: 'PCE',
-                  height: 4.88,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'BMPOLES',
-      name: 'Boomsticks and poles',
-    },
-    {
-      id: 'HAYRNPR',
-      name: 'Haybales (round) Peace River only',
-    },
-    {
-      id: 'BUSPONY',
-      name: 'Inter-city bus with pony trailer',
-    },
-    {
-      id: 'TOWTRCK',
-      name: 'Tow trucks and disabled vehicles',
-    },
-    {
-      id: 'BRSHCUT',
-      name: 'Brushcutters (Peace only)',
-      powerUnits: [
-        {
-          type: 'TRKTRAC',
-          canFollow: [],
-        },
-        {
-          type: 'REGTRCK',
-          canFollow: [],
-        },
-      ],
-      trailers: [
-        {
-          type: 'JEEPSRG',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-        },
-        {
-          type: 'BOOSTER',
-          canFollow: ['STSDBDK', 'BOOSTER'],
-        },
-        {
-          type: 'SEMITRL',
-          canFollow: ['TRKTRAC'],
-          sizeDimensions: [
-            {
-              length: 23,
-              regions: [
-                {
-                  region: 'PCE',
-                  width: 4.57,
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'STSDBDK',
-          canFollow: ['TRKTRAC', 'JEEPSRG'],
-          sizeDimensions: [
-            {
-              length: 23,
-              regions: [
-                {
-                  region: 'PCE',
-                  width: 4.57,
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'FULLLTL',
-          canFollow: ['REGTRCK'],
-          sizeDimensions: [
-            {
-              frontProjection: 1,
-              rearProjection: 1,
-              length: 23,
-              regions: [
-                {
-                  region: 'PCE',
-                  width: 4.57,
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'NONEXXX',
-          canFollow: ['REGTRCK'],
-          sizeDimensions: [
-            {
-              frontProjection: 1,
-              rearProjection: 1,
-              length: 12.5,
-              regions: [
-                {
-                  region: 'PCE',
-                  width: 4.57,
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'PONYTRL',
-          canFollow: ['REGTRCK'],
-          sizeDimensions: [
-            {
-              frontProjection: 1,
-              rearProjection: 1,
-              length: 23,
-              regions: [
-                {
-                  region: 'PCE',
-                  width: 4.57,
-                  height: 5.33,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'FIXEDEQ',
-      name: 'Fixed equipment',
-    },
+      "id": "NONEXXX",
+      "name": "None",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "CONCRET",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 15.5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "CRAFTAT",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 25
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 14,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "l": 15
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "CRAFTMB",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 25
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 14,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "l": 15
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "DDCKBUS",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.42,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "KTN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 4.3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "GRADERS",
+            "trailers": [
+              {
+                "type": "FEPNYTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 31
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.4,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "KTN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "BUSTRLR",
+            "trailers": [
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 20
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "LOGOFFH",
+            "trailers": [
+              {
+                "type": "STLOGNG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 4.4,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "LCVRMDB",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 32,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "l": 31
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "LCVTPDB",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 41
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "LWBTRCT",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "PICKRTT",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 16
+                  }
+                ]
+              },
+              {
+                "type": "STCRANE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 25
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 40,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 36,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "SCRAPER",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "FECVYER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 4,
+                    "rp": 9.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEDRMMX",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEBGHSE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 4.26,
+                    "h": 4.72,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FESEMTR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "ODTRLEX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.65,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "REDIMIX",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "l": 23
+                      },
+                      {
+                        "region": "KTN",
+                        "l": 23
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STREEFR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "STNTSHC",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 5,
+                    "rp": 2.25,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 20
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "l": 32
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 40
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 36
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FECVYPT",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 4,
+                    "rp": 9.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 31
+                  }
+                ]
+              },
+              {
+                "type": "FEPNYTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 31
+                  }
+                ]
+              },
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "MHMBSHL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "MHMBSHG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 6,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 16,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "ODTRLEX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.65,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "PMHWAAX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.9,
+                    "w": 4.4,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "PLOWBLD",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DOGLOGG",
+      "name": "Doglogger/Sjostrum Trailers (decked)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 13.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "GRTBBUK",
+      "name": "Grader, Tractor Blades, Buckets",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "GRADERS",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 0,
+                    "rp": 0,
+                    "w": 4.4,
+                    "h": 4.15,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HAYRACK",
+      "name": "Hayrack Semi-Trailer with a Folded Chassis/Empty Piggyback",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STLOGNG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "IMCONTN",
+      "name": "Intermodal Containers",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 26
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "IMCONWS",
+      "name": "Intermodal Containers without Sides",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 4.4,
+                    "h": 4.72,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "LPBOOMS",
+      "name": "Logs, Poles And Boomsticks (Up To 20.1)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "LOGLGCY",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 25
+                  }
+                ]
+              },
+              {
+                "type": "POLETRL",
+                "jeep": true,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 26
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 25
+                  }
+                ]
+              },
+              {
+                "type": "STLOGNG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 25
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "LPBOOML",
+      "name": "Logs, Poles And Boomsticks (Over 20.1)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "LOGFULL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 10,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 40
+                  }
+                ]
+              },
+              {
+                "type": "POLETRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 8,
+                    "rp": 9,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 40
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 10,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 40
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 10,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 36
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MFHOMES",
+      "name": "Manufactured Homes, Modular Buildings, Structures and Houseboats (<= 5.0 m OAW)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 7.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 7.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FLOATTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 5,
+                    "h": 4.57,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "MFHOMEL",
+      "name": "Manufactured Homes, Modular Buildings, Structures and Houseboats (> 5.0 m OAW)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 7.5,
+                    "w": 6,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 7.5,
+                    "w": 6,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 6,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FLOATTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 6,
+                    "h": 4.57,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.9,
+                    "w": 6,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 6.1,
+                        "h": 5.33,
+                        "l": 36
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PARKMHS",
+      "name": "Park Model Homes",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.9,
+                    "w": 4.4,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FLOATTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.9,
+                    "w": 4.4,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.9,
+                    "w": 4.4,
+                    "h": 4.88,
+                    "l": 31.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PIPESTL",
+      "name": "Pipe And Steel Products (Rebar, Pilings, Reinforcing Steel, Etc.)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 31
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "STSTEER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 36
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 40
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REDUCBL",
+      "name": "Reducible Loads",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STLOGNG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "PLATFRM",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSTEER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWIDWH",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STCRANE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 40,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 36,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "PICKRTT",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "STINGER",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1.2,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSTNGR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1.2,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 16,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCRAPER",
+      "name": "Scraper on Dollies",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": true,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "OILFILD",
+      "name": "Oil Field Equipment",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "OGBEDTK",
+            "trailers": [
+              {
+                "type": "EXPANDO",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 3.3,
+                    "h": 4.3,
+                    "l": 14
+                  }
+                ]
+              },
+              {
+                "type": "OGOSFDT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.3,
+                    "h": 4.3,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "OGOILSW",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 15
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 25
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "OGSERVC",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 15
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.3,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "OGSRRAH",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 15.5
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 10,
+                    "rp": 6.5,
+                    "w": 2.9,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "OGOSFDT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.3,
+                    "h": 4.3,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "JPTRLOG",
+      "name": "Tandem Jeep/Pole Trailer Loaded on Logging Truck",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.9,
+                    "h": 4.3,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.9,
+                    "h": 4.3,
+                    "l": 12.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "TOWDISB",
+      "name": "Tow Trucks And Disabled Vehicles",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TOWVEHC",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 27.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "TRQDLOG",
+      "name": "Tri-Axle or Quad Axle Full Trailer Loaded on Logging Truck",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 13.5
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 5,
+                    "w": 2.6,
+                    "h": 4.3,
+                    "l": 13.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "WOODCHP",
+      "name": "Wood Chips, Residuals",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.45,
+                    "l": 27.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "EMPTYXX",
+      "name": "Empty",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "LOGOWBK",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 0,
+                    "rp": 0,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "PLATFRM",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.15
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.15
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.4,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.15
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.15
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWIDWH",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.15
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "PICKRTT",
+            "trailers": [
+              {
+                "type": "OGOSFDT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "PLATFRM",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "l": 27.5
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "STWIDWH",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "GRBBINS",
+      "name": "Garbage Bins",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 12.5
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "LAMBEAM",
+      "name": "Laminated Beams",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "POLETRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 40
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 31
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HAYLREC",
+      "name": "Hay Bales Large Rectangular",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.05,
+                    "h": 4.4,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "KTN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HAYROND",
+      "name": "Hay Bales Round",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HAYSREC",
+      "name": "Hay Bales Small Rectangular",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.05,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "BRGBEAM",
+      "name": "Bridge Beams",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "POLETRL",
+                "jeep": true,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 31
+                  }
+                ]
+              },
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.2,
+                    "h": 4.3,
+                    "l": 31,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "NONREDU",
+      "name": "Non-Reducible Loads",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STLOGNG",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.15,
+                    "l": 27.5
+                  }
+                ]
+              },
+              {
+                "type": "PLATFRM",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSTEER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWIDWH",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STCRANE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 40,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 36,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "PICKRTT",
+            "trailers": [
+              {
+                "type": "OGOSFDT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.3,
+                    "h": 4.3,
+                    "l": 23
+                  }
+                ]
+              },
+              {
+                "type": "SEMITRL",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOEXP",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.4,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSTEER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STWIDWH",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STCRANE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STROPRT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 40,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STRSELF",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 36,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "STINGER",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1.2,
+                    "w": 2.6,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSTNGR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1.2,
+                    "w": 2.6,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "DOLLIES",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 16,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 6.5,
+                    "w": 5,
+                    "h": 4.88,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "AUTOCRR",
+      "name": "Auto Carrier, Campers And Boats (Stinger Steered Transporters Only)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "STINGER",
+            "trailers": [
+              {
+                "type": "STSTNGR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1.2,
+                    "w": 2.6,
+                    "h": 4.4,
+                    "l": 25,
+                    "regions": [
+                      {
+                        "region": "LMN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "KTN",
+                        "h": 4.3
+                      },
+                      {
+                        "region": "PCE",
+                        "h": 4.88
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HAYRNPR",
+      "name": "Hay Bales (Round) Peace River Only",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "STACTRN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 26,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STBTRAN",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 27.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "HIBOFLT",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FULLLTL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.5,
+                    "h": 4.3,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.84,
+                        "h": 4.8
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "BRSHCUT",
+      "name": "Brushcutters (Peace Only)",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "SEMITRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 4.57,
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "STSDBDK",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 4.57,
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "NONEXXX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 12.5,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 4.57,
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "PONYTRL",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 1,
+                    "w": 2.6,
+                    "h": 4.15,
+                    "l": 23,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "w": 3.8,
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "FIXEDEQ",
+      "name": "Fixed Equipment",
+      "size": {
+        "powerUnits": [
+          {
+            "type": "TRKTRAC",
+            "trailers": [
+              {
+                "type": "FECVYER",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 4,
+                    "rp": 9.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEDRMMX",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEBGHSE",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 4.26,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FESEMTR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEWHELR",
+                "jeep": true,
+                "booster": true,
+                "selfIssue": false,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "REGTRCK",
+            "trailers": [
+              {
+                "type": "FECVYPT",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 4,
+                    "rp": 9.5,
+                    "w": 3.2,
+                    "h": 4.3
+                  }
+                ]
+              },
+              {
+                "type": "FEDRMMX",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 3.8,
+                    "h": 4.72,
+                    "regions": [
+                      {
+                        "region": "PCE",
+                        "h": 5.33
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "FEPNYTR",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 1,
+                    "rp": 4,
+                    "w": 3.2,
+                    "h": 4.3
+                  }
+                ]
+              },
+              {
+                "type": "FEBGHSE",
+                "jeep": false,
+                "booster": false,
+                "selfIssue": true,
+                "sizeDimensions": [
+                  {
+                    "fp": 3,
+                    "rp": 6.5,
+                    "w": 4.26,
+                    "h": 4.72
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
   ],
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
 };

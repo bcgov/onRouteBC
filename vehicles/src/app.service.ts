@@ -91,6 +91,12 @@ export class AppService {
       createCacheMap(paymentMethods, 'paymentMethodTypeCode', 'name'),
     );
 
+    await addToCache(
+      this.cacheManager,
+      CacheKey.PAYMENT_METHOD_TYPE_GL_PROJ_CODE,
+      createCacheMap(paymentMethods, 'paymentMethodTypeCode', 'glProjCode'),
+    );
+
     const paymentTypes =
       await this.paymentService.findAllPaymentCardTypeEntities();
     await addToCache(

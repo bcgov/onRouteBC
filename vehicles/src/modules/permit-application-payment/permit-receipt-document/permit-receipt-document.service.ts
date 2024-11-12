@@ -39,6 +39,7 @@ import {
   generateFaxEmail,
   validateEmailandFaxList,
 } from '../../../common/helper/notification.helper';
+import { getPermitTemplateName } from '../../../common/helper/template.helper';
 
 @Injectable()
 export class PermitReceiptDocumentService {
@@ -275,21 +276,10 @@ export class PermitReceiptDocumentService {
           );
 
           const dopsRequestData = {
-            templateName: (() => {
-              switch (fetchedPermit.permitStatus) {
-                case ApplicationStatus.ISSUED:
-                  return TemplateName.PERMIT;
-                case ApplicationStatus.VOIDED:
-                  return TemplateName.PERMIT_VOID;
-                case ApplicationStatus.REVOKED:
-                  return TemplateName.PERMIT_REVOKED;
-                default:
-                  // Handle the default case here, for example:
-                  throw new InternalServerErrorException(
-                    'Invalid status for document generation',
-                  );
-              }
-            })(),
+            templateName: getPermitTemplateName(
+              fetchedPermit?.permitStatus,
+              fetchedPermit?.permitType,
+            ),
             generatedDocumentFileName: permitDataForTemplate.permitNumber,
             templateData: permitDataForTemplate,
             documentsToMerge: permitDataForTemplate.permitData.commodities.map(

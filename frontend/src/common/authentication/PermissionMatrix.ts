@@ -312,7 +312,7 @@ const MANAGE_SETTINGS = {
   /**
    * View Credit Account tab - Non-Holder/user
    * Comment: Info box
-   * 
+   *
    * Todo: ORV2-2771 Implement info box.
    */
   VIEW_CREDIT_ACCOUNT_TAB_NON_HOLDER_OR_USER: {
@@ -410,8 +410,8 @@ const GLOBAL_SEARCH = {
  * Application review queue on staff home screen
  */
 const STAFF_HOME_SCREEN = {
-  VIEW_QUEUE: { allowedIDIRRoles: [PC, SA] },
-  MANAGE_QUEUE: { allowedIDIRRoles: [PC, SA] },
+  VIEW_QUEUE: { allowedIDIRRoles: [PC, SA, CTPO] },
+  MANAGE_QUEUE: { allowedIDIRRoles: [PC, SA, CTPO] },
 } as const;
 
 const MISCELLANEOUS = {

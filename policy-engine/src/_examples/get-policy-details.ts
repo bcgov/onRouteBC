@@ -4,6 +4,12 @@ import { completePolicyConfig } from '../_test/policy-config/complete-in-progres
 function start() {
   const policy: Policy = new Policy(completePolicyConfig);
 
+  console.log('***ALL PERMIT TYPES***');
+  const allPermitTypes = policy.getPermitTypes();
+  console.log(
+    JSON.stringify(Array.from(allPermitTypes.entries()), null, '   '),
+  );
+
   console.log('***ALL COMMODITIES***');
   const allCommodities = policy.getCommodities();
   console.log(
@@ -53,20 +59,56 @@ function start() {
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX***',
   );
-  const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP']);
+  const sizeDimension = policy.getSizeDimension('STOS', 'EMPTYXX', [
+    'TRKTRAC',
+    'JEEPSRG',
+    'HIBOEXP',
+  ]);
   console.log(JSON.stringify(sizeDimension, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE***',
   );
-  const sizeDimensionPeace = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE']);
+  const sizeDimensionPeace = policy.getSizeDimension(
+    'STOS',
+    'EMPTYXX',
+    ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'],
+    ['PCE'],
+  );
   console.log(JSON.stringify(sizeDimensionPeace, null, '   '));
 
   console.log(
     '***MAX SIZE FOR TRUCK TRACTOR, JEEP, HIBOEXP, STOS AND EMPTYXX IN PEACE,BC DEFAULT***',
   );
-  const sizeDimensionPeaceBC = policy.getSizeDimension('STOS', 'EMPTYXX', ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'], ['PCE','BCD']);
+  const sizeDimensionPeaceBC = policy.getSizeDimension(
+    'STOS',
+    'EMPTYXX',
+    ['TRKTRAC', 'JEEPSRG', 'HIBOEXP'],
+    ['PCE', 'BCD'],
+  );
   console.log(JSON.stringify(sizeDimensionPeaceBC, null, '   '));
+
+  console.log(
+    '***MAX SIZE FOR TRUCK TRACTOR, JEEP, STWHELR, STOS AND EMPTYXX IN BC DEFAULT***',
+  );
+  const sizeDimensionBC = policy.getSizeDimension(
+    'STOS',
+    'EMPTYXX',
+    ['TRKTRAC', 'JEEPSRG', 'STWHELR'],
+    ['BCD'],
+  );
+  console.log(JSON.stringify(sizeDimensionBC, null, '   '));
+
+  console.log(
+    '***MAX SIZE FOR TRUCK TRACTOR, JEEP, STWHELR, STOS AND EMPTYXX IN PEACE***',
+  );
+  const sizeDimensionStwhelrPce = policy.getSizeDimension(
+    'STOS',
+    'EMPTYXX',
+    ['TRKTRAC', 'JEEPSRG', 'STWHELR'],
+    ['PCE'],
+  );
+  console.log(JSON.stringify(sizeDimensionStwhelrPce, null, '   '));
 }
 
 start();

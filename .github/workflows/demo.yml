@@ -3,42 +3,32 @@ name: Deploy Demo
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: "Deployment environment - test --> vault secrets"
-        required: true
-        type: choice
-        options: ["test","tools"]
-        default: "test"
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
+        default: "uat"
+  workflow_call:
+    inputs:
+      tag:
+        description: "Image tag to deploy"
+        required: false
+        type: string
+        default: "uat"
   
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
-
 jobs:
-  uninstall-demo:
-    name: Uninstall (demo)
-    environment: ${{inputs.environment}}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: uninstall
-        run: |
-          oc login --token=${{ secrets.oc_token }} --server=${{ secrets.oc_server }}
-          oc project ${{ secrets.OC_NAMESPACE }} # Safeguard!
-          helm uninstall onroutebc-demo || true
   deploy-demo:
-    name: Deploys (demo)
+    name: Deploys (DEMO)
     uses: ./.github/workflows/deploy.yml
-    needs: uninstall-demo
     secrets: inherit
     with:
       autoscaling: false
-      environment: ${{inputs.environment}}
-      tag: "test"
+      environment: demo
+      tag: ${{inputs.tag}}
       release: "demo"
       params: |
         --set-string global.license='c28f0c' \
         --set-string global.zone='test' \
         --set-string global.vault.role='nonprod' \
-        --set-string global.vault.zone='staging' \
-        --set-string global.pr_num='${{ needs.vars.outputs.pr }}' \
+        --set-string global.vault.zone='demo' \
+        --set-string global.pr_num='${{ inputs.tag }}' \

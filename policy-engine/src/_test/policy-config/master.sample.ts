@@ -7,9 +7,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.companyName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.companyName',
         },
       },
       event: {
@@ -24,9 +25,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.firstName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.firstName',
         },
       },
       event: {
@@ -41,9 +43,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.lastName',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.lastName',
         },
       },
       event: {
@@ -58,9 +61,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.phone1',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.phone1',
         },
       },
       event: {
@@ -75,9 +79,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.contactDetails.email',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.contactDetails.email',
         },
       },
       event: {
@@ -93,11 +98,12 @@ export const masterPolicyConfig: PolicyDefinition = {
       conditions: {
         any: [
           {
-            fact: 'permitData.startDate',
+            fact: 'permitData',
             operator: 'dateLessThan',
             value: {
               fact: 'validationDate',
             },
+            path: '$.startDate',
           },
         ],
       },
@@ -113,9 +119,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.vin',
+          fact: 'permitData',
           operator: 'regex',
           value: '^[a-zA-Z0-9]{6}$',
+          path: '$.vehicleDetails.vin',
         },
       },
       event: {
@@ -131,9 +138,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.plate',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.plate',
         },
       },
       event: {
@@ -148,9 +156,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.make',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.make',
         },
       },
       event: {
@@ -165,9 +174,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.year',
+          fact: 'permitData',
           operator: 'greaterThan',
           value: 1900,
+          path: '$.vehicleDetails.year',
         },
       },
       event: {
@@ -182,9 +192,10 @@ export const masterPolicyConfig: PolicyDefinition = {
     {
       conditions: {
         not: {
-          fact: 'permitData.vehicleDetails.countryCode',
+          fact: 'permitData',
           operator: 'stringMinimumLength',
           value: 1,
+          path: '$.vehicleDetails.countryCode',
         },
       },
       event: {
@@ -267,18 +278,20 @@ export const masterPolicyConfig: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
                   },
+                  path: '$.permitDuration',
                 },
               },
             ],
@@ -295,11 +308,12 @@ export const masterPolicyConfig: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
               },
+              path: '$.vehicleDetails.vehicleSubType',
             },
           },
           event: {
@@ -354,18 +368,20 @@ export const masterPolicyConfig: PolicyDefinition = {
             all: [
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'in',
                   value: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+                  path: '$.permitDuration',
                 },
               },
               {
                 not: {
-                  fact: 'permitData.permitDuration',
+                  fact: 'permitData',
                   operator: 'equal',
                   value: {
                     fact: 'daysInPermitYear',
                   },
+                  path: '$.permitDuration',
                 },
               },
             ],
@@ -382,11 +398,12 @@ export const masterPolicyConfig: PolicyDefinition = {
         {
           conditions: {
             not: {
-              fact: 'permitData.vehicleDetails.vehicleSubType',
+              fact: 'permitData',
               operator: 'in',
               value: {
                 fact: 'allowedVehicles',
               },
+              path: '$.vehicleDetails.vehicleSubType',
             },
           },
           event: {
@@ -414,11 +431,11 @@ export const masterPolicyConfig: PolicyDefinition = {
     trailers: [],
   },
   globalSizeDefaults: {
-    frontProjection: 3,
-    rearProjection: 6.5,
-    width: 2.6,
-    height: 4.15,
-    length: 31,
+    fp: 3,
+    rp: 6.5,
+    w: 2.6,
+    h: 4.15,
+    l: 31,
   },
   vehicleCategories: {
     trailerCategories: [],

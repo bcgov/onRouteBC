@@ -49,6 +49,7 @@ export const defaultApplicationData = {
     startDate: getStartOfDate(toLocalDayjs(permitData.startDate)),
     expiryDate: getEndOfDate(toLocalDayjs(permitData.expiryDate)),
   },
+  permitStatus: PERMIT_STATUSES.IN_PROGRESS,
 } as Application;
 
 export const companyInfo = getDefaultCompanyInfo();
@@ -98,7 +99,7 @@ const server = setupServer(
   ),
 
   http.put(
-    `${APPLICATIONS_API_ROUTES.UPDATE(companyInfo.companyId.toString())}/:id`,
+    APPLICATIONS_API_ROUTES.UPDATE(companyInfo.companyId.toString(), ":id"),
     async ({ request, params }) => {
       const { id } = params;
       const reqBody = await request.json();

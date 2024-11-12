@@ -31,17 +31,14 @@ export const LeaveApplicationDialog = ({
         <strong>Are you sure you want to leave?</strong>
       </div>
       <div className="leave-application-dialog__content">
-        <p>
-          You have unsaved changes. If you leave, all your changes will be lost.
-        </p>
-        <p>This action cannot be undone.</p>
+        <p>Your application progress will be lost if you haven&apos;t saved.</p>
       </div>
       <div className="leave-application-dialog__actions">
         <Button
           className="leave-action leave-action--discard"
           onClick={onLeaveUnsaved}
         >
-          Discard Changes
+          Leave Application
         </Button>
         <Button
           className="leave-action leave-action--back"

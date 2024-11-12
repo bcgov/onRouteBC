@@ -30,6 +30,7 @@ import { isPermitInactive } from "../../types/PermitStatus";
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { DoesUserHaveRole } from "../../../../common/authentication/util";
 import { IDIR_USER_ROLE } from "../../../../common/authentication/types";
+import { applyWhenNotNullable } from "../../../../common/helpers/util";
 
 /**
  * A permit list component with common functionalities that can be shared by
@@ -40,7 +41,17 @@ export const BasePermitList = ({
 }: {
   isExpired?: boolean;
 }) => {
-  const { idirUserDetails } = useContext(OnRouteBCContext);
+  const {
+    idirUserDetails,
+    companyId: companyIdFromContext,
+  } = useContext(OnRouteBCContext);
+
+  const companyId: number = applyWhenNotNullable(
+    id => Number(id),
+    companyIdFromContext,
+    0,
+  );
+
   const navigate = useNavigate();
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -65,6 +76,7 @@ export const BasePermitList = ({
     ],
     queryFn: () =>
       getPermits(
+        companyId,
         { expired: isExpired },
         {
           page: pagination.pageIndex,
@@ -84,13 +96,14 @@ export const BasePermitList = ({
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
     retry: 1,
+    enabled: Boolean(companyId),
   });
 
   const { data, isError, isPending, isRefetching } = permitsQuery;
 
   const table = useMaterialReactTable({
     ...defaultTableOptions,
-    columns: PermitsColumnDefinition,
+    columns: PermitsColumnDefinition(() => navigate(ERROR_ROUTES.DOCUMENT_UNAVAILABLE)),
     data: data?.items ?? [],
     enableRowSelection: false,
     initialState: {
@@ -152,12 +165,14 @@ export const BasePermitList = ({
                 permitNumber={row.original.permitNumber}
                 permitId={row.original.permitId}
                 userRole={idirUserDetails?.userRole}
-                companyId={row.original.companyId?.toString()}
+                companyId={row.original.companyId}
               />
             ) : (
               <PermitRowOptions
                 isExpired={isExpired}
+                companyId={row.original.companyId}
                 permitId={row.original.permitId}
+                onDocumentUnavailable={() => {navigate(ERROR_ROUTES.DOCUMENT_UNAVAILABLE)}}
               />
             )}
           </Box>

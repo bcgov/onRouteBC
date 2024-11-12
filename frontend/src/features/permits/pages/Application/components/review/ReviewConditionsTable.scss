@@ -1,18 +1,18 @@
 @import "../../../../../../themes/orbcStyles";
 
 .review-conditions-table {
-  min-width: 650px;
+  table-layout: fixed;
 
   & &__header {
-    font-weight: 600;
-    padding: 1em 0;
+    font-weight: bold;
+    padding: 1rem;
+
+    &--description {
+      padding-left: 0;
+    }
   }
 
   &__row {
-    td {
-      padding: 1em 0;
-    }
-
     &:last-child th, &:last-child td {
       border: 0;
     }
@@ -21,6 +21,14 @@
       padding: 0;
       margin-right: 0.5em;
       color: $disabled-colour;
+    }
+  }
+
+  & &__cell {
+    padding: 1rem;
+
+    &--description {
+      padding-left: 0;
     }
   }
 }

@@ -5,4 +5,5 @@ export enum PolicyFacts {
   FixedCost = 'fixedCost',
   CostPerMonth = 'costPerMonth',
   RangeMatrixCostLookup = 'rangeMatrixCostLookup',
+  ConfigurationIsValid = 'configurationIsValid',
 }

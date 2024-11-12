@@ -1,0 +1,45 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET NOCOUNT ON
+GO
+
+SET XACT_ABORT ON
+GO
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+GO
+BEGIN TRANSACTION
+GO
+
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+ALTER TABLE [permit].[ORBC_PAYMENT_METHOD_TYPE] ADD [GL_PROJ_CODE] [char] (7) NULL
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'GL Project Code' , @level0type=N'SCHEMA',@level0name=N'permit', @level1type=N'TABLE',@level1name=N'ORBC_PAYMENT_METHOD_TYPE', @level2type=N'COLUMN',@level2name=N'GL_PROJ_CODE'
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+
+DECLARE @VersionDescription VARCHAR(255)
+SET @VersionDescription = 'Add GL_PROJ_CODE col to ORBC_PAYMENT_METHOD_TYPE'
+
+INSERT [dbo].[ORBC_SYS_VERSION] ([VERSION_ID], [DESCRIPTION], [UPDATE_SCRIPT], [REVERT_SCRIPT], [RELEASE_DATE]) VALUES (45, @VersionDescription, '$(UPDATE_SCRIPT)', '$(REVERT_SCRIPT)', getutcdate())
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+
+COMMIT TRANSACTION
+GO
+IF @@ERROR <> 0 SET NOEXEC ON
+GO
+DECLARE @Success AS BIT
+SET @Success = 1
+SET NOEXEC OFF
+IF (@Success = 1) PRINT 'The database update succeeded'
+ELSE BEGIN
+   IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+   PRINT 'The database update failed'
+END
+GO
+

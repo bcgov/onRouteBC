@@ -26,14 +26,20 @@ export const ReviewConditionsTable = ({
       <Table className="review-conditions-table" aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell className="review-conditions-table__header">
+            <TableCell
+              className="review-conditions-table__header review-conditions-table__header--description"
+            >
               Description
             </TableCell>
-            <TableCell className="review-conditions-table__header">
+
+            <TableCell
+              className="review-conditions-table__header review-conditions-table__header--link"
+            >
               Conditions
             </TableCell>
           </TableRow>
         </TableHead>
+        
         <TableBody>
           {reviewConditions.map((row: PermitCondition) => {
             return (
@@ -42,7 +48,11 @@ export const ReviewConditionsTable = ({
                 key={row.condition}
                 data-testid="review-permit-condition"
               >
-                <TableCell component="td" scope="row">
+                <TableCell
+                  component="td"
+                  scope="row"
+                  className="review-conditions-table__cell review-conditions-table__cell--description"
+                >
                   <Checkbox
                     className="checkbox checkbox--readonly"
                     key={row.condition}
@@ -54,7 +64,11 @@ export const ReviewConditionsTable = ({
                   </span>
                 </TableCell>
 
-                <TableCell component="td" scope="row">
+                <TableCell
+                  component="td"
+                  scope="row"
+                  className="review-conditions-table__cell review-conditions-table__cell--link"
+                >
                   <CustomExternalLink
                     href={row.conditionLink}
                     className="condition-link"

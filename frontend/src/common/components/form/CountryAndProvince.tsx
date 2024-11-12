@@ -44,6 +44,8 @@ interface CountryAndProvinceProps {
   isProvinceRequired?: boolean;
   countryClassName?: string;
   provinceClassName?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -62,6 +64,8 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
   isProvinceRequired = true,
   countryClassName,
   provinceClassName,
+  disabled,
+  readOnly,
 }: CountryAndProvinceProps): JSX.Element => {
   const { resetField, watch, setValue } = useFormContext();
 
@@ -175,7 +179,10 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
           </MenuItem>
         ))}
         className={countryClassName}
+        disabled={disabled}
+        readOnly={readOnly}
       />
+
       {shouldDisplayProvince && (
         <CustomFormComponent
           type="select"
@@ -192,6 +199,8 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
             </MenuItem>
           ))}
           className={provinceClassName}
+          disabled={disabled}
+          readOnly={readOnly}
         />
       )}
     </>

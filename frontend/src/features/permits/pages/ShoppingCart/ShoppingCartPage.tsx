@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
+
 import "./ShoppingCartPage.scss";
 import { ApplicationContext } from "../../context/ApplicationContext";
 import { isZeroAmount } from "../../helpers/feeSummary";
@@ -9,12 +10,22 @@ import { PermitPayFeeSummary } from "../Application/components/pay/PermitPayFeeS
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { useIssuePermits, useStartTransaction } from "../../hooks/hooks";
 import { TRANSACTION_TYPES } from "../../types/payment";
+import { PaymentFailedBanner } from "../Application/components/pay/PaymentFailedBanner";
+import { ChoosePaymentMethod } from "../Application/components/pay/ChoosePaymentMethod";
+import { hasPermitsActionFailed } from "../../helpers/permitState";
+import { ShoppingCart } from "./components/ShoppingCart";
+import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
+import { useShoppingCart } from "./hooks/useShoppingCart";
+import { useCheckOutdatedCart } from "./hooks/useCheckOutdatedCart";
+import { EditCartItemDialog } from "../../components/cart/EditCartItemDialog";
+import { UpdateCartDialog } from "../../components/cart/UpdateCartDialog";
+import { BCeID_USER_ROLE } from "../../../../common/authentication/types";
+import { Loading } from "../../../../common/pages/Loading";
 import {
   PAYMENT_METHOD_TYPE_CODE,
   PaymentCardTypeCode,
 } from "../../../../common/types/paymentMethods";
-import { PaymentFailedBanner } from "../Application/components/pay/PaymentFailedBanner";
-import { ChoosePaymentMethod } from "../Application/components/pay/ChoosePaymentMethod";
+
 import {
   DEFAULT_EMPTY_CARD_TYPE,
   DEFAULT_EMPTY_PAYMENT_TYPE,
@@ -26,14 +37,7 @@ import {
   isCashOrCheque,
   PaymentMethodData,
 } from "../Application/components/pay/types/PaymentMethodData";
-import { hasPermitsActionFailed } from "../../helpers/permitState";
-import { ShoppingCart } from "./components/ShoppingCart";
-import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
-import { useShoppingCart } from "./hooks/useShoppingCart";
-import { useCheckOutdatedCart } from "./hooks/useCheckOutdatedCart";
-import { EditCartItemDialog } from "../../components/cart/EditCartItemDialog";
-import { UpdateCartDialog } from "../../components/cart/UpdateCartDialog";
-import { BCeID_USER_ROLE } from "../../../../common/authentication/types";
+
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
@@ -45,7 +49,11 @@ import {
   PERMITS_ROUTES,
   SHOPPING_CART_ROUTES,
 } from "../../../../routes/constants";
-import { Loading } from "../../../../common/pages/Loading";
+
+import {
+  TOLL_FREE_NUMBER,
+  PPC_EMAIL,
+} from "../../../../common/constants/constants";
 
 const AVAILABLE_STAFF_PAYMENT_METHODS = [
   PAYMENT_METHOD_TYPE_CODE.ICEPAY,
@@ -60,7 +68,7 @@ export const ShoppingCartPage = () => {
   const navigate = useNavigate();
   const { applicationData } = useContext(ApplicationContext);
   const { idirUserDetails, userDetails } = useContext(OnRouteBCContext);
-  const companyId = getDefaultRequiredVal("", getCompanyIdFromSession());
+  const companyId: number = applyWhenNotNullable(id => Number(id), getCompanyIdFromSession(), 0);
   const isStaffActingAsCompany = Boolean(idirUserDetails?.userRole);
   const isCompanyAdmin = Boolean(
     userDetails?.userRole === BCeID_USER_ROLE.COMPANY_ADMINISTRATOR,
@@ -104,7 +112,7 @@ export const ShoppingCartPage = () => {
     fetchStatusFor,
     setShowEditCartItemDialog,
     setShowUpdateCartDialog,
-  } = useCheckOutdatedCart(showAllApplications, cartItems);
+  } = useCheckOutdatedCart(companyId, showAllApplications, cartItems);
 
   const { mutation: startTransactionMutation, transaction } =
     useStartTransaction();
@@ -136,28 +144,35 @@ export const ShoppingCartPage = () => {
   }, []);
 
   useEffect(() => {
+    // transaction is undefined when payment endpoint has not been requested
+    // ie. "Pay Now" button has not been pressed
     if (typeof transaction !== "undefined") {
-      if (!isStaffActingAsCompany) {
-        // CV Client
-        if (!transaction?.url) {
-          // Failed to generate transaction url
-          navigate(SHOPPING_CART_ROUTES.DETAILS(true));
-        } else {
-          window.open(transaction.url, "_self");
-        }
-      } else if (!transaction) {
-        // Staff payment failed
+      if (!transaction) {
+        // Payment failed - ie. transaction object is null
         navigate(SHOPPING_CART_ROUTES.DETAILS(true));
-      } else {
-        // Staff payment transaction created successfully, proceed to issue permit
-        issuePermitMutation.mutate([...selectedIds]);
+      } else if (isFeeZero || isStaffActingAsCompany) {
+        // If purchase was for no-fee permits, or if staff payment transaction was created successfully,
+        // simply proceed to issue permits
+        issuePermitMutation.mutate({
+          companyId,
+          applicationIds: [...selectedIds],
+        });
 
         // also update the cart and cart count
         cartQuery.refetch();
         refetchCartCount();
+      } else {
+        // CV Client payment, anticipate PayBC transaction url
+        if (!transaction?.url) {
+          // Failed to generate transaction url
+          navigate(SHOPPING_CART_ROUTES.DETAILS(true));
+        } else {
+          // Redirect to PayBC transaction url to continue payment
+          window.open(transaction.url, "_self");
+        }
       }
     }
-  }, [transaction, isStaffActingAsCompany]);
+  }, [transaction, isStaffActingAsCompany, isFeeZero, companyId]);
 
   useEffect(() => {
     const issueFailed = hasPermitsActionFailed(issueResults);
@@ -248,10 +263,29 @@ export const ShoppingCartPage = () => {
     });
   };
 
+  // Paying for no-fee permits
+  const handlePayForNoFee = () => {
+    startTransactionMutation.mutate({
+      transactionTypeId: TRANSACTION_TYPES.P,
+      paymentMethodTypeCode: PAYMENT_METHOD_TYPE_CODE.NP,
+      applicationDetails: [
+        ...selectedApplications.map((application) => ({
+          applicationId: application.applicationId,
+          transactionAmount: 0,
+        })),
+      ],
+    });
+  };
+
   const handlePay = (paymentMethodData: PaymentMethodData) => {
     if (startTransactionMutation.isPending) return;
 
     const { paymentMethod, additionalPaymentData } = paymentMethodData;
+
+    if (isFeeZero) {
+      handlePayForNoFee();
+      return;
+    }
 
     if (paymentMethod === PAYMENT_METHOD_TYPE_CODE.ICEPAY) {
       const { cardType, icepayTransactionId } =
@@ -349,6 +383,14 @@ export const ShoppingCartPage = () => {
   return (
     <div className="shopping-cart-page">
       <Box className="shopping-cart-page__left-container">
+        <div className="shopping-cart-page__info">
+          <p className="info__body">
+            Have questions? Please contact the Provincial Permit Centre.
+            Toll-free: <strong>{TOLL_FREE_NUMBER}</strong> or Email:{" "}
+            <strong>{PPC_EMAIL}</strong>
+          </p>
+        </div>
+
         <ShoppingCart
           outdatedApplicationNumbers={outdatedApplicationNumbers}
           showCartFilter={enableCartFilter}
@@ -365,9 +407,12 @@ export const ShoppingCartPage = () => {
 
       <Box className="shopping-cart-page__right-container">
         <FormProvider {...formMethods}>
-          <ChoosePaymentMethod
-            availablePaymentMethods={availablePaymentMethods}
-          />
+          {!isFeeZero ? (
+            <ChoosePaymentMethod
+              availablePaymentMethods={availablePaymentMethods}
+              showPayInPersonInfo={!isStaffActingAsCompany}
+            />
+          ) : null}
 
           {paymentFailed ? <PaymentFailedBanner /> : null}
 

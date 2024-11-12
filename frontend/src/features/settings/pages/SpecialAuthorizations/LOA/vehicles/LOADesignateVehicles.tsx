@@ -74,11 +74,8 @@ const getVehicleDetailsForSelected = (
 };
 
 export const LOADesignateVehicles = () => {
-  const { companyId } = useContext(OnRouteBCContext);
-  const companyIdStr = applyWhenNotNullable(
-    id => `${id}`,
-    companyId,
-  );
+  const { companyId: companyIdFromContext } = useContext(OnRouteBCContext);
+  const companyId = getDefaultRequiredVal(0, companyIdFromContext);
 
   const [vehicleTab, setVehicleTab] = useState<LOAVehicleTab>(LOA_VEHICLE_TABS.POWER_UNITS);
 
@@ -94,8 +91,8 @@ export const LOADesignateVehicles = () => {
   const selectedPowerUnits = watch("selectedVehicles.powerUnits");
   const selectedTrailers = watch("selectedVehicles.trailers");
 
-  const powerUnitsQuery = usePowerUnitsQuery(companyIdStr);
-  const trailersQuery = useTrailersQuery(companyIdStr);
+  const powerUnitsQuery = usePowerUnitsQuery(companyId);
+  const trailersQuery = useTrailersQuery(companyId);
   const powerUnitSubTypesQuery = usePowerUnitSubTypesQuery();
   const trailerSubTypesQuery = useTrailerSubTypesQuery();
   const powerUnitSubTypes = useMemo(() => getDefaultRequiredVal(

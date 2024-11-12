@@ -1,0 +1,40 @@
+@import "../../../../themes/orbcStyles";
+
+.application-in-review-modal {
+  & &__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: $bc-background-light-grey;
+    border-bottom: 1px solid $bc-border-grey;
+  }
+
+  &__title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 0 0 0 0.5em;
+  }
+
+  &__body {
+    padding: 1.5rem;
+  }
+
+  &__text {
+    font-size: 1rem;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    gap: 1.5rem;
+  }
+}

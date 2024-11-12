@@ -1,0 +1,21 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".review-permit-loas");
+@include orbcStyles.permit-left-box-style(".review-permit-loas__header");
+@include orbcStyles.permit-right-box-style(".review-permit-loas__body");
+
+.review-permit-loas {
+  &__body {
+    .permit-loas {
+      gap: 2.5rem;
+      padding-top: 1.5rem;
+    }
+  }
+
+  .permit-loas {
+    &__label {
+      padding: 0;
+      padding-bottom: 0.5rem;
+    }
+  }
+}

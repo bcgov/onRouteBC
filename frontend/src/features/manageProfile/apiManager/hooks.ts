@@ -8,8 +8,6 @@ import { IDPS } from "../../../common/types/idp";
 import { Nullable } from "../../../common/types/common";
 import { ERROR_ROUTES } from "../../../routes/constants";
 import { DeleteResponse } from "../types/manageProfile";
-import { getCompanyIdFromSession } from "../../../common/apiManager/httpRequestHandler";
-import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import {
   FIVE_MINUTES,
   FOUR_MINUTES,
@@ -39,7 +37,7 @@ import {
 
 /**
  * Fetches company info of current user.
- * @returns company info of current user, or error if failed
+ * @returns Query object containing company info of current user
  */
 export const useCompanyInfoQuery = () => {
   return useQuery({
@@ -53,19 +51,15 @@ export const useCompanyInfoQuery = () => {
 
 /**
  * Fetches company info of specific company.
- * @returns company info or error if failed
+ * @param companyId Id of the company to get the info for
+ * @returns Query object containing company info
  */
 export const useCompanyInfoDetailsQuery = (
-  companyIdParam?: Nullable<string>,
+  companyId: number,
 ) => {
-  const companyId = getDefaultRequiredVal(
-    "",
-    getCompanyIdFromSession(),
-    companyIdParam,
-  );
   return useQuery({
     queryKey: ["companyInfo"],
-    queryFn: () => getCompanyInfoById(Number(companyId)),
+    queryFn: () => getCompanyInfoById(companyId),
     enabled: Boolean(companyId),
     refetchInterval: FIVE_MINUTES,
     refetchOnWindowFocus: false, // fixes issue where a query is run everytime the screen is brought to foreground

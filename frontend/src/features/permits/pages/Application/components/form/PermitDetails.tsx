@@ -11,7 +11,6 @@ import { requiredMessage } from "../../../../../../common/helpers/validationMess
 import { ONROUTE_WEBPAGE_LINKS } from "../../../../../../routes/constants";
 import { CustomExternalLink } from "../../../../../../common/components/links/CustomExternalLink";
 import { BANNER_MESSAGES } from "../../../../../../common/constants/bannerMessages";
-import { PermitType } from "../../../../types/PermitType";
 import { PermitCondition } from "../../../../types/PermitCondition";
 import { DATE_FORMATS } from "../../../../../../common/helpers/formatDate";
 import {
@@ -27,25 +26,21 @@ import {
 export const PermitDetails = ({
   feature,
   expiryDate,
-  conditionsInPermit,
+  allConditions,
   durationOptions,
   disableStartDate,
-  permitType,
   pastStartDateStatus,
-  includeLcvCondition,
   onSetConditions,
 }: {
   feature: string;
   expiryDate: Dayjs;
-  conditionsInPermit: PermitCondition[];
+  allConditions: PermitCondition[];
   durationOptions: {
     value: number;
     label: string;
   }[];
   disableStartDate: boolean;
-  permitType: PermitType;
   pastStartDateStatus: PastStartDateStatus;
-  includeLcvCondition?: boolean;
   onSetConditions: (conditions: PermitCondition[]) => void;
 }) => {
   const formattedExpiryDate = dayjs(expiryDate).format(DATE_FORMATS.SHORT);
@@ -131,9 +126,7 @@ export const PermitDetails = ({
           />
 
           <ConditionsTable
-            conditionsInPermit={conditionsInPermit}
-            permitType={permitType}
-            includeLcvCondition={includeLcvCondition}
+            allConditions={allConditions}
             onSetConditions={onSetConditions}
           />
         </Box>

@@ -1,3 +1,4 @@
+import { isVehicleSubtypeLCV } from "../../manageVehicles/helpers/vehicleSubtypes";
 import { LCV_CONDITION } from "../constants/constants";
 import { MANDATORY_TROS_CONDITIONS, TROS_CONDITIONS } from "../constants/tros";
 import { MANDATORY_TROW_CONDITIONS, TROW_CONDITIONS } from "../constants/trow";
@@ -82,4 +83,87 @@ export const getDefaultConditions = (
       disabled: isConditionMandatory(condition, mandatoryConditions),
     })),
   );
+};
+
+/**
+ * Get updated permit conditions based on LCV designation and selected vehicle subtype.
+ * @param isLcvDesignated Whether or not the LCV designation is to be used
+ * @param prevSelectedConditions Previously selected permit conditions
+ * @param vehicleSubtype Selected vehicle subtype
+ * @returns Updated permit conditions
+ */
+export const getUpdatedConditionsForLCV = (
+  isLcvDesignated: boolean,
+  prevSelectedConditions: PermitCondition[],
+  vehicleSubtype: string,
+) => {
+  if (!isLcvDesignated) {
+    // If LCV not designated, remove LCV condition
+    return prevSelectedConditions.filter(
+      ({ condition }: PermitCondition) => condition !== LCV_CONDITION.condition,
+    );
+  }
+  
+  // If LCV is designated, and vehicle subtype isn't LCV but conditions have LCV,
+  // then remove that LCV condition
+  if (
+    !isVehicleSubtypeLCV(vehicleSubtype)
+    && prevSelectedConditions.some(({ condition }) => condition === LCV_CONDITION.condition)
+  ) {
+    return prevSelectedConditions.filter(
+      ({ condition }: PermitCondition) => condition !== LCV_CONDITION.condition,
+    );
+  }
+
+  // If LCV is designated, and vehicle subtype is LCV but conditions don't have LCV,
+  // then add that LCV condition
+  if (
+    isVehicleSubtypeLCV(vehicleSubtype)
+    && !prevSelectedConditions.some(({ condition }) => condition === LCV_CONDITION.condition)
+  ) {
+    return sortConditions([...prevSelectedConditions, LCV_CONDITION]);
+  }
+
+  // In other cases, the conditions are valid
+  return prevSelectedConditions;
+};
+
+/**
+ * Get permit condition selection state, including all selected, unselected, and disabled conditions.
+ * @param permitType Permit type
+ * @param isLcvDesignated Whether or not the LCV designation is to be used
+ * @param vehicleSubtype Selected vehicle subtype
+ * @param prevSelectedConditions Previously selected permit conditions
+ * @returns Permit condition selection state
+ */
+export const getPermitConditionSelectionState = (
+  permitType: PermitType,
+  isLcvDesignated: boolean,
+  vehicleSubtype: string,
+  prevSelectedConditions: PermitCondition[],
+): PermitCondition[] => {
+  const defaultConditionsForPermitType = getDefaultConditions(
+    permitType,
+    isLcvDesignated && isVehicleSubtypeLCV(vehicleSubtype),
+  );
+
+  const updatedConditionsInForm = getUpdatedConditionsForLCV(
+    isLcvDesignated,
+    prevSelectedConditions,
+    vehicleSubtype,
+  );
+
+  return defaultConditionsForPermitType.map((defaultCondition) => {
+    // Select all conditions that were previously selected
+    const existingCondition = updatedConditionsInForm.find(
+      (c) => c.condition === defaultCondition.condition,
+    );
+
+    return {
+      ...defaultCondition,
+      checked: existingCondition
+        ? existingCondition.checked
+        : defaultCondition.checked,
+    };
+  });
 };
