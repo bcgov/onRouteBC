@@ -8,7 +8,9 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
 import { Nullable } from "../../../common/types/common";
-import OnRouteBCContext, { BCeIDUserDetailContext } from "../../../common/authentication/OnRouteBCContext";
+import OnRouteBCContext, {
+  BCeIDUserDetailContext,
+} from "../../../common/authentication/OnRouteBCContext";
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import { ERROR_ROUTES } from "../../../routes/constants";
 import { BC_COLOURS } from "../../../themes/bcGovStyles";
@@ -19,6 +21,7 @@ import { UserInformationWizardForm } from "./UserInformationWizardForm";
 import { WizardCompanyBanner } from "./WizardCompanyBanner";
 import { InfoBcGovBanner } from "../../../common/components/banners/InfoBcGovBanner";
 import { BANNER_MESSAGES } from "../../../common/constants/bannerMessages";
+import { AxiosError } from "axios";
 
 /**
  * The company info and user info steps to be shared between
@@ -58,7 +61,7 @@ export const CompanyAndUserInfoSteps = ({
         const companyId = responseBody["companyId"];
         const companyName = responseBody["legalName"];
         const clientNumber = responseBody["clientNumber"];
-        const userDetails:BCeIDUserDetailContext = {
+        const userDetails: BCeIDUserDetailContext = {
           firstName: responseBody.adminUser?.firstName,
           lastName: responseBody.adminUser?.lastName,
           userName: responseBody.adminUser?.userName,
@@ -98,8 +101,10 @@ export const CompanyAndUserInfoSteps = ({
         });
       }
     },
-    onError: () => {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
     },
   });
 

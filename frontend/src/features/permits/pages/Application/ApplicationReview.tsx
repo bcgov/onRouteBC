@@ -27,10 +27,8 @@ import {
 } from "../../../../routes/constants";
 
 export const ApplicationReview = () => {
-  const {
-    applicationData,
-    setApplicationData: setApplicationContextData,
-  } = useContext(ApplicationContext);
+  const { applicationData, setApplicationData: setApplicationContextData } =
+    useContext(ApplicationContext);
 
   const companyId = getDefaultRequiredVal(0, applicationData?.companyId);
 
@@ -171,6 +169,7 @@ export const ApplicationReview = () => {
           doingBusinessAs={doingBusinessAs}
           calculatedFee={fee}
           loas={applicationData?.permitData?.loas}
+          applicationRejectionHistory={applicationData?.rejectionHistory}
         />
       </FormProvider>
     </div>

@@ -33,6 +33,7 @@ import { OnRouteBCProfileCreated } from "../../subcomponents/OnRouteBCProfileCre
 import { VerifyMigratedClientForm } from "../../subcomponents/VerifyMigratedClientForm";
 import { WizardCompanyBanner } from "../../subcomponents/WizardCompanyBanner";
 import "./CreateProfileSteps.scss";
+import { AxiosError } from "axios";
 
 /**
  * The stepper component containing the necessary forms for creating profile.
@@ -193,8 +194,10 @@ export const ChallengeProfileSteps = React.memo(() => {
         }
       }
     },
-    onError: () => {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
     },
   });
 

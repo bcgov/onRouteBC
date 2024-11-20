@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "react-oidc-context";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 import { IDPS } from "../../../common/types/idp";
 import { Nullable } from "../../../common/types/common";
@@ -54,9 +54,7 @@ export const useCompanyInfoQuery = () => {
  * @param companyId Id of the company to get the info for
  * @returns Query object containing company info
  */
-export const useCompanyInfoDetailsQuery = (
-  companyId: number,
-) => {
+export const useCompanyInfoDetailsQuery = (companyId: number) => {
   return useQuery({
     queryKey: ["companyInfo"],
     queryFn: () => getCompanyInfoById(companyId),
@@ -268,12 +266,19 @@ export const useDeleteCompanyActiveUsers = () => {
   const navigate = useNavigate();
   return useMutation({
     mutationFn: deleteCompanyActiveUsers,
-    onError: () => navigate(ERROR_ROUTES.UNEXPECTED),
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
+    },
     onSuccess: (response: AxiosResponse) => {
-      const { data: companyUserResponse } = response;
+      const { data: companyUserResponse, headers } = response;
+
       const { failure } = companyUserResponse as DeleteResponse;
       if (failure?.length > 0) {
-        navigate(ERROR_ROUTES.UNEXPECTED);
+        navigate(ERROR_ROUTES.UNEXPECTED, {
+          state: { correlationId: headers["x-correlation-id"] },
+        });
       }
     },
   });
@@ -287,12 +292,18 @@ export const useDeleteCompanyPendingUsers = () => {
   const navigate = useNavigate();
   return useMutation({
     mutationFn: deleteCompanyPendingUsers,
-    onError: () => navigate(ERROR_ROUTES.UNEXPECTED),
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
+    },
     onSuccess: (response: AxiosResponse) => {
-      const { data: companyUserResponse } = response;
+      const { data: companyUserResponse, headers } = response;
       const { failure } = companyUserResponse as DeleteResponse;
       if (failure?.length > 0) {
-        navigate(ERROR_ROUTES.UNEXPECTED);
+        navigate(ERROR_ROUTES.UNEXPECTED, {
+          state: { correlationId: headers["x-correlation-id"] },
+        });
       }
     },
   });

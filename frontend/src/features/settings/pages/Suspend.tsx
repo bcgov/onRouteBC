@@ -31,11 +31,8 @@ export const Suspend = ({
   } = useSuspensionHistoryQuery(companyId);
 
   // Check if user can update suspend
-  const {
-    userClaims,
-    isCompanySuspended,
-    setIsCompanySuspended,
-  } = useContext(OnRouteBCContext);
+  const { userClaims, isCompanySuspended, setIsCompanySuspended } =
+    useContext(OnRouteBCContext);
 
   const canSuspendCompany = canUpdateSuspend(userClaims);
 
@@ -82,12 +79,13 @@ export const Suspend = ({
         comment: reason,
       },
     });
-
     if (isActionSuccessful(suspendResult.status)) {
       refetchSuspensionHistory();
       setShowSuspendModal(false);
     } else {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: suspendResult.headers["x-correlation-id"] },
+      });
     }
   };
 
@@ -102,7 +100,9 @@ export const Suspend = ({
     if (isActionSuccessful(unsuspendResult.status)) {
       refetchSuspensionHistory();
     } else {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: unsuspendResult.headers["x-correlation-id"] },
+      });
     }
   };
 

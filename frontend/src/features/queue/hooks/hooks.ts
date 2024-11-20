@@ -180,7 +180,9 @@ export const useUpdateApplicationInQueueStatus = () => {
       if (err.response?.status === 422) {
         return err;
       } else {
-        navigate(ERROR_ROUTES.UNEXPECTED);
+        navigate(ERROR_ROUTES.UNEXPECTED, {
+          state: { correlationId: err.response?.headers["x-correlation-id"] },
+        });
       }
     },
   });

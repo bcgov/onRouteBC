@@ -22,12 +22,16 @@ import {
   UpdateStatusData,
 } from "../types/creditAccount";
 import { CompanyProfile } from "../../manageProfile/types/manageProfile";
+import { AxiosError } from "axios";
 
 /**
  * Hook to fetch the company credit account details for the active user.
  * @returns Query result of the company credit account details
  */
-export const useGetCreditAccountMetadataQuery = (companyId: number, enabled?: boolean ) => {
+export const useGetCreditAccountMetadataQuery = (
+  companyId: number,
+  enabled?: boolean,
+) => {
   return useQuery({
     queryKey: ["credit-account", { companyId }, "metadata"],
     queryFn: () => getCreditAccountMetadata(companyId),
@@ -163,7 +167,11 @@ export const useCreateCreditAccountMutation = () => {
         queryKey: ["credit-account", { companyId }],
       });
     },
-    onError: () => navigate(ERROR_ROUTES.UNEXPECTED),
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error?.response?.headers["x-correlation-id"] },
+      });
+    },
   });
 };
 
@@ -203,7 +211,11 @@ export const useAddCreditAccountUserMutation = () => {
         queryKey: ["credit-account", { companyId }],
       });
     },
-    onError: () => navigate(ERROR_ROUTES.UNEXPECTED),
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
+    },
   });
 };
 
@@ -229,8 +241,10 @@ export const useRemoveCreditAccountUsersMutation = () => {
         alertType: "info",
       });
     },
-    onError: () => {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
     },
   });
 };
@@ -276,8 +290,12 @@ export const useUpdateCreditAccountStatusMutation = () => {
         ...getResultingSnackbarOptionsFromAction(updateStatusAction),
       });
     },
-    onError: () => {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: {
+          correlationId: error?.response?.headers["x-correlation-id"],
+        },
+      });
     },
   });
 };

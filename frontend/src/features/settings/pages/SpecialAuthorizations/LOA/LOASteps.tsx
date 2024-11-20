@@ -57,8 +57,10 @@ export const LOASteps = ({
 
   const [activeStep, setActiveStep] = useState<LOAStep>(LOA_STEPS.BASIC);
 
-  const showPrevBtn = activeStep === LOA_STEPS.VEHICLES || activeStep === LOA_STEPS.REVIEW;
-  const showNextBtn = activeStep === LOA_STEPS.BASIC || activeStep === LOA_STEPS.VEHICLES;
+  const showPrevBtn =
+    activeStep === LOA_STEPS.VEHICLES || activeStep === LOA_STEPS.REVIEW;
+  const showNextBtn =
+    activeStep === LOA_STEPS.BASIC || activeStep === LOA_STEPS.VEHICLES;
   const showFinishBtn = activeStep === LOA_STEPS.REVIEW;
 
   const handlePrev = () => {
@@ -80,14 +82,16 @@ export const LOASteps = ({
   const handleFinish = async () => {
     // Handle submitting LOA
     const isLOACreation = !loaId;
-    const res = isLOACreation ? await createLOAMutation.mutateAsync({
-      companyId,
-      data: getValues(),
-    }) : await updateLOAMutation.mutateAsync({
-      companyId,
-      loaId,
-      data: getValues(),
-    });
+    const res = isLOACreation
+      ? await createLOAMutation.mutateAsync({
+          companyId,
+          data: getValues(),
+        })
+      : await updateLOAMutation.mutateAsync({
+          companyId,
+          loaId,
+          data: getValues(),
+        });
 
     if (res.status === 200 || res.status === 201) {
       setSnackBar({
@@ -98,7 +102,8 @@ export const LOASteps = ({
       });
       onExit();
     } else {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+      const correlationId = res.headers["x-correlation-id"];
+      navigate(ERROR_ROUTES.UNEXPECTED, { state: { correlationId } });
     }
   };
 
@@ -125,14 +130,10 @@ export const LOASteps = ({
       case LOA_STEPS.REVIEW:
         return <LOAReview />;
       default:
-        return (
-          <LOABasicInfo
-            onRemoveDocument={handleRemoveDocument}
-          />
-        );
+        return <LOABasicInfo onRemoveDocument={handleRemoveDocument} />;
     }
   }, [activeStep]);
-  
+
   return (
     <FormProvider {...formMethods}>
       <div className="loa-steps">
@@ -166,16 +167,16 @@ export const LOASteps = ({
                     text: "step__step-number",
                     active: "step__icon--active",
                     completed: "step__icon--completed",
-                  }
+                  },
                 }}
-              >{label}</StepLabel>
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
 
-        <div className="loa-steps__step-component">
-          {stepComponent}
-        </div>
+        <div className="loa-steps__step-component">{stepComponent}</div>
 
         <div className="steps-navigation">
           <Button

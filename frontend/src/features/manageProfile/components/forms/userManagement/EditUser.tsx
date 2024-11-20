@@ -25,6 +25,7 @@ import {
   getDefaultRequiredVal,
 } from "../../../../../common/helpers/util";
 import { BCeID_USER_ROLE } from "../../../../../common/authentication/types";
+import { AxiosError } from "axios";
 
 /**
  * Edit User form for User Management.
@@ -76,8 +77,10 @@ export const EditUserForm = memo(
      */
     const updateUserInfoMutation = useMutation({
       mutationFn: updateUserInfo,
-      onError: () => {
-        navigate(ERROR_ROUTES.UNEXPECTED);
+      onError: (error: AxiosError) => {
+        navigate(ERROR_ROUTES.UNEXPECTED, {
+          state: { correlationId: error.response?.headers["x-correlation-id"] },
+        });
       },
       onSuccess: (response) => {
         if (response.status === 200) {
@@ -92,6 +95,10 @@ export const EditUserForm = memo(
             state: {
               selectedTab: BCEID_PROFILE_TABS.USER_MANAGEMENT,
             },
+          });
+        } else {
+          navigate(ERROR_ROUTES.UNEXPECTED, {
+            state: { correlationId: response.headers["x-correlation-id"] },
           });
         }
       },

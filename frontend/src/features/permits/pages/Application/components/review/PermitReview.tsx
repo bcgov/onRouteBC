@@ -65,7 +65,8 @@ interface PermitReviewProps {
 
 export const PermitReview = (props: PermitReviewProps) => {
   const shouldShowRejectionHistory =
-    props.reviewContext === PERMIT_REVIEW_CONTEXTS.QUEUE &&
+    (props.reviewContext === PERMIT_REVIEW_CONTEXTS.QUEUE ||
+      props.reviewContext === PERMIT_REVIEW_CONTEXTS.APPLY) &&
     props.applicationRejectionHistory &&
     props.applicationRejectionHistory.length > 0;
 

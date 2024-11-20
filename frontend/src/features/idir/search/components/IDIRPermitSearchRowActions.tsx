@@ -162,7 +162,9 @@ export const IDIRPermitSearchRowActions = ({
         alertType: "success",
       });
     } else {
-      navigate(routes.ERROR_ROUTES.UNEXPECTED);
+      navigate(routes.ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: response.headers["x-correlation-id"] },
+      });
     }
   };
 

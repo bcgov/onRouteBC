@@ -19,6 +19,9 @@ import {
   BCeIDUserRoleType,
   BCeID_USER_ROLE,
 } from "../../../../../common/authentication/types";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import { ERROR_ROUTES } from "../../../../../routes/constants";
 
 export const MyInfoForm = memo(
   ({
@@ -29,6 +32,7 @@ export const MyInfoForm = memo(
     setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   }) => {
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const formMethods = useForm<UserInfoRequest>({
       defaultValues: {
         firstName: getDefaultRequiredVal("", myInfo?.firstName),
@@ -60,6 +64,11 @@ export const MyInfoForm = memo(
           });
           setIsEditing(false);
         }
+      },
+      onError: (error: AxiosError) => {
+        navigate(ERROR_ROUTES.UNEXPECTED, {
+          state: { correlationId: error.response?.headers["x-correlation-id"] },
+        });
       },
     });
 

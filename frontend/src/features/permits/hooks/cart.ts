@@ -9,6 +9,9 @@ import {
   getCartCount,
   removeFromCart,
 } from "../apiManager/cart";
+import { AxiosError } from "axios";
+import { ERROR_ROUTES } from "../../../routes/constants";
+import { useNavigate } from "react-router-dom";
 
 const CART_KEY = "cart";
 const CART_COUNT_KEY = "cart-count";
@@ -19,6 +22,7 @@ const CART_ITEM = "cart-item";
  * @returns Mutation object for adding items to cart
  */
 export const useAddToCart = () => {
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: ({
       companyId,
@@ -27,6 +31,13 @@ export const useAddToCart = () => {
       companyId: number;
       applicationIds: string[];
     }) => addToCart(companyId, applicationIds),
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: {
+          correlationId: error?.response?.headers["x-correlation-id"],
+        },
+      });
+    },
   });
 };
 

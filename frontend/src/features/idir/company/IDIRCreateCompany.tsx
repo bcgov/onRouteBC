@@ -20,6 +20,7 @@ import {
   CreateCompanyRequest,
   CompanyProfile,
 } from "../../manageProfile/types/manageProfile";
+import { AxiosError } from "axios";
 
 /**
  * The form for a staff user to create a company.
@@ -117,8 +118,10 @@ export const IDIRCreateCompany = React.memo(() => {
         setClientNumber(() => clientNumber);
       }
     },
-    onError: () => {
-      navigate(ERROR_ROUTES.UNEXPECTED);
+    onError: (error: AxiosError) => {
+      navigate(ERROR_ROUTES.UNEXPECTED, {
+        state: { correlationId: error.response?.headers["x-correlation-id"] },
+      });
     },
   });
 
