@@ -88,7 +88,7 @@ export const PermitsColumnDefinition = (
   {
     accessorKey: "issuer",
     id: "issuer",
-    header: "Applicant",
+    header: "Issued By",
     enableSorting: true,
   },
 ];

@@ -1,0 +1,3 @@
+@use "../CustomFormComponents";
+
+@include CustomFormComponents.custom-form-component(".phone-ext-input");

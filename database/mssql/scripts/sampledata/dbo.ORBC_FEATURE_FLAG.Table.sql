@@ -118,6 +118,145 @@ VALUES
     GETUTCDATE()
   );
 
+   INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '6',
+    'TROS',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+
+INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '7',
+    'TROW',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+
+   INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '8',
+    'STOS',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+
+
+INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '9',
+    'MFP',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+  
+INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '10',
+    'LCV',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+
+INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '11',
+    'NO-FEE',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+
 SET
   IDENTITY_INSERT [dbo].[ORBC_FEATURE_FLAG] OFF
 GO

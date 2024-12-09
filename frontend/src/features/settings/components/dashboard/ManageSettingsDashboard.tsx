@@ -6,11 +6,7 @@ import { SETTINGS_TABS, SettingsTab } from "../../types/tabs";
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { ERROR_ROUTES } from "../../../../routes/constants";
 import { SpecialAuthorizations } from "../../pages/SpecialAuthorizations/SpecialAuthorizations";
-import { useFeatureFlagsQuery } from "../../../../common/hooks/hooks";
-import {
-  canViewSpecialAuthorizations,
-  canViewSuspend,
-} from "../../helpers/permissions";
+import { canViewSuspend } from "../../helpers/permissions";
 import { CreditAccountMetadataComponent } from "../../pages/CreditAccountMetadataComponent";
 import { usePermissionMatrix } from "../../../../common/authentication/PermissionMatrix";
 import { useGetCreditAccountMetadataQuery } from "../../hooks/creditAccount";
@@ -18,10 +14,8 @@ import { useGetCreditAccountMetadataQuery } from "../../hooks/creditAccount";
 import { CREDIT_ACCOUNT_USER_TYPE } from "../../types/creditAccount";
 
 export const ManageSettingsDashboard = React.memo(() => {
-  const { userClaims, companyId, idirUserDetails } =
+  const { userClaims, companyId } =
     useContext(OnRouteBCContext);
-
-  const { data: featureFlags } = useFeatureFlagsQuery();
   const { data: creditAccountMetadata, isPending } =
     useGetCreditAccountMetadataQuery(companyId as number);
 
@@ -40,16 +34,17 @@ export const ManageSettingsDashboard = React.memo(() => {
       return "VIEW_CREDIT_ACCOUNT_TAB_ACCOUNT_USER";
     }
   };
-
-  const isStaffActingAsCompany = Boolean(idirUserDetails?.userRole);
   // const isFinanceUser = idirUserDetails?.userRole === IDIR_USER_ROLE.FINANCE;
 
   const [hideSuspendTab, setHideSuspendTab] = useState<boolean>(false);
   const showSuspendTab = canViewSuspend(userClaims) && !hideSuspendTab;
-  const showSpecialAuth =
-    isStaffActingAsCompany &&
-    canViewSpecialAuthorizations(userClaims, idirUserDetails?.userRole) &&
-    featureFlags?.["LOA"] === "ENABLED";
+
+  const showSpecialAuth = usePermissionMatrix({
+    permissionMatrixKeys: {
+      permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+      permissionMatrixFunctionKey: "VIEW_SPECIAL_AUTHORIZATIONS",
+    }
+  });
 
   const showCreditAccountTab = usePermissionMatrix({
     featureFlag: "CREDIT-ACCOUNT",

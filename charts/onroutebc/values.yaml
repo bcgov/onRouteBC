@@ -547,7 +547,7 @@ scheduler:
     license: "{{.Values.global.license}}"
     secretPaths:
       - "keycloak-{{tpl $.Values.vault.zone $}}"
-      - "mssql-{{tpl $.Values.vault.zone $}}"      
+      - "mssql-{{tpl $.Values.vault.zone $}}"
       - "scheduler-{{tpl $.Values.vault.zone $}}"
       - "s3-{{tpl $.Values.vault.zone $}}"
       - "cfs-{{tpl $.Values.vault.zone $}}"
@@ -563,7 +563,9 @@ policy:
   secret:
     enabled: false
   configmap:
-    enabled: false
+    enabled: true
+    data:
+      FRONTEND_URL: "https://{{.Release.Name}}-frontend.apps.silver.devops.gov.bc.ca"
   containers:
     - name: policy
       command:
@@ -574,7 +576,10 @@ policy:
       repository: '{{ .Values.global.repository }}' # example, it includes registry and repository
       image: policy
       tag: "{{tpl .Values.global.tag .}}"
-      env:        
+      env:
+        fromLocalConfigmap:
+          - name: FRONTEND_URL
+            key: FRONTEND_URL
         fromValues:
           - name: POLICY_PR_NUM
             value: '{{.Values.global.pr_num}}'

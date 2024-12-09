@@ -1,16 +1,10 @@
 import { factory, nullable, primaryKey } from "@mswjs/data";
 
-import { DEFAULT_PERMIT_TYPE } from "../../../../../types/PermitType";
 import {
   PowerUnit,
   Trailer,
   VEHICLE_TYPES,
 } from "../../../../../../manageVehicles/types/Vehicle";
-
-import {
-  getIneligiblePowerUnitSubtypes,
-  getIneligibleTrailerSubtypes,
-} from "../../../../../helpers/permitVehicles";
 
 let powerUnitId = 1;
 let trailerId = 1;
@@ -112,7 +106,11 @@ export const getDefaultPowerUnitSubTypes = () => [
     type: "Power Unit Type C",
     description: "Power Unit Type C.",
   },
-  { ...getIneligiblePowerUnitSubtypes(DEFAULT_PERMIT_TYPE)[0] },
+  {
+    typeCode: "BUSCRUM",
+    type: "Buses/Crummies",
+    description: "A motor vehicle used to transport persons, when such transportation is not undertaken for compensation or gain.",
+  },
 ];
 
 export const getDefaultTrailerSubTypes = () => [
@@ -131,7 +129,11 @@ export const getDefaultTrailerSubTypes = () => [
     type: "Trailer Type C",
     description: "Trailer Type C.",
   },
-  { ...getIneligibleTrailerSubtypes(DEFAULT_PERMIT_TYPE)[0] },
+  {
+    typeCode: "DBTRBTR",
+    type: "Tandem/Tridem Drive B-Train (Super B-Train)",
+    description: "B-trains for wood chip residual.",
+  },
 ];
 
 export const createPowerUnit = (powerUnit: PowerUnit) => {

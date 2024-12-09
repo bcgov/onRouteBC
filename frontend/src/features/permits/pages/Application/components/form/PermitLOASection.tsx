@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Dayjs } from "dayjs";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 import "./PermitLOASection.scss";
 import { InfoBcGovBanner } from "../../../../../../common/components/banners/InfoBcGovBanner";
@@ -71,17 +71,17 @@ export const PermitLOASection = ({
     }
   };
 
-  return (
+  return loasForTable.length > 0 ? (
     <Box className="permit-loa-section">
       <Box className="permit-loa-section__header">
-        <Typography variant={"h3"}>
+        <h3>
           Letter of Authorization (LOA)
-        </Typography>
+        </h3>
       </Box>
 
       <Box className="permit-loa-section__body">
         <div className="loa-title">
-          <span className="loa-title__title">Select the relevant LOA(s)</span>
+          <h4 className="loa-title__title">Select the relevant LOA(s)</h4>
           <span className="loa-title__title--optional">(optional)</span>
         </div>
 
@@ -101,5 +101,5 @@ export const PermitLOASection = ({
         />
       </Box>
     </Box>
-  );
+  ) : null;
 };

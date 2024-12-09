@@ -32,15 +32,10 @@ export const getCompanyInfo = async (): Promise<CompanyProfile> => {
 export const getCompanyInfoById = async (
   companyId: number,
 ): Promise<RequiredOrNull<CompanyProfile>> => {
-  try {
-    const response = await httpGETRequest(
-      `${MANAGE_PROFILE_API.COMPANIES}/${companyId}`,
-    );
-    return response.data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+  const response = await httpGETRequest(
+    `${MANAGE_PROFILE_API.COMPANIES}/${companyId}`,
+  );
+  return response.data;
 };
 
 export const getMyInfo = async (): Promise<ReadUserInformationResponse> => {

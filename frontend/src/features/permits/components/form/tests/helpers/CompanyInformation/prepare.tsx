@@ -1,10 +1,8 @@
 import { render } from "@testing-library/react";
 import { CompanyProfile } from "../../../../../../manageProfile/types/manageProfile";
 import { CompanyInformation } from "../../../CompanyInformation";
-import {
-  formatCountry,
-  formatProvince,
-} from "../../../../../../../common/helpers/formatCountryProvince";
+import { getProvinceFullName } from "../../../../../../../common/helpers/countries/getProvinceFullName";
+import { getCountryFullName } from "../../../../../../../common/helpers/countries/getCountryFullName";
 
 export const defaultCompanyInfo = {
   companyId: 74,
@@ -32,10 +30,11 @@ export const defaultCompanyInfo = {
   isSuspended: false,
 };
 
-export const country = formatCountry(
+export const country = getCountryFullName(
   defaultCompanyInfo.mailingAddress.countryCode,
 );
-export const province = formatProvince(
+
+export const province = getProvinceFullName(
   defaultCompanyInfo.mailingAddress.countryCode,
   defaultCompanyInfo.mailingAddress.provinceCode,
 );

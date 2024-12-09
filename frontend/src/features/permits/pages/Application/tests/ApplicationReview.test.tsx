@@ -7,15 +7,12 @@ import { VehicleType } from "../../../../manageVehicles/types/Vehicle";
 import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { calculateFeeByDuration } from "../../../helpers/feeSummary";
 import { getPermitTypeName } from "../../../types/PermitType";
+import { getCountryFullName } from "../../../../../common/helpers/countries/getCountryFullName";
+import { getProvinceFullName } from "../../../../../common/helpers/countries/getProvinceFullName";
 import {
   DATE_FORMATS,
   dayjsToLocalStr,
 } from "../../../../../common/helpers/formatDate";
-
-import {
-  formatCountry,
-  formatProvince,
-} from "../../../../../common/helpers/formatCountryProvince";
 
 import {
   applicationCreatedDate,
@@ -167,8 +164,10 @@ describe("Review and Confirm Application Details", () => {
       // Assert
       const { addressLine1, city, countryCode, postalCode, provinceCode } =
         companyInfo.mailingAddress;
-      const country = formatCountry(countryCode);
-      const province = formatProvince(countryCode, provinceCode);
+
+      const country = getCountryFullName(countryCode);
+      const province = getProvinceFullName(countryCode, provinceCode);
+
       expect(await companyMailAddrHeaderTitle()).toHaveTextContent(
         companyMailAddrTitle,
       );
@@ -345,15 +344,17 @@ describe("Review and Confirm Application Details", () => {
         vehicleSubType,
       } = defaultApplicationData.permitData
         .vehicleDetails as PermitVehicleDetails;
+
       const unit = getDefaultRequiredVal("", unitNumber);
-      const country = formatCountry(countryCode);
-      const province = formatProvince(countryCode, provinceCode);
+      const country = getCountryFullName(countryCode);
+      const province = getProvinceFullName(countryCode, provinceCode);
       const vehicleTypeStr = vehicleTypeDisplayText(vehicleType as VehicleType);
       const vehicleSubtypeStr = getDefaultRequiredVal(
         "",
         vehicleSubtypes.find((subtype) => subtype.typeCode === vehicleSubType)
           ?.type,
       );
+      
       expect(await vehicleUnitNumber()).toHaveTextContent(unit);
       expect(await vehicleVIN()).toHaveTextContent(vin);
       expect(await vehiclePlate()).toHaveTextContent(plate);

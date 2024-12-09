@@ -21,6 +21,7 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { IUserJWT } from 'src/common/interface/user-jwt.interface';
 import { CreateApplicationDto } from './dto/request/create-application.dto';
@@ -141,6 +142,10 @@ export class CompanyApplicationController {
   @ApiCreatedResponse({
     description: 'The Permit Application Resource',
     type: ReadApplicationDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'The Application could not be processed.',
+    type: ExceptionDto,
   })
   @Permissions({
     allowedBCeIDRoles: CLIENT_USER_ROLE_LIST,
@@ -316,7 +321,7 @@ export class CompanyApplicationController {
     );
 
     if (result?.success?.length) {
-      await Promise.allSettled([
+      void Promise.allSettled([
         this.permitReceiptDocumentService.generatePermitDocuments(
           currentUser,
           result.success,

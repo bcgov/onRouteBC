@@ -5,13 +5,31 @@
 @include orbcStyles.permit-right-box-style(".permit-details__body");
 
 .permit-details {
-  & &__input-section {
+  & &__date-selection {
     display: flex;
-    gap: 2.5rem;
-
-    .custom-date-picker {
-      width: 344px;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 30.625rem;
+    
+    .custom-form-control, .custom-date-picker__form-control {
+      margin: 0;
+      width: 100%;
     }
+  }
+
+  & &__input {
+    &--start-date {
+      max-width: 16.125rem;
+    }
+
+    &--duration {
+      max-width: 12rem;
+      width: 100%;
+    }
+  }
+
+  .permit-expiry-date-banner {
+    margin-top: 1.5rem;
   }
 
   & &__conditions {

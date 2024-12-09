@@ -1,0 +1,14 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".review-application-notes");
+@include orbcStyles.permit-left-box-style(".review-application-notes__header");
+@include orbcStyles.permit-right-box-style(".review-application-notes__body");
+
+@media (width < 370px) {
+  .review-application-notes {
+    &__body {
+      max-width: 100%;
+      min-width: 100%;
+    }
+  }
+}

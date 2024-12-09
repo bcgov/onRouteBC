@@ -7,23 +7,51 @@
 .review-vehicle-info {
   &__body {
     .info-section {
-      gap: 2.5rem;
-      padding-top: 1.5rem;
-
       &__label {
-        font-weight: 600;
+        font-weight: bold;
 
         &--indicator {
-          font-weight: 500;
+          font-weight: normal;
         }
       }
 
       &__msg {
-        font-weight: 600;
+        font-weight: bold;
         color: orbcStyles.$bc-green;
 
         .icon {
-          margin-right: 0.5em;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    .selected-power-unit-and-trailers {
+      .selected-power-unit {
+        padding: 0 0 1.5rem 0;
+
+        .power-unit-info-display {
+          padding: 1rem 0 0 0;
+        }
+      }
+
+      .selected-trailers {
+        border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
+        padding: 1.5rem 0 0 0;
+
+        .selected-vehicle-subtype-list {
+          margin: 1rem 0 0 0;
+          box-shadow: none;
+          border-radius: 0;
+        }
+      }
+
+      .vehicle-saved {
+        margin-top: 1rem;
+        font-weight: bold;
+        color: orbcStyles.$bc-green;
+
+        .icon {
+          margin-right: 0.5rem;
         }
       }
     }

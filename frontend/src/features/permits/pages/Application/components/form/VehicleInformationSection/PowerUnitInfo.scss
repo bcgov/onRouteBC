@@ -1,0 +1,29 @@
+@use "../../../../../../../themes/orbcStyles";
+
+.power-unit-info {
+  padding: 1.5rem 0;
+  border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
+
+  & &__title {
+    margin-bottom: 0;
+  }
+
+  .power-unit-info-display {
+    padding: 1.5rem 0;
+  }
+
+  & &__remove-btn {
+    background-color: orbcStyles.$bc-background-light-grey;
+    padding: 0.875rem 1rem;
+    box-shadow: none;
+    line-height: normal;
+    min-height: inherit;
+    border: none;
+
+    &:hover {
+      background-color: orbcStyles.$bc-background-light-grey;
+      border: 2px solid orbcStyles.$bc-text-box-border-grey;
+      box-shadow: none;
+    }
+  }
+}

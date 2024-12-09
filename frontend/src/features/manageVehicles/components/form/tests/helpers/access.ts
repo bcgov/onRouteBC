@@ -153,7 +153,7 @@ export const submitVehicleForm = async (
 
   await replaceValueForInput(user, unitNumber, 0, details.newUnitNumber);
   await replaceValueForInput(user, make, 0, details.newMake);
-  await replaceValueForInput(user, year, 1, `${details.newYear}`);
+  await replaceValueForInput(user, year, 4, `${details.newYear}`);
   await replaceValueForInput(user, vin, 0, details.newVin);
   await replaceValueForInput(user, plate, 0, details.newPlate);
 

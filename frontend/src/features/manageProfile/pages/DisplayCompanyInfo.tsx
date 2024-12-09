@@ -10,13 +10,9 @@ import { DoesUserHaveClaimWithContext } from "../../../common/authentication/uti
 import { formatPhoneNumber } from "../../../common/components/form/subFormComponents/PhoneNumberInput";
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import { CompanyProfile } from "../types/manageProfile";
-import {
-  formatCountry,
-  formatProvince,
-} from "../../../common/helpers/formatCountryProvince";
-
-// Disable any eslint for references to countries_and_states.json
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getProvinceFullName } from "../../../common/helpers/countries/getProvinceFullName";
+import { getCountryFullName } from "../../../common/helpers/countries/getCountryFullName";
+import { Nullable } from "../../../common/types/common";
 
 export const DisplayInfo = memo(
   ({
@@ -26,69 +22,101 @@ export const DisplayInfo = memo(
     companyInfo?: CompanyProfile;
     setIsEditting: React.Dispatch<React.SetStateAction<boolean>>;
   }) => {
-    if (!companyInfo) return <></>;
-
     const userEmail = getUserEmailFromSession();
-    return (
+    const mailingCountry = getCountryFullName(companyInfo?.mailingAddress?.countryCode);
+    const mailingProvince = getProvinceFullName(
+      companyInfo?.mailingAddress?.countryCode,
+      companyInfo?.mailingAddress?.provinceCode,
+    );
+
+    const primaryContactCountry = getCountryFullName(companyInfo?.primaryContact?.countryCode);
+    const primaryContactProvince = getProvinceFullName(
+      companyInfo?.primaryContact?.countryCode,
+      companyInfo?.primaryContact?.provinceCode,
+    );
+
+    const phoneDisplay = (phone: string, ext?: Nullable<string>) => {
+      const extDisplay = ext ? `Ext: ${ext}` : "";
+      return `${formatPhoneNumber(
+        phone,
+      )} ${extDisplay}`;
+    };
+
+    return companyInfo ? (
       <div className="display-company-info">
         <Box>
-          {companyInfo?.alternateName && (
+          {companyInfo.alternateName ? (
             <>
               <Typography variant="h3">Doing Business As (DBA)</Typography>
-              <Typography>{companyInfo?.alternateName}</Typography>
+              <Typography>{companyInfo.alternateName}</Typography>
             </>
-          )}
+          ) : null}
+
           <Typography variant="h3">Company Mailing Address</Typography>
-          <Typography>{companyInfo?.mailingAddress.addressLine1}</Typography>
+
+          <Typography>{companyInfo.mailingAddress.addressLine1}</Typography>
+
           <Typography>
-            {formatCountry(companyInfo?.mailingAddress.countryCode)}
+            {mailingCountry}
           </Typography>
+
+          {mailingProvince ? (
+            <Typography>
+              {mailingProvince}
+            </Typography>
+          ) : null}
+
           <Typography>
-            {formatProvince(
-              companyInfo?.mailingAddress.countryCode,
-              companyInfo?.mailingAddress.provinceCode,
-            )}
+            {`${companyInfo.mailingAddress.city} ${companyInfo.mailingAddress.postalCode}`}
           </Typography>
-          <Typography>{`${companyInfo?.mailingAddress.city} ${companyInfo?.mailingAddress.postalCode}`}</Typography>
 
           <Typography variant="h3">Company Contact Details</Typography>
+
           <Typography>
-            Email: {getDefaultRequiredVal("", companyInfo?.email, userEmail)}
+            Email: {getDefaultRequiredVal("", companyInfo.email, userEmail)}
           </Typography>
-          <Typography>{`Phone: ${formatPhoneNumber(companyInfo?.phone)} ${
-            companyInfo?.extension ? `Ext: ${companyInfo?.extension}` : ""
-          }`}</Typography>
+
+          <Typography>
+            {`Phone: ${phoneDisplay(companyInfo.phone, companyInfo.extension)}`}
+          </Typography>
+
           {companyInfo?.fax ? (
-            <Typography>Fax: {formatPhoneNumber(companyInfo?.fax)}</Typography>
-          ) : (
-            ""
-          )}
+            <Typography>
+              Fax: {formatPhoneNumber(companyInfo.fax)}
+            </Typography>
+          ) : null}
 
           <Typography variant="h3">Company Primary Contact</Typography>
-          <Typography>{`${companyInfo?.primaryContact.firstName} ${companyInfo?.primaryContact.lastName}`}</Typography>
+
           <Typography>
-            Email:{" "}
-            {getDefaultRequiredVal("", companyInfo?.primaryContact?.email)}
+            {`${companyInfo.primaryContact.firstName} ${companyInfo.primaryContact.lastName}`}
           </Typography>
-          <Typography>{`Primary Phone: ${formatPhoneNumber(
-            companyInfo?.primaryContact.phone1,
-          )} ${
-            companyInfo?.primaryContact.phone1Extension
-              ? `Ext: ${companyInfo?.primaryContact.phone1Extension}`
-              : ""
-          }`}</Typography>
+
           <Typography>
-            {formatCountry(companyInfo?.primaryContact.countryCode)}
+            Email: {getDefaultRequiredVal("", companyInfo.primaryContact.email)}
           </Typography>
+
           <Typography>
-            {formatProvince(
-              companyInfo?.primaryContact.countryCode,
-              companyInfo?.primaryContact.provinceCode,
-            )}
+            {`Primary Phone: ${phoneDisplay(
+              companyInfo.primaryContact.phone1,
+              companyInfo.primaryContact.phone1Extension,
+            )}`}
           </Typography>
-          <Typography>{companyInfo?.primaryContact.city}</Typography>
+
+          <Typography>
+            {primaryContactCountry}
+          </Typography>
+
+          {primaryContactProvince ? (
+            <Typography>
+              {primaryContactProvince}
+            </Typography>
+          ) : null}
+
+          <Typography>{companyInfo.primaryContact.city}</Typography>
         </Box>
-        {DoesUserHaveClaimWithContext(CLAIMS.WRITE_ORG) && (
+
+        {DoesUserHaveClaimWithContext(CLAIMS.WRITE_ORG) ? (
           <div className="display-company-info__edit">
             <Button
               variant="contained"
@@ -100,9 +128,9 @@ export const DisplayInfo = memo(
               Edit
             </Button>
           </div>
-        )}
+        ) : null}
       </div>
-    );
+    ) : null;
   },
 );
 

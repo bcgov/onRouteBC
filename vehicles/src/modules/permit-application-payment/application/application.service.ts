@@ -87,6 +87,9 @@ import { ReadPermitLoaDto } from './dto/response/read-permit-loa.dto';
 import { CreatePermitLoaDto } from './dto/request/create-permit-loa.dto';
 import { PermitLoa } from './entities/permit-loa.entity';
 import { LoaDetail } from 'src/modules/special-auth/entities/loa-detail.entity';
+import { getFromCache } from '../../../common/helper/cache.helper';
+import { CacheKey } from '../../../common/enum/cache-key.enum';
+import { FeatureFlagValue } from '../../../common/enum/feature-flag-value.enum';
 
 @Injectable()
 export class ApplicationService {
@@ -123,6 +126,16 @@ export class ApplicationService {
     currentUser: IUserJWT,
     companyId: number,
   ): Promise<ReadApplicationDto> {
+    const permitTypeFeatureFlag = (await getFromCache(
+      this.cacheManager,
+      CacheKey.FEATURE_FLAG_TYPE,
+      createApplicationDto.permitType,
+    )) as FeatureFlagValue;
+    if (permitTypeFeatureFlag !== FeatureFlagValue.ENABLED) {
+      throwUnprocessableEntityException(
+        `Feature Disabled - ${createApplicationDto.permitType}`,
+      );
+    }
     const id = createApplicationDto.permitId;
     let fetchExistingApplication: Permit;
     //If permit id exists assign it to null to create new application.

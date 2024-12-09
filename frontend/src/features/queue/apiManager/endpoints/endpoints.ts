@@ -8,4 +8,6 @@ export const APPLICATION_QUEUE_API_ROUTES = {
     `${APPLICATIONS_API_BASE(companyId)}/${applicationId}/queue/status`,
   CLAIM: (companyId: number, applicationId: string) =>
     `${APPLICATIONS_API_BASE(companyId)}/${applicationId}/queue/assign`,
+  SUBMIT_FOR_REVIEW: (companyId: number, applicationId: string) =>
+    `${APPLICATIONS_API_BASE(companyId)}/${applicationId}/queue`,
 };

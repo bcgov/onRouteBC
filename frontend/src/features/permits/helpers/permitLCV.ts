@@ -3,7 +3,7 @@ import { isVehicleSubtypeLCV } from "../../manageVehicles/helpers/vehicleSubtype
 import { Application, ApplicationFormData } from "../types/application";
 import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import { getPermitConditionSelectionState } from "./conditions";
-import { getDefaultVehicleDetails } from "./permitVehicles";
+import { getDefaultVehicleDetails } from "./vehicles/getDefaultVehicleDetails";
 
 /**
  * Get updated vehicle details based on LCV designation.

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
+import "./ApplicationInQueueReview.scss";
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import { Nullable } from "../../../common/types/common";
-import { APPLICATION_STEPS, IDIR_ROUTES } from "../../../routes/constants";
+import { APPLICATION_QUEUE_ROUTES, APPLICATION_STEPS, IDIR_ROUTES } from "../../../routes/constants";
 import { useCompanyInfoDetailsQuery } from "../../manageProfile/apiManager/hooks";
 import { usePowerUnitSubTypesQuery } from "../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../manageVehicles/hooks/trailers";
@@ -14,10 +16,11 @@ import { PERMIT_REVIEW_CONTEXTS } from "../../permits/types/PermitReviewContext"
 import { DEFAULT_PERMIT_TYPE } from "../../permits/types/PermitType";
 import { useFetchSpecialAuthorizations } from "../../settings/hooks/specialAuthorizations";
 import { CASE_ACTIVITY_TYPES } from "../types/CaseActivityType";
-import "./ApplicationInQueueReview.scss";
 import { QueueBreadcrumb } from "./QueueBreadcrumb";
 import { RejectApplicationModal } from "./RejectApplicationModal";
 import { useUpdateApplicationInQueueStatus } from "../hooks/hooks";
+import { usePolicyEngine } from "../../policy/hooks/usePolicyEngine";
+import { useCommodityOptions } from "../../permits/hooks/useCommodityOptions";
 
 export const ApplicationInQueueReview = ({
   applicationData,
@@ -33,15 +36,18 @@ export const ApplicationInQueueReview = ({
   const { data: companyInfo } = useCompanyInfoDetailsQuery(companyId);
   const doingBusinessAs = companyInfo?.alternateName;
 
+  const permitType = getDefaultRequiredVal(DEFAULT_PERMIT_TYPE, applicationData?.permitType);
   const fee = isNoFeePermitType
     ? "0"
     : `${calculateFeeByDuration(
-        getDefaultRequiredVal(DEFAULT_PERMIT_TYPE, applicationData?.permitType),
+        permitType,
         getDefaultRequiredVal(0, applicationData?.permitData?.permitDuration),
       )}`;
 
   const navigate = useNavigate();
 
+  const policyEngine = usePolicyEngine();
+  const { commodityOptions } = useCommodityOptions(policyEngine, permitType);
   const powerUnitSubTypesQuery = usePowerUnitSubTypesQuery();
   const trailerSubTypesQuery = useTrailerSubTypesQuery();
   const methods = useForm<Application>();
@@ -52,7 +58,7 @@ export const ApplicationInQueueReview = ({
   const [hasAttemptedSubmission, setHasAttemptedSubmission] = useState(false);
 
   const handleEdit = () => {
-    return;
+    navigate(APPLICATION_QUEUE_ROUTES.EDIT(companyId, applicationId), { replace: true });
   };
 
   const isSuccess = (status?: number) => status === 201;
@@ -113,7 +119,7 @@ export const ApplicationInQueueReview = ({
       <FormProvider {...methods}>
         <PermitReview
           reviewContext={PERMIT_REVIEW_CONTEXTS.QUEUE}
-          permitType={applicationData?.permitType}
+          permitType={permitType}
           permitNumber={applicationData?.permitNumber}
           applicationNumber={applicationData?.applicationNumber}
           isAmendAction={false}
@@ -121,6 +127,8 @@ export const ApplicationInQueueReview = ({
           permitDuration={applicationData?.permitData?.permitDuration}
           permitExpiryDate={applicationData?.permitData?.expiryDate}
           permitConditions={applicationData?.permitData?.commodities}
+          permittedCommodity={applicationData?.permitData?.permittedCommodity}
+          commodityOptions={commodityOptions}
           createdDateTime={applicationData?.createdDateTime}
           updatedDateTime={applicationData?.updatedDateTime}
           companyInfo={companyInfo}
@@ -138,27 +146,24 @@ export const ApplicationInQueueReview = ({
           vehicleWasSaved={
             applicationData?.permitData?.vehicleDetails?.saveVehicle
           }
+          vehicleConfiguration={applicationData?.permitData?.vehicleConfiguration}
+          route={applicationData?.permitData?.permittedRoute}
+          applicationNotes={applicationData?.permitData?.applicationNotes}
           doingBusinessAs={doingBusinessAs}
           calculatedFee={fee}
           applicationRejectionHistory={applicationData?.rejectionHistory}
+          isStaffUser={true}
         />
       </FormProvider>
-      {showRejectApplicationModal && (
+
+      {showRejectApplicationModal ? (
         <RejectApplicationModal
           showModal={showRejectApplicationModal}
           onCancel={() => setShowRejectApplicationModal(false)}
           onConfirm={handleReject}
           isPending={updateApplicationMutationPending}
         />
-      )}
-      {showRejectApplicationModal && (
-        <RejectApplicationModal
-          showModal={showRejectApplicationModal}
-          onCancel={() => setShowRejectApplicationModal(false)}
-          onConfirm={handleReject}
-          isPending={updateApplicationMutationPending}
-        />
-      )}
+      ) : null}
     </div>
   );
 };

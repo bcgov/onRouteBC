@@ -93,26 +93,35 @@ $bc-shadow: 0 0 0.5rem #00000029;
     display: flex;
     flex-wrap: wrap;
     background-color: $white;
-    border-bottom: 1px solid $bc-text-box-border-grey;
-    padding-bottom: 1.5rem;
+    border-top: 1px solid $bc-text-box-border-grey;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+
+    h3 {
+      color: $bc-black;
+      font-size: 1.5rem;
+      padding: 0;
+      margin: 0 0 0.5rem 0;
+    }
+    
+    h4 {
+      color: $bc-black;
+      font-size: 1.25rem;
+      padding: 0;
+      margin: 0 0 0.5rem 0;
+    }
   }
 }
 
 @mixin permit-left-box-style($permit-left-box) {
   #{$permit-left-box} {
-    padding-top: 1.5rem;
     min-width: $permit-left-column-width;
     max-width: $permit-left-column-width;
-
-    h3 {
-      font-size: 1.5rem;
-    }
   }
 }
 
 @mixin permit-right-box-style($permit-right-box) {
   #{$permit-right-box} {
-    padding-top: 1.5rem;
     min-width: 600px;
     max-width: calc(100% - $permit-left-column-width);
   }

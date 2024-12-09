@@ -10,7 +10,11 @@ export const BANNER_MESSAGES = {
   PERMIT_REFUND_REQUEST: `Refunds and amendments can be requested over the phone by calling the Provincial Permit Centre at Toll-free: ${TOLL_FREE_NUMBER}. Please have your permit number ready.`,
   POLICY_REMINDER:
     "The applicant is responsible for ensuring they are following Legislation, policies, standards and guidelines in the operation of a commercial transportation business in British Columbia.",
-  CANNOT_FIND_VEHICLE: "Can't find a vehicle from your inventory?",
+  CANNOT_FIND_VEHICLE: {
+    TITLE: "Can't find a vehicle from your inventory?",
+    DETAIL: "Your vehicle may not be available in a permit application because it cannot be used for the type of permit you are applying for.",
+    INELIGIBLE_SUBTYPES: "If you are creating a new vehicle, a desired Vehicle Sub-Type may not be available because it is not eligible for the permit application you are currently in.",
+  },
   ISSUED_PERMIT_NUMBER_7_YEARS:
     "Enter any Permit No. issued to the above Client No. in the last 7 years",
   SELECT_VEHICLES_LOA:
@@ -23,4 +27,14 @@ export const BANNER_MESSAGES = {
     "Vehicle details cannot be edited in the permit application if you are using an LOA.",
   REJECTED_APPLICATIONS:
     "Rejected applications appear in Applications in Progress.",
+  APPLICATION_NOTES:
+    "Application notes can provide additional details to the Provincial Permit Centre when submitting a permit application for review.",
+  APPLICATION_NOTES_EXAMPLE:
+    "e.g. Use the credit account for payment.",
+  APPLICATION_NOTES_INFO:
+    "Application notes will not appear on the permit document.",
+  HIGHWAY_SEQUENCES: {
+    TITLE: "The sequence of highways should be in order of travel.",
+    EXAMPLE: "e.g. If the origin is Victoria, BC and the destination is Hope, BC, the sequence of highways travelled in order will be 17 1 3.",
+  },
 };

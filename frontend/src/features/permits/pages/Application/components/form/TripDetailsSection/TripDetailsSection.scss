@@ -1,0 +1,21 @@
+@use "../../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".trip-details-section");
+@include orbcStyles.permit-left-box-style(".trip-details-section__header");
+@include orbcStyles.permit-right-box-style(".trip-details-section__body");
+
+.trip-details-section {
+  .trip-origin-destination {
+    padding-bottom: 1.5rem;
+  }
+
+  .highway-sequences {
+    border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
+    padding: 1.5rem 0;
+  }
+
+  .specific-route-details {
+    border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
+    padding-top: 1.5rem;
+  }
+}

@@ -22,15 +22,29 @@ import {
   TROW_DURATION_OPTIONS,
 } from "../constants/trow";
 
+import {
+  MAX_STOS_DURATION,
+  MIN_STOS_DURATION,
+  STOS_DURATION_INTERVAL_DAYS,
+  STOS_DURATION_OPTIONS,
+} from "../constants/stos";
+
 /**
  * Get list of selectable duration options for a given permit type.
  * @param permitType Permit type to get duration options for
  * @returns List of selectable duration options for the given permit type
  */
 export const durationOptionsForPermitType = (permitType: PermitType) => {
-  if (permitType === PERMIT_TYPES.TROS) return TROS_DURATION_OPTIONS;
-  if (permitType === PERMIT_TYPES.TROW) return TROW_DURATION_OPTIONS;
-  return [];
+  switch (permitType) {
+    case PERMIT_TYPES.STOS:
+      return STOS_DURATION_OPTIONS;
+    case PERMIT_TYPES.TROW:
+      return TROW_DURATION_OPTIONS;
+    case PERMIT_TYPES.TROS:
+      return TROS_DURATION_OPTIONS;
+    default:
+      return [];
+  }
 };
 
 /**
@@ -39,9 +53,16 @@ export const durationOptionsForPermitType = (permitType: PermitType) => {
  * @returns Mininum allowable duration for the permit type
  */
 export const minDurationForPermitType = (permitType: PermitType) => {
-  if (permitType === PERMIT_TYPES.TROS) return MIN_TROS_DURATION;
-  if (permitType === PERMIT_TYPES.TROW) return MIN_TROW_DURATION;
-  return 0;
+  switch (permitType) {
+    case PERMIT_TYPES.STOS:
+      return MIN_STOS_DURATION;
+    case PERMIT_TYPES.TROW:
+      return MIN_TROW_DURATION;
+    case PERMIT_TYPES.TROS:
+      return MIN_TROS_DURATION;
+    default:
+      return 0;
+  }
 };
 
 /**
@@ -50,9 +71,16 @@ export const minDurationForPermitType = (permitType: PermitType) => {
  * @returns Maxinum allowable duration for the permit type
  */
 export const maxDurationForPermitType = (permitType: PermitType) => {
-  if (permitType === PERMIT_TYPES.TROS) return MAX_TROS_DURATION;
-  if (permitType === PERMIT_TYPES.TROW) return MAX_TROW_DURATION;
-  return BASE_DAYS_IN_YEAR;
+  switch (permitType) {
+    case PERMIT_TYPES.STOS:
+      return MAX_STOS_DURATION;
+    case PERMIT_TYPES.TROW:
+      return MAX_TROW_DURATION;
+    case PERMIT_TYPES.TROS:
+      return MAX_TROS_DURATION;
+    default:
+      return BASE_DAYS_IN_YEAR;
+  }
 };
 
 /**
@@ -62,6 +90,8 @@ export const maxDurationForPermitType = (permitType: PermitType) => {
  */
 export const getDurationIntervalDays = (permitType: PermitType) => {
   switch (permitType) {
+    case PERMIT_TYPES.STOS:
+      return STOS_DURATION_INTERVAL_DAYS;
     case PERMIT_TYPES.TROW:
       return TROW_DURATION_INTERVAL_DAYS;
     case PERMIT_TYPES.TROS:

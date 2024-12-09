@@ -1,50 +1,61 @@
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import { MRT_PaginationState, MRT_SortingState } from "material-react-table";
 import {
   keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { MRT_PaginationState, MRT_SortingState } from "material-react-table";
-import { useContext } from "react";
+
+import { canViewApplicationQueue } from "../helpers/canViewApplicationQueue";
+import { CaseActivityType } from "../types/CaseActivityType";
+import { ERROR_ROUTES } from "../../../routes/constants";
 import OnRouteBCContext from "../../../common/authentication/OnRouteBCContext";
 import { IDIRUserRoleType } from "../../../common/authentication/types";
 import { Nullable } from "../../../common/types/common";
 import { useTableControls } from "../../permits/hooks/useTableControls";
+import { APPLICATION_QUEUE_STATUSES, ApplicationQueueStatus } from "../types/ApplicationQueueStatus";
 import {
   claimApplicationInQueue,
   getApplicationsInQueue,
   getClaimedApplicationsInQueue,
   getUnclaimedApplicationsInQueue,
+  submitApplicationForReview,
   updateApplicationQueueStatus,
 } from "../apiManager/queueAPI";
-import { canViewApplicationQueue } from "../helpers/canViewApplicationQueue";
-import { CaseActivityType } from "../types/CaseActivityType";
-import { useNavigate } from "react-router-dom";
-import { ERROR_ROUTES } from "../../../routes/constants";
 
 const QUEUE_QUERY_KEYS_BASE = "queue";
 
+/*
+ * The queryKey structure is: ["queue", status?, { pagination, sorting }]
+ *
+ * eg. ["queue"] and ["queue", undefined] refers to all (ApplicationQueueStatus) queue items
+ * (regardless of pagination and sorting)
+ * 
+ * eg. ["queue", "IN_REVIEW"] only refers to "IN_REVIEW" queue items
+ */
 const QUEUE_QUERY_KEYS = {
-  ALL: (pagination: MRT_PaginationState, sorting: MRT_SortingState) => [
-    [QUEUE_QUERY_KEYS_BASE, pagination, sorting],
-  ],
-  CLAIMED: (pagination: MRT_PaginationState, sorting: MRT_SortingState) => [
-    [QUEUE_QUERY_KEYS_BASE, pagination, sorting],
-  ],
-  UNCLAIMED: (pagination: MRT_PaginationState, sorting: MRT_SortingState) => [
-    [QUEUE_QUERY_KEYS_BASE, pagination, sorting],
-  ],
-  DETAIL: (applicationNumber: string) => [
-    QUEUE_QUERY_KEYS_BASE,
-    { applicationNumber },
-  ],
+  ALL_ITEMS: [QUEUE_QUERY_KEYS_BASE] as const,
+  WITH_STATUS: (status?: ApplicationQueueStatus) => [
+    ...QUEUE_QUERY_KEYS.ALL_ITEMS,
+    status,
+  ] as const,
+  WITH_PAGINATION: (
+    pagination: MRT_PaginationState,
+    sorting: MRT_SortingState,
+    status?: ApplicationQueueStatus,
+  ) => [
+    ...QUEUE_QUERY_KEYS.WITH_STATUS(status),
+    { pagination, sorting },
+  ] as const,
 };
 
 /**
- * Hook that fetches all applications in queue (PENDING_REVIEW, IN_REVIEW) for staff and manages its pagination state.
+ * Hook that fetches all applications in queue (PENDING_REVIEW and IN_REVIEW) for staff and manages its pagination state.
  * This is the data that is consumed by the ApplicationsInReviewList component.
- * @returns All applications in queue(PENDING_REVIEW, IN_REVIEW) along with pagination state and setter
+ * @returns All applications in queue (PENDING_REVIEW and IN_REVIEW) along with pagination state and setter
  */
 export const useApplicationsInQueueQuery = () => {
   const { idirUserDetails, companyId } = useContext(OnRouteBCContext);
@@ -58,7 +69,7 @@ export const useApplicationsInQueueQuery = () => {
     useTableControls();
 
   const applicationsInQueueQuery = useQuery({
-    queryKey: QUEUE_QUERY_KEYS.ALL(pagination, sorting),
+    queryKey: QUEUE_QUERY_KEYS.WITH_PAGINATION(pagination, sorting),
     queryFn: () =>
       getApplicationsInQueue(
         {
@@ -93,7 +104,11 @@ export const useClaimedApplicationsInQueueQuery = () => {
     useTableControls({ pageSize: 25 });
 
   const claimedApplicationsInQueueQuery = useQuery({
-    queryKey: QUEUE_QUERY_KEYS.CLAIMED(pagination, sorting),
+    queryKey: QUEUE_QUERY_KEYS.WITH_PAGINATION(
+      pagination,
+      sorting,
+      APPLICATION_QUEUE_STATUSES.IN_REVIEW,
+    ),
     queryFn: () =>
       getClaimedApplicationsInQueue({
         page: pagination.pageIndex,
@@ -125,7 +140,11 @@ export const useUnclaimedApplicationsInQueueQuery = () => {
     useTableControls({ pageSize: 25 });
 
   const unclaimedApplicationsInQueueQuery = useQuery({
-    queryKey: QUEUE_QUERY_KEYS.UNCLAIMED(pagination, sorting),
+    queryKey: QUEUE_QUERY_KEYS.WITH_PAGINATION(
+      pagination,
+      sorting,
+      APPLICATION_QUEUE_STATUSES.PENDING_REVIEW,
+    ),
     queryFn: () =>
       getUnclaimedApplicationsInQueue({
         page: pagination.pageIndex,
@@ -188,13 +207,40 @@ export const useUpdateApplicationInQueueStatus = () => {
   });
 };
 
+/**
+ * Hook for submitting an application for review by adding it to the queue.
+ * @returns Mutation object that allows the application to be submitted for review
+ */
+export const useSubmitApplicationForReview = () => {
+  const { invalidate } = useInvalidateApplicationsInQueue();
+
+  return useMutation({
+    mutationFn: async (data: {
+      companyId: number;
+      applicationId: string;
+    }) => {
+      return submitApplicationForReview(
+        data.companyId,
+        data.applicationId,
+      );
+    },
+    onSuccess: () => {
+      invalidate();
+    },
+  });
+};
+
+/**
+ * Hook that allows all queue query keys to be invalidated.
+ * @returns Method that invalidates the query keys
+ */
 export const useInvalidateApplicationsInQueue = () => {
   const queryClient = useQueryClient();
 
   return {
     invalidate: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUEUE_QUERY_KEYS_BASE],
+        queryKey: QUEUE_QUERY_KEYS.ALL_ITEMS,
       });
     },
   };

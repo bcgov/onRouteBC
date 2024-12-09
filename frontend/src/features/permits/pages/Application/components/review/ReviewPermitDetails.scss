@@ -1,5 +1,4 @@
 @use "../../../../../../themes/orbcStyles";
-@import "../../../../../../themes/orbcStyles";
 
 @include orbcStyles.permit-main-box-style(".review-permit-details");
 @include orbcStyles.permit-left-box-style(".review-permit-details__header");
@@ -8,26 +7,31 @@
 .review-permit-details {
   &__body {
     .permit-dates {
-      gap: 40px;
-      padding-top: 24px;
-
       &__label {
-        font-weight: 600;
+        font-weight: bold;
+      }
+
+      &__duration {
+        margin-top: 1.5rem;
       }
     }
 
     .permit-expiry-banner {
-      width: 90%;
+      margin-top: 1.5rem;
     }
 
     .permit-error-banner {
       padding-top: 1.5rem;
       
       .bc-gov-alertbanner {
-        background-color: $bc-messages-red-background;
-        color: $bc-messages-red-text;
+        background-color: orbcStyles.$bc-messages-red-background;
+        color: orbcStyles.$bc-messages-red-text;
         margin-bottom: 0;
       }
+    }
+
+    .permit-conditions {
+      margin-top: 1.5rem;
     }
   }
 }

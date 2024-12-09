@@ -9,5 +9,6 @@ import "vitest-canvas-mock";
   return {
     VITE_DEPLOY_ENVIRONMENT: "docker",
     VITE_API_VEHICLE_URL: "http://localhost:5000",
+    VITE_POLICY_URL: "http://localhost:5002",
   };
 })();

@@ -94,7 +94,7 @@ export const ReusableUserInfoForm = ({
           className="my-info-form__input my-info-form__input--left"
         />
         <CustomFormComponent
-          type="number"
+          type="ext"
           feature={FEATURE}
           options={{
             name: "phone1Extension",
@@ -137,7 +137,7 @@ export const ReusableUserInfoForm = ({
           className="my-info-form__input my-info-form__input--left"
         />
         <CustomFormComponent
-          type="number"
+          type="ext"
           feature={FEATURE}
           options={{
             name: "phone2Extension",

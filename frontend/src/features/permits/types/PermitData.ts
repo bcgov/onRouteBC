@@ -5,6 +5,9 @@ import { PermitContactDetails } from "./PermitContactDetails";
 import { PermitVehicleDetails } from "./PermitVehicleDetails";
 import { PermitMailingAddress } from "./PermitMailingAddress";
 import { PermitCondition } from "./PermitCondition";
+import { PermittedCommodity } from "./PermittedCommodity";
+import { PermitVehicleConfiguration } from "./PermitVehicleConfiguration";
+import { PermittedRoute } from "./PermittedRoute";
 import { PermitLOA } from "./PermitLOA";
 
 export interface PermitData {
@@ -20,4 +23,8 @@ export interface PermitData {
   doingBusinessAs?: Nullable<string>;
   clientNumber?: Nullable<string>;
   loas?: Nullable<PermitLOA[]>;
+  permittedCommodity?: Nullable<PermittedCommodity>;
+  vehicleConfiguration?: Nullable<PermitVehicleConfiguration>;
+  permittedRoute?: Nullable<PermittedRoute>;
+  applicationNotes?: Nullable<string>;
 }

@@ -10,6 +10,22 @@
   "NaN": {
     "defaultMessage": "Must be a number"
   },
+  "greaterThan": {
+    "messageTemplate": "Must be greater than :val.",
+    "placeholders": [":val"]
+  },
+  "lessThan": {
+    "messageTemplate": "Must be less than :val.",
+    "placeholders": [":val"]
+  },
+  "greaterThanOrEq": {
+    "messageTemplate": "Must be greater than or equal to :val.",
+    "placeholders": [":val"]
+  },
+  "lessThanOrEq": {
+    "messageTemplate": "Must be less than or equal to :val.",
+    "placeholders": [":val"]
+  },
   "country": {
     "defaultMessage": "Invalid country code"
   },
@@ -60,7 +76,8 @@
     "length": {
       "messageTemplate": "Address length must be between :min-:max characters",
       "placeholders": [":min", ":max"]
-    }
+    },
+    "invalid": "You must enter a valid address."
   },
   "dba": {
     "defaultMessage": "Invalid DBA format",
@@ -118,6 +135,12 @@
       }
     }
   },
+  "licensedGVW": {
+    "max": {
+      "messageTemplate": "Can't Exceed :max",
+      "placeholders": [":max"]
+    }
+  },
   "upload": {
     "fileSize": {
       "exceeded": "File exceeds maximum size"
@@ -129,5 +152,11 @@
       "messageTemplate": "The :item must be uploaded",
       "placeholders": [":item"]
     }
+  },
+  "highway": {
+    "missing": "You must enter at least one highway."
+  },
+  "powerUnit": {
+    "required": "A Power Unit must be added."
   }
 }

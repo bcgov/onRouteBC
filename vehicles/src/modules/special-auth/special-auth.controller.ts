@@ -27,7 +27,6 @@ import {
 
 @ApiBearerAuth()
 @ApiTags('Special Authorization')
-@IsFeatureFlagEnabled('LOA')
 @Controller('companies/:companyId/special-auths')
 @ApiMethodNotAllowedResponse({
   description: 'The Special Authorizaion Api Method Not Allowed Response',
@@ -79,6 +78,7 @@ export class SpecialAuthController {
     ],
   })
   @Put('/lcv')
+  @IsFeatureFlagEnabled('LCV')
   async updateLcv(
     @Req() request: Request,
     @Param() { companyId }: CompanyIdPathParamDto,
@@ -107,6 +107,7 @@ export class SpecialAuthController {
       IDIRUserRole.SYSTEM_ADMINISTRATOR,
     ],
   })
+  @IsFeatureFlagEnabled('NO-FEE')
   @Put('/no-fee')
   async updateNoFee(
     @Req() request: Request,

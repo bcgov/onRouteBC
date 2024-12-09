@@ -1,4 +1,5 @@
 import { Nullable } from "../types/common";
+import { getDefaultRequiredVal } from "./util";
 
 /**
  * Check if two nullable values are different.
@@ -74,4 +75,22 @@ export const doUniqueArraysHaveSameObjects = <T, K extends (number | string)>(
   }
 
   return true;
+};
+
+/**
+ * Compare whether or not two ordered sequences are equal (ie. having same items in the same order).
+ * @param sequence1 First array of sequential items
+ * @param sequence2 Second array of sequential items
+ * @returns Whether or not the two sequences have the same items in the same order
+ */
+export const areOrderedSequencesEqual = <T>(
+  sequence1: Nullable<T[]>,
+  sequence2: Nullable<T[]>,
+  equalFn: (item1: T, item2: T) => boolean,
+) => {
+  const seq1 = getDefaultRequiredVal([], sequence1);
+  const seq2 = getDefaultRequiredVal([], sequence2);
+  
+  if (seq1.length !== seq2.length) return false;
+  return seq1.every((seqNumber, index) => equalFn(seqNumber, seq2[index]));
 };

@@ -112,6 +112,14 @@ export const APPLICATION_STEPS = {
 export type ApplicationStep =
   (typeof APPLICATION_STEPS)[keyof typeof APPLICATION_STEPS];
 
+export const APPLICATION_STEP_CONTEXTS = {
+  APPLY: 0,
+  QUEUE: 1,
+} as const;
+
+export type ApplicationStepContext =
+  (typeof APPLICATION_STEP_CONTEXTS)[keyof typeof APPLICATION_STEP_CONTEXTS];
+
 export const NEW_APPLICATION_SEGMENT = "new";
 export const APPLICATIONS_ROUTES = {
   BASE: APPLICATIONS_ROUTE_BASE,
@@ -219,4 +227,8 @@ export const ONROUTE_WEBPAGE_LINKS = {
   CONTACT_US: "https://onroutebc.gov.bc.ca",
   SERVICE_BC_OFFICE_LOCATIONS:
     "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/citizens-services/servicebc#locations",
+  LIST_OF_BC_HIGHWAYS:
+    "https://www2.gov.bc.ca/gov/content/transportation/transportation-reports-and-reference/reference-information/numbered-routes",
+  HEIGHT_CLEARANCE_TOOL:
+    "https://www.drivebc.ca/cvrp/?c=hct",
 };

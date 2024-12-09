@@ -1,0 +1,23 @@
+@use "../../../../../../themes/orbcStyles";
+
+.selected-vehicle-subtype-list {
+  overflow: visible;
+  box-shadow: none;
+  border-radius: 0;
+
+  & &__table {
+    width: 100%;
+    border: 1px solid orbcStyles.$bc-border-grey;
+    table-layout: fixed;
+  }
+
+  & &__header {
+    background-color: orbcStyles.$bc-background-light-grey;
+    font-weight: bold;
+    color: orbcStyles.$bc-black;
+  }
+
+  & &__cell {
+    color: orbcStyles.$bc-black;
+  }
+}

@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { AxiosError } from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
 
@@ -8,23 +7,27 @@ import { Banner } from "../../../../common/components/dashboard/components/banne
 import { ApplicationForm } from "../../pages/Application/ApplicationForm";
 import { ApplicationContext } from "../../context/ApplicationContext";
 import { ApplicationReview } from "../../pages/Application/ApplicationReview";
-import { useCompanyInfoQuery } from "../../../manageProfile/apiManager/hooks";
+import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
 import { Loading } from "../../../../common/pages/Loading";
-import { ErrorFallback } from "../../../../common/pages/ErrorFallback";
+import { ApplicationInQueueReview } from "../../../queue/components/ApplicationInQueueReview";
 import { useApplicationForStepsQuery } from "../../hooks/hooks";
 import { PERMIT_STATUSES } from "../../types/PermitStatus";
 import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { useFeatureFlagsQuery } from "../../../../common/hooks/hooks";
 import {
   DEFAULT_PERMIT_TYPE,
+  PERMIT_TYPES,
   PermitType,
   isPermitTypeValid,
 } from "../../types/PermitType";
+
 import {
+  APPLICATION_STEP_CONTEXTS,
   APPLICATION_STEPS,
   ApplicationStep,
+  ApplicationStepContext,
   ERROR_ROUTES,
 } from "../../../../routes/constants";
-import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
 
 const displayHeaderText = (stepKey: ApplicationStep) => {
   switch (stepKey) {
@@ -40,19 +43,23 @@ const displayHeaderText = (stepKey: ApplicationStep) => {
 
 export const ApplicationStepPage = ({
   applicationStep,
+  applicationStepContext,
 }: {
   applicationStep: ApplicationStep;
+  applicationStepContext: ApplicationStepContext;
 }) => {
-  const companyInfoQuery = useCompanyInfoQuery();
-  const companyId: number = getDefaultRequiredVal(
-    0,
-    applyWhenNotNullable(id => Number(id), getCompanyIdFromSession()),
-    companyInfoQuery.data?.companyId,
-  );
-
   // Get application number from route, if there is one (for edit applications)
   // or get the permit type for creating a new application
-  const { permitId, permitType } = useParams();
+  const { permitId, permitType, companyId: companyIdParam } = useParams();
+
+  const companyId: number = getDefaultRequiredVal(
+    0,
+    applyWhenNotNullable(id => Number(id), companyIdParam),
+    applyWhenNotNullable(id => Number(id), getCompanyIdFromSession()),
+  );
+
+  const { data: featureFlags } = useFeatureFlagsQuery();
+  const enableSTOS = featureFlags?.["STOS"] === "ENABLED";
 
   // Query for the application data whenever this page is rendered
   const {
@@ -85,43 +92,57 @@ export const ApplicationStepPage = ({
     DEFAULT_PERMIT_TYPE,
     isPermitTypeValid(permitType)
       ? (permitType?.toUpperCase() as PermitType)
-      : null,
+      : null, // when permitType in the url param is empty or not a valid permit type
     applicationData?.permitType,
   );
 
+  // Currently onRouteBC only handles TROS and TROW permits, and STOS only if feature flag is enabled
+  const isPermitTypeAllowed = () => {
+    const allowedPermitTypes: string[] = enableSTOS ? [
+      PERMIT_TYPES.TROS,
+      PERMIT_TYPES.TROW,
+      PERMIT_TYPES.STOS,
+    ] : [
+      PERMIT_TYPES.TROS,
+      PERMIT_TYPES.TROW,
+    ];
+
+    return allowedPermitTypes.includes(applicationPermitType);
+  };
+
   // Permit must be an application in progress in order to allow application-related edit/review/add to cart steps
-  // (ie. empty status for new application, or in progress)
+  // (ie. empty status for new application, or in progress and in queue)
   const isValidApplicationStatus = () => {
     return (
       !isInvalidApplication &&
       (!applicationData?.permitStatus ||
-        applicationData?.permitStatus === PERMIT_STATUSES.IN_PROGRESS)
+        applicationData?.permitStatus === PERMIT_STATUSES.IN_PROGRESS ||
+        applicationData?.permitStatus === PERMIT_STATUSES.IN_QUEUE
+      )
     );
   };
 
   const renderApplicationStep = () => {
     if (applicationStep === APPLICATION_STEPS.REVIEW) {
-      return <ApplicationReview />;
+      return applicationStepContext === APPLICATION_STEP_CONTEXTS.QUEUE ? (
+        <ApplicationInQueueReview applicationData={contextData.applicationData} />        
+      ) : (
+        <ApplicationReview
+          companyId={companyId}
+        />
+      );
     }
 
-    return <ApplicationForm permitType={applicationPermitType} />;
+    return (
+      <ApplicationForm
+        permitType={applicationPermitType}
+        companyId={companyId}
+      />
+    );
   };
 
-  if (isInvalidApplication || !isValidApplicationStatus()) {
+  if (isInvalidApplication || !isValidApplicationStatus() || !companyId || !isPermitTypeAllowed()) {
     return <Navigate to={ERROR_ROUTES.UNEXPECTED} />;
-  }
-
-  if (companyInfoQuery.isPending) {
-    return <Loading />;
-  }
-
-  if (companyInfoQuery.isError) {
-    if (companyInfoQuery.error instanceof AxiosError) {
-      if (companyInfoQuery.error.response?.status === 401) {
-        return <Navigate to={ERROR_ROUTES.UNAUTHORIZED} />;
-      }
-      return <ErrorFallback error={companyInfoQuery.error.message} />;
-    }
   }
 
   if (isLoading) {

@@ -1,17 +1,18 @@
+import { getDefaultRequiredVal } from "../../../common/helpers/util";
+import { getApplications } from "../../permits/apiManager/permitsAPI";
+import { ApplicationListItem } from "../../permits/types/application";
+import { CaseActivityType } from "../types/CaseActivityType";
+import { APPLICATION_QUEUE_API_ROUTES } from "./endpoints/endpoints";
 import {
   getCompanyIdFromSession,
   httpPOSTRequest,
 } from "../../../common/apiManager/httpRequestHandler";
-import { getDefaultRequiredVal } from "../../../common/helpers/util";
+
 import {
   Nullable,
   PaginatedResponse,
   PaginationAndFilters,
 } from "../../../common/types/common";
-import { getApplications } from "../../permits/apiManager/permitsAPI";
-import { ApplicationListItem } from "../../permits/types/application";
-import { CaseActivityType } from "../types/CaseActivityType";
-import { APPLICATION_QUEUE_API_ROUTES } from "./endpoints/endpoints";
 
 /**
  * Fetch all applications in queue.
@@ -103,4 +104,14 @@ export const claimApplicationInQueue = async (
     {},
   );
   return response;
+};
+
+export const submitApplicationForReview = async (
+  companyId: number,
+  applicationId: string,
+) => {
+  return await httpPOSTRequest(
+    APPLICATION_QUEUE_API_ROUTES.SUBMIT_FOR_REVIEW(companyId, applicationId),
+    {},
+  );
 };

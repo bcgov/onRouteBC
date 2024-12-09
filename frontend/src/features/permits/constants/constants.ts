@@ -4,7 +4,9 @@ import {
   PERMIT_CATEGORIES,
   PermitCategory,
 } from "../types/PermitCategory";
+
 import {
+  PERMIT_TYPES,
   PermitType,
   TERM_PERMIT_LIST,
   getPermitTypeShortName,
@@ -37,15 +39,21 @@ export const ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS: PermitTypeChooseFromItem[] = [
       label: getPermitTypeShortName(permitType),
     })),
   },
+  {
+    value: PERMIT_CATEGORIES.SINGLE_TRIP,
+    label: getPermitCategoryName(PERMIT_CATEGORIES.SINGLE_TRIP),
+    items: [
+      {
+        value: PERMIT_TYPES.STOS,
+        label: getPermitTypeShortName(PERMIT_TYPES.STOS),
+      },
+    ],
+    // items: SINGLE_TRIP_PERMIT_LIST.map((permitType: PermitType) => ({
+    //   value: permitType,
+    //   label: getPermitTypeShortName(permitType),
+    // })),
+  },
   /* TODO uncomment these when required */
-  // {
-  //   value: PERMIT_CATEGORIES.SINGLE_TRIP,
-  //   label: getPermitCategoryName(PERMIT_CATEGORIES.SINGLE_TRIP),
-  //   items: SINGLE_TRIP_PERMIT_LIST.map((permitType: PermitType) => ({
-  //     value: permitType,
-  //     label: getPermitTypeShortName(permitType),
-  //   })),
-  // },
   // {
   //   value: PERMIT_CATEGORIES.NON_RESIDENT,
   //   label: getPermitCategoryName(PERMIT_CATEGORIES.NON_RESIDENT),
@@ -68,11 +76,11 @@ export interface PermitTypeChooseFromItem {
 }
 
 export const BASE_DAYS_IN_YEAR = 365;
-export const COMMON_MIN_DURATION = 30;
+export const TERM_PERMIT_MIN_DURATION = 30;
 export const TERM_DURATION_INTERVAL_DAYS = 30;
 
-export const COMMON_DURATION_OPTIONS = [
-  { value: COMMON_MIN_DURATION, label: "30 Days" },
+export const TERM_PERMIT_DURATION_OPTIONS = [
+  { value: TERM_PERMIT_MIN_DURATION, label: "30 Days" },
   { value: 60, label: "60 Days" },
   { value: 90, label: "90 Days" },
   { value: 120, label: "120 Days" },
@@ -92,4 +100,23 @@ export const LCV_CONDITION = {
   conditionLink: "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1260",
   checked: true,
   disabled: true,
+};
+
+export const LCV_VEHICLE_SUBTYPES = [
+  {
+    typeCode: "LCVRMDB",
+    type: "Long Combination Vehicles (LCV) - Rocky Mountain Doubles",
+    description: "LCV vehicles for approved carriers and routes only."
+  },
+  {
+    typeCode: "LCVTPDB",
+    type: "Long Combination Vehicles (LCV) - Turnpike Doubles",
+    description: "LCV vehicles for approved carriers and routes only."
+  },
+];
+
+export const DEFAULT_COMMODITY_SELECT_VALUE = "-";
+export const DEFAULT_COMMODITY_SELECT_OPTION = {
+  value: DEFAULT_COMMODITY_SELECT_VALUE,
+  label: "Select",
 };

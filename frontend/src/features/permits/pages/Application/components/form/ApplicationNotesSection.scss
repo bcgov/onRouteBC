@@ -1,0 +1,31 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".application-notes-section");
+@include orbcStyles.permit-left-box-style(".application-notes-section__header");
+@include orbcStyles.permit-right-box-style(".application-notes-section__body");
+
+.application-notes-section {
+  & &__input {
+    max-width: 43.125rem;
+
+    .custom-form-control {
+      margin: 1.5rem 0 0 0;
+    }
+  }
+
+  & &__info {
+    color: orbcStyles.$bc-black;
+
+    .application-notes-info {
+      &__details {
+        font-weight: normal;
+        font-size: 1rem;
+        margin: 0;
+
+        &--info {
+          margin-top: 0.5rem;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+@use "../../../../../../../themes/orbcStyles";
+
+.vehicle-details {
+  display: flex;
+  flex-direction: column;
+
+  & &__vehicle-selection {
+    display: flex;
+    justify-content: space-between;
+    max-width: 30.625rem;
+
+    .select-unit-or-plate {
+      margin: 0;
+      max-width: 11.375rem;
+      width: 100%;
+    }
+
+    .select-vehicle-dropdown {
+      margin: 0;
+      max-width: 16.75rem;
+      width: 100%;
+    }
+  }
+
+  & &__input {
+    max-width: 30.625rem;
+
+    .custom-form-control {
+      margin: 1.5rem 0 0 0;
+    }
+  }
+
+  .save-to-inventory {
+    margin-top: 1.5rem;
+
+    &__label {
+      font-size: 1rem;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    &__radio-btns {
+      display: flex;
+    }
+  }
+}

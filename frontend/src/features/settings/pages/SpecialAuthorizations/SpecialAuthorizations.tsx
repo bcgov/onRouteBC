@@ -11,10 +11,12 @@ import { ExpiredLOAModal } from "../../components/SpecialAuthorizations/LOA/expi
 import { DeleteConfirmationDialog } from "../../../../common/components/dialog/DeleteConfirmationDialog";
 import { LOASteps } from "./LOA/LOASteps";
 import { useFetchLOAs, useRemoveLOAMutation } from "../../hooks/LOA";
-import { getDefaultNullableVal, getDefaultRequiredVal } from "../../../../common/helpers/util";
-import { DEFAULT_NO_FEE_PERMIT_TYPE, NoFeePermitType } from "../../types/SpecialAuthorization";
+import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import {
+  DEFAULT_NO_FEE_PERMIT_TYPE,
+  NoFeePermitType,
+} from "../../types/SpecialAuthorization";
 import { NoFeePermitsSection } from "../../components/SpecialAuthorizations/NoFeePermits/NoFeePermitsSection";
-import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { LCVSection } from "../../components/SpecialAuthorizations/LCV/LCVSection";
 import { downloadLOA } from "../../apiManager/loa";
 import {
@@ -22,69 +24,99 @@ import {
   useUpdateLCV,
   useUpdateNoFee,
 } from "../../hooks/specialAuthorizations";
+import { usePermissionMatrix } from "../../../../common/authentication/PermissionMatrix";
+import { useFeatureFlagsQuery } from "../../../../common/hooks/hooks";
+import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 
-import {
-  canUpdateLCVFlag,
-  canUpdateLOA,
-  canUpdateNoFeePermitsFlag,
-  canViewLCVFlag,
-  canViewLOA,
-  canViewNoFeePermitsFlag,
-} from "../../helpers/permissions";
+export const SpecialAuthorizations = ({ companyId }: { companyId: number }) => {
+  const { idirUserDetails } = useContext(OnRouteBCContext);
+  const isStaffUser = Boolean(idirUserDetails?.userRole);
+  const { data: featureFlags } = useFeatureFlagsQuery();
+  const { data: specialAuthorizations, refetch: refetchSpecialAuth } =
+    useFetchSpecialAuthorizations(
+      companyId,
+      // At least one of the special auth feature flags must be enabled
+      // to decide whether to enable the query.
+      featureFlags?.["NO-FEE"] === "ENABLED" ||
+        featureFlags?.["LCV"] === "ENABLED",
+    );
 
-export const SpecialAuthorizations = ({
-  companyId,
-}: {
-  companyId: number;
-}) => {
-  const {
-    data: specialAuthorizations,
-    refetch: refetchSpecialAuth,
-  } = useFetchSpecialAuthorizations(companyId);
-
-  const noFeeType = getDefaultRequiredVal(null, specialAuthorizations?.noFeeType);
-  const isLcvAllowed = getDefaultRequiredVal(false, specialAuthorizations?.isLcvAllowed);
+  const noFeeType = getDefaultRequiredVal(
+    null,
+    specialAuthorizations?.noFeeType,
+  );
+  const isLcvAllowed = getDefaultRequiredVal(
+    false,
+    specialAuthorizations?.isLcvAllowed,
+  );
 
   const [showExpiredLOAs, setShowExpiredLOAs] = useState<boolean>(false);
   const [loaToDelete, setLoaToDelete] = useState<RequiredOrNull<number>>(null);
   const [showLOASteps, setShowLOASteps] = useState<boolean>(false);
   const [loaToEdit, setLoaToEdit] = useState<RequiredOrNull<number>>(null);
 
-  const {
-    userClaims,
-    idirUserDetails,
-    userDetails,
-  } = useContext(OnRouteBCContext);
+  const canEditNoFeePermits = usePermissionMatrix({
+    featureFlag: "NO-FEE",
+    permissionMatrixKeys: {
+      permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+      permissionMatrixFunctionKey: "UPDATE_NO_FEE_FLAG",
+    },
+  });
 
-  const canEditNoFeePermits = canUpdateNoFeePermitsFlag(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
+  const canViewNoFeePermits = usePermissionMatrix({
+    featureFlag: "NO-FEE",
+    permissionMatrixKeys: isStaffUser
+      ? {
+          permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+          permissionMatrixFunctionKey: "VIEW_SPECIAL_AUTHORIZATIONS",
+        }
+      : {
+          permissionMatrixFeatureKey: "MANAGE_PROFILE",
+          permissionMatrixFunctionKey: "VIEW_SPECIAL_AUTHORIZATIONS",
+        },
+  });
 
-  const canViewNoFeePermits = canViewNoFeePermitsFlag(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
+  const canUpdateLCV = usePermissionMatrix({
+    featureFlag: "LCV",
+    permissionMatrixKeys: {
+      permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+      permissionMatrixFunctionKey: "REMOVE_LCV_FLAG",
+    },
+  });
 
-  const canUpdateLCV = canUpdateLCVFlag(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
+  const canViewLCV = usePermissionMatrix({
+    featureFlag: "LCV",
+    permissionMatrixKeys: isStaffUser
+      ? {
+          permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+          permissionMatrixFunctionKey: "VIEW_SPECIAL_AUTHORIZATIONS",
+        }
+      : {
+          permissionMatrixFeatureKey: "MANAGE_PROFILE",
+          permissionMatrixFunctionKey: "VIEW_SPECIAL_AUTHORIZATIONS",
+        },
+  });
 
-  const canViewLCV = canViewLCVFlag(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
+  const canReadLOA = usePermissionMatrix({
+    featureFlag: "LOA",
+    permissionMatrixKeys: isStaffUser
+      ? {
+          permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+          permissionMatrixFunctionKey: "VIEW_LOA",
+        }
+      : {
+          permissionMatrixFeatureKey: "MANAGE_PROFILE",
+          permissionMatrixFunctionKey: "VIEW_LOA",
+        },
+  });
 
-  const canWriteLOA = canUpdateLOA(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
-
-  const canReadLOA = canViewLOA(
-    userClaims,
-    getDefaultNullableVal(idirUserDetails?.userRole, userDetails?.userRole),
-  );
+  const canWriteLOA = usePermissionMatrix({
+    featureFlag: "LOA",
+    permissionMatrixKeys: {
+      permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+      permissionMatrixFunctionKey: "EDIT_AN_LOA",
+    },
+  });
 
   const updateNoFeeMutation = useUpdateNoFee();
   const updateLCVMutation = useUpdateLCV();

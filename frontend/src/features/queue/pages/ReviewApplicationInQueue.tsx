@@ -9,7 +9,7 @@ import {
   getDefaultRequiredVal,
 } from "../../../common/helpers/util";
 import { ERROR_ROUTES } from "../../../routes/constants";
-import { deserializeApplicationResponse } from "../../permits/helpers/deserializeApplication";
+import { deserializeApplicationResponse } from "../../permits/helpers/serialize/deserializeApplication";
 import { UniversalUnexpected } from "../../../common/pages/UniversalUnexpected";
 
 export const ReviewApplicationInQueue = () => {

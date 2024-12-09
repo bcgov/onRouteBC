@@ -13,6 +13,7 @@ import {
   removeLOADocument,
   updateLOA,
 } from "../apiManager/loa";
+import { useFeatureFlagsQuery } from "../../../common/hooks/hooks";
 
 const QUERY_KEYS = {
   LOAS: (expired: boolean) => ["loas", expired],
@@ -26,11 +27,13 @@ const QUERY_KEYS = {
  * @returns Query result of the company's LOAs
  */
 export const useFetchLOAs = (companyId: number | string, expired: boolean) => {
+  const {data: featureFlags} = useFeatureFlagsQuery();
   return useQuery({
     queryKey: QUERY_KEYS.LOAS(expired),
     queryFn: () => getLOAs(companyId, expired),
     retry: false,
     refetchOnMount: "always",
+    enabled: featureFlags?.['LOA'] === 'ENABLED',
     refetchOnWindowFocus: false,
   });
 };

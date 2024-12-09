@@ -9,18 +9,18 @@ import { CountryAndProvince } from "../../../../common/components/form/CountryAn
 import { CustomFormComponent } from "../../../../common/components/form/CustomFormComponents";
 import { SnackBarContext } from "../../../../App";
 import { VEHICLES_ROUTES } from "../../../../routes/constants";
-import { Nullable } from "../../../../common/types/common";
+import { now } from "../../../../common/helpers/formatDate";
+import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { convertToNumberIfValid } from "../../../../common/helpers/numeric/convertToNumberIfValid";
+import {
+  disableMouseWheelInputOnNumberField,
+} from "../../../../common/helpers/disableMouseWheelInputOnNumberField";
+
 import {
   useTrailerSubTypesQuery,
   useAddTrailerMutation,
   useUpdateTrailerMutation,
 } from "../../hooks/trailers";
-
-import {
-  getDefaultRequiredVal,
-  getDefaultNullableVal,
-  convertToNumberIfValid,
-} from "../../../../common/helpers/util";
 
 import {
   invalidNumber,
@@ -29,7 +29,6 @@ import {
   invalidYearMin,
   requiredMessage,
 } from "../../../../common/helpers/validationMessages";
-import { disableMouseWheelInputOnNumberField } from "../../../../common/helpers/disableMouseWheelInputOnNumberField";
 
 const FEATURE = "trailer";
 
@@ -41,6 +40,8 @@ export const TrailerForm = ({
   trailer?: Trailer;
 }) => {
   const isEditMode = Boolean(trailer?.trailerId);
+  const getDefaultYear = () => now().year();
+  const defaultYear = getDefaultYear();
 
   // If data was passed to this component, then use that data, otherwise set fields to empty
   const trailerDefaultValues = {
@@ -51,8 +52,8 @@ export const TrailerForm = ({
     plate: getDefaultRequiredVal("", trailer?.plate),
     trailerTypeCode: getDefaultRequiredVal("", trailer?.trailerTypeCode),
     vin: getDefaultRequiredVal("", trailer?.vin),
-    year: getDefaultNullableVal(trailer?.year),
-    emptyTrailerWidth: getDefaultNullableVal(trailer?.emptyTrailerWidth),
+    year: convertToNumberIfValid(trailer?.year, defaultYear),
+    emptyTrailerWidth: convertToNumberIfValid(trailer?.emptyTrailerWidth, null),
   };
 
   const formMethods = useForm<Trailer>({
@@ -77,11 +78,11 @@ export const TrailerForm = ({
         trailer: {
           ...trailerToBeUpdated,
           // need to explicitly convert form values to number here (since we can't use valueAsNumber prop)
-          year: !isNaN(Number(data.year)) ? Number(data.year) : data.year,
+          year: convertToNumberIfValid(data.year, defaultYear),
           emptyTrailerWidth: convertToNumberIfValid(
             data.emptyTrailerWidth,
             null,
-          ) as Nullable<number>,
+          ),
         },
       });
       if (result.status === 200) {
@@ -100,11 +101,11 @@ export const TrailerForm = ({
         trailer: {
           ...trailerToBeAdded,
           // need to explicitly convert form values to number here (since we can't use valueAsNumber prop)
-          year: !isNaN(Number(data.year)) ? Number(data.year) : data.year,
+          year: convertToNumberIfValid(data.year, defaultYear),
           emptyTrailerWidth: convertToNumberIfValid(
             data.emptyTrailerWidth,
             null,
-          ) as Nullable<number>,
+          ),
         },
       });
 

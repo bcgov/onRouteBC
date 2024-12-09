@@ -176,25 +176,6 @@ export const streamDownloadFile = async (response: Response) => {
 };
 
 /**
- * Convers a string to a number.
- * (Applicable for number fields in forms).
- *
- * @param str The string value.
- * @param valueToReturnWhenInvalid The value to return if invalid.
- * @returns A number or valueToReturnWhenInvalid.
- */
-export const convertToNumberIfValid = (
-  str?: Nullable<string>,
-  valueToReturnWhenInvalid?: 0 | Nullable<number> | Nullable<string>,
-) => {
-  // return input as a number if it's a valid number value,
-  // or original value if invalid number
-  return str != null && str !== "" && !isNaN(Number(str))
-    ? Number(str)
-    : valueToReturnWhenInvalid;
-};
-
-/**
  * Returns a label for the userRole.
  * @param userRole The userRole the user belongs to.
  * @returns A string representing the label of the user.

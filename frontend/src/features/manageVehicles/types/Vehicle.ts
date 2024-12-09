@@ -27,7 +27,7 @@ export interface BaseVehicle {
 
 export interface PowerUnit extends BaseVehicle {
   powerUnitId?: string;
-  licensedGvw?: number;
+  licensedGvw?: Nullable<number>;
   steerAxleTireSize?: Nullable<number>;
   powerUnitTypeCode: string;
 }

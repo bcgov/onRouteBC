@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AxiosError } from "axios";
 import { MRT_PaginationState } from "material-react-table";
+import { useNavigate } from "react-router-dom";
 import {
   useQueryClient,
   useMutation,
@@ -8,21 +9,27 @@ import {
   keepPreviousData,
 } from "@tanstack/react-query";
 
-import { Application, ApplicationFormData } from "../types/application";
 import { IssuePermitsResponse } from "../types/permit";
 import { StartTransactionResponseData } from "../types/payment";
+import { isPermitTypeValid } from "../types/PermitType";
+import { isPermitIdNumeric } from "../helpers/permitState";
+import { deserializeApplicationResponse } from "../helpers/serialize/deserializeApplication";
+import { deserializePermitResponse } from "../helpers/serialize/deserializePermit";
+import { AmendPermitFormData } from "../pages/Amend/types/AmendPermitFormData";
+import { Nullable, Optional } from "../../../common/types/common";
+import { useTableControls } from "./useTableControls";
+import { getDefaultRequiredVal } from "../../../common/helpers/util";
+import {
+  Application,
+  ApplicationFormData,
+} from "../types/application";
+
 import {
   APPLICATION_STEPS,
   ApplicationStep,
   ERROR_ROUTES,
 } from "../../../routes/constants";
-import { isPermitTypeValid } from "../types/PermitType";
-import { isPermitIdNumeric } from "../helpers/permitState";
-import { deserializeApplicationResponse } from "../helpers/deserializeApplication";
-import { deserializePermitResponse } from "../helpers/deserializePermit";
-import { AmendPermitFormData } from "../pages/Amend/types/AmendPermitFormData";
-import { Nullable, Optional } from "../../../common/types/common";
-import { useTableControls } from "./useTableControls";
+
 import {
   getApplication,
   getPermit,
@@ -39,8 +46,6 @@ import {
   resendPermit,
   getPendingPermits,
 } from "../apiManager/permitsAPI";
-import { getDefaultRequiredVal } from "../../../common/helpers/util";
-import { useNavigate } from "react-router-dom";
 
 const QUERY_KEYS = {
   PERMIT_DETAIL: (
@@ -63,7 +68,7 @@ const QUERY_KEYS = {
  */
 export const useSaveApplicationMutation = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  
   return useMutation({
     mutationFn: async ({
       data,
@@ -72,33 +77,16 @@ export const useSaveApplicationMutation = () => {
       data: ApplicationFormData;
       companyId: number;
     }) => {
-      const res = data.permitId
+      return data.permitId
         ? await updateApplication(data, data.permitId, companyId)
-        : await createApplication(data, companyId);
-
+        : await createApplication(data, companyId);      
+    },
+    onSuccess: (res) => {
       if (res.status === 200 || res.status === 201) {
         queryClient.invalidateQueries({
           queryKey: ["application"],
         });
-
-        return {
-          application: deserializeApplicationResponse(res.data),
-          status: res.status,
-        };
-      } else {
-        return {
-          application: null,
-          status: res.status,
-        };
       }
-    },
-    onError: (error: AxiosError) => {
-      console.error(error);
-      navigate(ERROR_ROUTES.UNEXPECTED, {
-        state: {
-          correlationId: error?.response?.headers["x-correlation-id"],
-        },
-      });
     },
   });
 };

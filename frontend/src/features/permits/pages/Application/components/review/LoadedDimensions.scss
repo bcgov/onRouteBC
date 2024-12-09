@@ -1,0 +1,28 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".review-loaded-dimensions");
+@include orbcStyles.permit-left-box-style(".review-loaded-dimensions__header");
+@include orbcStyles.permit-right-box-style(".review-loaded-dimensions__body");
+
+.review-loaded-dimensions {
+  &__body {
+    display: grid;
+    grid-template-columns: repeat(3, [col] 1fr);
+    row-gap: 1rem;
+    
+    .loaded-dimension {
+      &__label {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@media (width < 370px) {
+  .review-loaded-dimensions {
+    &__body {
+      max-width: 100%;
+      min-width: 100%;
+    }
+  }
+}

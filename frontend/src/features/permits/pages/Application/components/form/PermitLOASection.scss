@@ -5,15 +5,9 @@
 @include orbcStyles.permit-right-box-style(".permit-loa-section__body");
 
 .permit-loa-section {
-  & &__header {
-    h3 {
-      padding-top: 1rem;
-    }
-  }
-
   .loa-title {
     color: orbcStyles.$bc-black;
-    padding-top: 1rem;
+    display: flex;
 
     &__title {
       font-weight: bold;

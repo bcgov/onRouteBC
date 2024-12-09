@@ -1,0 +1,25 @@
+@use "../../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".loaded-dimensions-section");
+@include orbcStyles.permit-left-box-style(".loaded-dimensions-section__header");
+@include orbcStyles.permit-right-box-style(".loaded-dimensions-section__body");
+
+.loaded-dimensions-section {
+  & &__input-row {
+    display: flex;
+    margin-top: 1.5rem;
+
+    &--first {
+      margin-top: 0;
+    }
+  }
+
+  & &__input {
+    max-width: 14.0625rem;
+    margin: 0 0 0 2.5rem;
+
+    &--first {
+      margin: 0;
+    }
+  }
+}

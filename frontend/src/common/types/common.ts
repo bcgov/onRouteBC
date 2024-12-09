@@ -146,3 +146,11 @@ export type Nullable<T> = Optional<RequiredOrNull<T>>;
 export type NullableFields<T> = {
   [P in keyof T]?: Nullable<T[P]>;
 };
+
+export const isNull = <T>(val?: Nullable<T>) => {
+  return !val && (typeof val !== "undefined") && val == null;
+};
+
+export const isUndefined = <T>(val?: Nullable<T>) => {
+  return (typeof val === "undefined");
+};

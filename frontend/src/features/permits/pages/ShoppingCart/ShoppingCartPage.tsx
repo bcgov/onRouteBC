@@ -4,7 +4,6 @@ import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 
 import "./ShoppingCartPage.scss";
-import { ApplicationContext } from "../../context/ApplicationContext";
 import { isZeroAmount } from "../../helpers/feeSummary";
 import { PermitPayFeeSummary } from "../Application/components/pay/PermitPayFeeSummary";
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
@@ -66,7 +65,6 @@ const AVAILABLE_CV_PAYMENT_METHODS = [PAYMENT_METHOD_TYPE_CODE.WEB];
 
 export const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const { applicationData } = useContext(ApplicationContext);
   const { idirUserDetails, userDetails } = useContext(OnRouteBCContext);
   const companyId: number = applyWhenNotNullable(id => Number(id), getCompanyIdFromSession(), 0);
   const isStaffActingAsCompany = Boolean(idirUserDetails?.userRole);
@@ -418,7 +416,6 @@ export const ShoppingCartPage = () => {
 
           <PermitPayFeeSummary
             calculatedFee={selectedTotalFee}
-            permitType={applicationData?.permitType}
             selectedItemsCount={selectedApplications.length}
             onPay={handleSubmit(handlePay)}
             transactionPending={startTransactionMutation.isPending}

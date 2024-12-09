@@ -1,27 +1,27 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import isEmail from "validator/lib/isEmail";
 
 import "./ContactDetails.scss";
 import { InfoBcGovBanner } from "../../../../common/components/banners/InfoBcGovBanner";
 import { CustomFormComponent } from "../../../../common/components/form/CustomFormComponents";
+import { BANNER_MESSAGES } from "../../../../common/constants/bannerMessages";
 import {
   invalidEmail,
   invalidExtensionLength,
   invalidPhoneLength,
   requiredMessage,
 } from "../../../../common/helpers/validationMessages";
-import { PHONE_WIDTH, EXT_WIDTH } from "../../../../themes/orbcStyles";
-import { BANNER_MESSAGES } from "../../../../common/constants/bannerMessages";
-import isEmail from "validator/lib/isEmail";
 
 export const ContactDetails = ({ feature }: { feature: string }) => {
   return (
     <Box className="contact-details-form">
       <Box className="contact-details-form__header">
-        <Typography variant={"h3"}>Contact Information</Typography>
+        <h3>Contact Information</h3>
       </Box>
 
       <Box className="contact-details-form__body">
         <CustomFormComponent
+          className="contact-details-form__input contact-details-form__input--first-name"
           type="input"
           feature={feature}
           options={{
@@ -34,6 +34,7 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
         />
 
         <CustomFormComponent
+          className="contact-details-form__input"
           type="input"
           feature={feature}
           options={{
@@ -45,8 +46,9 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
           }}
         />
 
-        <div className="mp-side-by-side-container">
+        <div className="side-by-side-inputs">
           <CustomFormComponent
+            className="side-by-side-inputs__left-input"
             type="phone"
             feature={feature}
             options={{
@@ -61,12 +63,12 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
               },
 
               label: "Phone Number",
-              width: PHONE_WIDTH,
             }}
           />
 
           <CustomFormComponent
-            type="number"
+            className="side-by-side-inputs__right-input"
+            type="ext"
             feature={feature}
             options={{
               name: "permitData.contactDetails.phone1Extension",
@@ -81,13 +83,13 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
                 },
               },
               label: "Ext",
-              width: EXT_WIDTH,
             }}
           />
         </div>
 
-        <div className="mp-side-by-side-container">
+        <div className="side-by-side-inputs">
           <CustomFormComponent
+            className="side-by-side-inputs__left-input"
             type="phone"
             feature={feature}
             options={{
@@ -103,12 +105,12 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
                 },
               },
               label: "Alternate Number",
-              width: PHONE_WIDTH,
             }}
           />
 
           <CustomFormComponent
-            type="number"
+            className="side-by-side-inputs__right-input"
+            type="ext"
             feature={feature}
             options={{
               name: "permitData.contactDetails.phone2Extension",
@@ -123,14 +125,17 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
                 },
               },
               label: "Ext",
-              width: EXT_WIDTH,
             }}
           />
         </div>
 
-        <InfoBcGovBanner msg={BANNER_MESSAGES.PERMIT_SEND_TO} />
+        <InfoBcGovBanner
+          className="contact-details-form__info"
+          msg={BANNER_MESSAGES.PERMIT_SEND_TO}
+        />
 
         <CustomFormComponent
+          className="contact-details-form__input contact-details-form__input--company-email"
           type="input"
           feature={feature}
           options={{
@@ -149,6 +154,7 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
         />
 
         <CustomFormComponent
+          className="contact-details-form__input"
           type="input"
           feature={feature}
           options={{
@@ -168,13 +174,13 @@ export const ContactDetails = ({ feature }: { feature: string }) => {
         />
 
         <CustomFormComponent
+          className="contact-details-form__input contact-details-form__input--fax"
           type="phone"
           feature={feature}
           options={{
             name: "permitData.contactDetails.fax",
             rules: { required: false },
             label: "Fax",
-            width: PHONE_WIDTH,
           }}
         />
       </Box>

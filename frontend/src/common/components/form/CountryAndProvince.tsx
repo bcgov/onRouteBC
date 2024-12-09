@@ -2,9 +2,9 @@ import { useFormContext, FieldPath } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { COUNTRIES_THAT_SUPPORT_PROVINCE } from "../../constants/countries";
 
-import CountriesAndStates from "../../constants/countries_and_states.json";
+import { COUNTRIES } from "../../constants/countries";
+import { countrySupportsProvinces } from "../../helpers/countries/countrySupportsProvinces";
 import { DEFAULT_WIDTH } from "../../../themes/bcGovStyles";
 import { CustomFormComponent } from "./CustomFormComponents";
 import { Nullable, ORBC_FormTypes } from "../../types/common";
@@ -14,32 +14,11 @@ import {
   requiredMessage,
 } from "../../helpers/validationMessages";
 
-/**
- * The props that can be passed to the country and provinces subsection of a form.
- */
 interface CountryAndProvinceProps {
-  /**
-   * Name of the feature that the field belongs to.
-   * This name is used for Id's and keys.
-   * Example: feature={"profile"}
-   */
   feature: string;
-
-  /**
-   * The value for the width of the select box
-   */
   width?: string;
-
-  /**
-   * Name used for the API call. Example: countryField="primaryContact.countryCode"
-   */
   countryField: string;
   provinceField: string;
-
-  /**
-   * Boolean for react hook form rules. Example-> rules: { required: isCountryRequired }
-   * Should default to true
-   */
   isCountryRequired?: boolean;
   isProvinceRequired?: boolean;
   countryClassName?: string;
@@ -50,9 +29,6 @@ interface CountryAndProvinceProps {
 
 /**
  * The CountryAndProvince component provides form fields for country and province.
- * This implementation uses {@link  COUNTRIES_THAT_SUPPORT_PROVINCE} to display or hide
- * the province field.
- *
  * @returns A react component with the country and province fields.
  */
 export const CountryAndProvince = <T extends ORBC_FormTypes>({
@@ -68,10 +44,6 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
   readOnly,
 }: CountryAndProvinceProps): JSX.Element => {
   const { resetField, watch, setValue } = useFormContext();
-
-  const countrySupportsProvinces = (country: string) =>
-    COUNTRIES_THAT_SUPPORT_PROVINCE.includes(country);
-
   const countrySelected = watch(countryField);
   const provinceSelected = watch(provinceField);
 
@@ -130,7 +102,7 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
    * @param selectedCountry string representing the country
    */
   const getProvinces = useCallback(function (selectedCountry: string) {
-    return CountriesAndStates.filter(
+    return COUNTRIES.filter(
       (country) => country.code === selectedCountry,
     ).flatMap((country) => country.states);
   }, []);
@@ -173,7 +145,7 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
           label: "Country",
           width: width,
         }}
-        menuOptions={CountriesAndStates.map((country) => (
+        menuOptions={COUNTRIES.map((country) => (
           <MenuItem key={`country-${country.name}`} value={country.code}>
             {country.name}
           </MenuItem>

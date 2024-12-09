@@ -237,10 +237,10 @@ const MANAGE_SETTINGS = {
    * Special Authorizations Tab
    */
   VIEW_SPECIAL_AUTHORIZATIONS: { allowedIDIRRoles: ALL_IDIR_ROLES },
-  ADD_NO_FEE_FLAG: { allowedIDIRRoles: [SA, FIN, HQA] },
-  UPDATE_NO_FEE_FLAG: { allowedIDIRRoles: [SA, FIN, HQA] },
-  ADD_LCV_FLAG: { allowedIDIRRoles: [HQA] },
-  REMOVE_LCV_FLAG: { allowedIDIRRoles: [HQA] },
+  ADD_NO_FEE_FLAG: { allowedIDIRRoles: [SA, HQA] },
+  UPDATE_NO_FEE_FLAG: { allowedIDIRRoles: [SA, HQA] },
+  ADD_LCV_FLAG: { allowedIDIRRoles: [SA, HQA] },
+  REMOVE_LCV_FLAG: { allowedIDIRRoles: [SA, HQA] },
   ADD_AN_LOA: { allowedIDIRRoles: [SA, HQA] },
   EDIT_AN_LOA: { allowedIDIRRoles: [SA, HQA] },
   VIEW_LOA: { allowedIDIRRoles: ALL_IDIR_ROLES },

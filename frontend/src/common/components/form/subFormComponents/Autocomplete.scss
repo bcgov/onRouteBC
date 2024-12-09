@@ -1,0 +1,37 @@
+@use "../../../../themes/orbcStyles";
+
+.autocomplete {
+  & &__label {
+    color: orbcStyles.$bc-black;
+    font-weight: bold;
+    margin: 0 0 0.5rem 0;
+  }
+
+  &#{&}--error &__label {
+    color: orbcStyles.$bc-black;
+  }
+
+  &#{&}--error &__autocomplete {
+    &:hover {
+      fieldset {
+        border: 2px solid orbcStyles.$bc-red;   
+      }
+    }
+
+    fieldset {
+      border: 2px solid orbcStyles.$bc-red;   
+    }
+  }
+
+  & &__autocomplete {
+    fieldset {
+      border: 2px solid orbcStyles.$bc-text-box-border-grey;   
+    }
+
+    &:focus-within {
+      fieldset {
+        border: 2px solid orbcStyles.$focus-blue;   
+      }
+    }
+  }
+}

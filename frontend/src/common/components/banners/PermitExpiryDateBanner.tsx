@@ -1,5 +1,3 @@
-import { Box, Typography } from "@mui/material";
-
 import "./PermitExpiryDateBanner.scss";
 
 export const PermitExpiryDateBanner = ({
@@ -8,13 +6,17 @@ export const PermitExpiryDateBanner = ({
   expiryDate: string;
 }) => {
   return (
-    <Box className="permit-expiry-date-banner">
-      <div>
-        <Typography variant="h5">PERMIT EXPIRY DATE</Typography>
-        <Typography variant="h4" data-testid="permit-expiry-date">
-          {expiryDate}
-        </Typography>
-      </div>
-    </Box>
+    <div className="permit-expiry-date-banner">
+      <p className="permit-expiry-date-banner__label">
+        PERMIT EXPIRY DATE
+      </p>
+      
+      <p
+        className="permit-expiry-date-banner__expiry-date"
+        data-testid="permit-expiry-date"
+      >
+        {expiryDate}
+      </p>
+    </div>
   );
 };

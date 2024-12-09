@@ -16,6 +16,26 @@ export const requiredMessage = () => validationMessages.required.defaultMessage;
 export const selectionRequired = () =>
   validationMessages.selectionRequired.defaultMessage;
 export const invalidNumber = () => validationMessages.NaN.defaultMessage;
+export const mustBeGreaterThan = (val: number) => {
+  const { messageTemplate, placeholders } = validationMessages.greaterThan;
+  return replacePlaceholders(messageTemplate, placeholders, val);
+};
+
+export const mustBeLessThan = (val: number) => {
+  const { messageTemplate, placeholders } = validationMessages.lessThan;
+  return replacePlaceholders(messageTemplate, placeholders, val);
+};
+
+export const mustBeGreaterThanOrEqualTo = (val: number) => {
+  const { messageTemplate, placeholders } = validationMessages.greaterThanOrEq;
+  return replacePlaceholders(messageTemplate, placeholders, val);
+};
+
+export const mustBeLessThanOrEqualTo = (val: number) => {
+  const { messageTemplate, placeholders } = validationMessages.lessThanOrEq;
+  return replacePlaceholders(messageTemplate, placeholders, val);
+};
+
 export const invalidCountryCode = () =>
   validationMessages.country.defaultMessage;
 export const invalidProvinceCode = () =>
@@ -53,6 +73,8 @@ export const invalidAddressLength = (min: number, max: number) => {
   return replacePlaceholders(messageTemplate, placeholders, min, max);
 };
 
+export const invalidAddress = () => validationMessages.address.invalid;
+
 export const invalidCityLength = (min: number, max: number) => {
   const { messageTemplate, placeholders } = validationMessages.city.length;
   return replacePlaceholders(messageTemplate, placeholders, min, max);
@@ -86,6 +108,15 @@ export const invalidPlateLength = (max: number) => {
   return replacePlaceholders(messageTemplate, placeholders, max);
 };
 
+export const licensedGVWExceeded = (max: number, localizeNumber?: boolean) => {
+  const { messageTemplate, placeholders } = validationMessages.licensedGVW.max;
+  return replacePlaceholders(
+    messageTemplate,
+    placeholders,
+    localizeNumber ? max.toLocaleString() : max,
+  );
+};
+
 export const invalidDBALength = (min: number, max: number) => {
   const { messageTemplate, placeholders } = validationMessages.dba.length;
   return replacePlaceholders(messageTemplate, placeholders, min, max);
@@ -103,6 +134,10 @@ export const requiredUpload = (uploadItem: string) => {
   const { messageTemplate, placeholders } = validationMessages.upload.required;
   return replacePlaceholders(messageTemplate, placeholders, uploadItem);
 };
+
+export const requiredHighway = () => validationMessages.highway.missing;
+
+export const requiredPowerUnit = () => validationMessages.powerUnit.required;
 
 /**
  * Checks if a given string is

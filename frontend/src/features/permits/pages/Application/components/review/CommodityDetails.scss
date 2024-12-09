@@ -1,0 +1,28 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".review-commodity-details");
+@include orbcStyles.permit-left-box-style(".review-commodity-details__header");
+@include orbcStyles.permit-right-box-style(".review-commodity-details__body");
+
+.review-commodity-details {
+  &__body {
+    .commodity-info {
+      &__label {
+        font-weight: bold;
+      }
+
+      &--load-description {
+        margin-top: 1.5rem;
+      }
+    }
+  }
+}
+
+@media (width < 370px) {
+  .review-commodity-details {
+    &__body {
+      max-width: 100%;
+      min-width: 100%;
+    }
+  }
+}

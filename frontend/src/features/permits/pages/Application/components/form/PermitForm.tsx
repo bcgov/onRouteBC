@@ -5,11 +5,15 @@ import { FormActions } from "./FormActions";
 import { ApplicationDetails } from "../../../../components/form/ApplicationDetails";
 import { ContactDetails } from "../../../../components/form/ContactDetails";
 import { PermitDetails } from "./PermitDetails";
-import { VehicleDetails } from "./VehicleDetails/VehicleDetails";
+import { VehicleInformationSection } from "./VehicleInformationSection/VehicleInformationSection";
 import { PermitLOASection } from "./PermitLOASection";
-import { useApplicationFormContext } from "../../../../hooks/useApplicationFormContext";
+import { useApplicationFormContext } from "../../../../hooks/form/useApplicationFormContext";
 import { AmendReason } from "../../../Amend/components/form/AmendReason";
 import { AmendRevisionHistory } from "../../../Amend/components/form/AmendRevisionHistory";
+import { CommodityDetailsSection } from "./CommodityDetailsSection/CommodityDetailsSection";
+import { ApplicationNotesSection } from "./ApplicationNotesSection";
+import { TripDetailsSection } from "./TripDetailsSection/TripDetailsSection";
+import { LoadedDimensionsSection } from "./LoadedDimensionsSection/LoadedDimensionsSection";
 
 export const PermitForm = () => {
   const {
@@ -33,6 +37,14 @@ export const PermitForm = () => {
     pastStartDateStatus,
     companyLOAs,
     revisionHistory,
+    commodityOptions,
+    highwaySequence,
+    nextAllowedSubtypes,
+    powerUnitSubtypeNamesMap,
+    trailerSubtypeNamesMap,
+    selectedVehicleConfigSubtypes,
+    commodityType,
+    vehicleConfiguration,
     onLeave,
     onSave,
     onCancel,
@@ -42,6 +54,10 @@ export const PermitForm = () => {
     onSetVehicle,
     onClearVehicle,
     onUpdateLOAs,
+    onUpdateHighwaySequence,
+    onUpdateVehicleConfigTrailers,
+    onChangeCommodityType,
+    onUpdateVehicleConfig,
   } = useApplicationFormContext();
 
   return (
@@ -79,16 +95,49 @@ export const PermitForm = () => {
           pastStartDateStatus={pastStartDateStatus}
           onSetConditions={onSetConditions}
         />
+
+        <CommodityDetailsSection
+          feature={feature}
+          permitType={permitType}
+          commodityOptions={commodityOptions}
+          selectedCommodityType={commodityType}
+          onChangeCommodityType={onChangeCommodityType}
+        />
         
-        <VehicleDetails
+        <VehicleInformationSection
+          permitType={permitType}
           feature={feature}
           vehicleFormData={vehicleFormData}
           vehicleOptions={filteredVehicleOptions}
           subtypeOptions={subtypeOptions}
           isSelectedLOAVehicle={isSelectedLOAVehicle}
+          nextAllowedSubtypes={nextAllowedSubtypes}
+          powerUnitSubtypeNamesMap={powerUnitSubtypeNamesMap}
+          trailerSubtypeNamesMap={trailerSubtypeNamesMap}
+          selectedConfigSubtypes={selectedVehicleConfigSubtypes}
           onSetSaveVehicle={onToggleSaveVehicle}
           onSetVehicle={onSetVehicle}
           onClearVehicle={onClearVehicle}
+          onUpdateVehicleConfigTrailers={onUpdateVehicleConfigTrailers}
+        />
+
+        <LoadedDimensionsSection
+          permitType={permitType}
+          feature={feature}
+          vehicleConfiguration={vehicleConfiguration}
+          onUpdateVehicleConfiguration={onUpdateVehicleConfig}
+        />
+
+        <TripDetailsSection
+          feature={feature}
+          permitType={permitType}
+          highwaySequence={highwaySequence}
+          onUpdateHighwaySequence={onUpdateHighwaySequence}
+        />
+
+        <ApplicationNotesSection
+          feature={feature}
+          permitType={permitType}
         />
 
         {isAmendAction ? (

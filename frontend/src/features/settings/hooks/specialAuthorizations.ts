@@ -13,6 +13,7 @@ const QUERY_KEYS = {
  */
 export const useFetchSpecialAuthorizations = (
   companyId: number | string,
+  enabled: boolean = true,
 ) => {
   return useQuery({
     queryKey: QUERY_KEYS.SPECIAL_AUTH(companyId),
@@ -22,7 +23,7 @@ export const useFetchSpecialAuthorizations = (
     retry: false,
     refetchOnMount: "always",
     refetchOnWindowFocus: false,
-    enabled: Boolean(companyId),
+    enabled,
   });
 };
 

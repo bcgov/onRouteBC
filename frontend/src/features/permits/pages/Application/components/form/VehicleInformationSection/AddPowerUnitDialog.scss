@@ -1,0 +1,89 @@
+@import "../../../../../../../themes/orbcStyles";
+
+.add-power-unit-dialog {
+  & &__container {
+    max-width: 66.75rem;
+  }
+
+  & &__header {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: $bc-background-light-grey;
+  }
+
+  & &__icon {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: $bc-black;
+
+    .icon {
+      color: $bc-white;
+      height: 1.5rem;
+    }
+  }
+
+  & &__title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    color: $bc-black;
+  }
+
+  & form &__body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vehicle-details {
+    &__inputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    &__input {
+      width: 100%;
+    }
+  }
+
+  & &__btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 1.5rem;
+  }
+
+  & &__btn {
+    &--cancel {
+      cursor: pointer;
+      background-color: $bc-background-light-grey;
+      color: $bc-black;
+      border: none;
+
+      &:hover {
+        border: 2px solid $bc-text-box-border-grey;
+      }
+    }
+
+    &--add {
+      margin-left: 1.5rem;
+      color: $white;
+      background-color: $bc-primary-blue;
+      font-weight: bold;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $button-hover;
+      }
+    }
+  }
+}

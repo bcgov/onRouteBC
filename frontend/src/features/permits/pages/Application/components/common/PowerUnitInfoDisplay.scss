@@ -1,0 +1,25 @@
+@use "../../../../../../themes/orbcStyles";
+
+.power-unit-info-display {
+  display: grid;
+  grid-template-columns: repeat(4, [col] 1fr);
+  row-gap: 1rem;
+
+  & &__data {
+    max-width: 15.75rem;
+    margin-left: 1.5rem;
+
+    &--unit, &--year {
+      margin-left: 0;
+    }
+  }
+
+  & &__label {
+    font-weight: bold;
+    color: orbcStyles.$bc-black;
+  }
+
+  & &__value {
+    color: orbcStyles.$bc-black;
+  }
+}

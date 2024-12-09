@@ -1,7 +1,7 @@
 import { MRT_ColumnDef } from "material-react-table";
-import CountriesAndStates from "../../../../common/constants/countries_and_states.json";
-import { CompanyProfile } from "../../../manageProfile/types/manageProfile";
 
+import { COUNTRIES } from "../../../../common/constants/countries";
+import { CompanyProfile } from "../../../manageProfile/types/manageProfile";
 import { getDefaultNullableVal } from "../../../../common/helpers/util";
 
 /*
@@ -31,7 +31,7 @@ export const CompanySearchResultColumnDef: MRT_ColumnDef<CompanyProfile>[] = [
     sortingFn: "alphanumeric",
     Cell: (props: { row: any }) => {
       const mailingAddress = props.row?.original?.mailingAddress;
-      const country = CountriesAndStates.filter((country) => {
+      const country = COUNTRIES.filter((country) => {
         return country?.code === mailingAddress?.countryCode;
       });
 

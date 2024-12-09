@@ -51,7 +51,6 @@ import {
 
 @ApiBearerAuth()
 @ApiTags('Letter of Authorization (LoA)')
-@IsFeatureFlagEnabled('LOA')
 @Controller('companies/:companyId/loas')
 @ApiMethodNotAllowedResponse({
   description: 'The LoA Api Method Not Allowed Response',
@@ -89,6 +88,7 @@ export class LoaController {
     ],
   })
   @Post()
+  @IsFeatureFlagEnabled('LOA')
   @UseInterceptors(FileInterceptor('file'), JsonReqBodyInterceptor)
   async create(
     @Req() request: Request,
@@ -164,6 +164,7 @@ export class LoaController {
     ],
   })
   @Put('/:loaId')
+  @IsFeatureFlagEnabled('LOA')
   @UseInterceptors(FileInterceptor('file'), JsonReqBodyInterceptor)
   async update(
     @Req() request: Request,
@@ -202,6 +203,7 @@ export class LoaController {
     ],
   })
   @Delete('/:loaId')
+  @IsFeatureFlagEnabled('LOA')
   async delete(
     @Req() request: Request,
     @Param() { companyId, loaId }: LoaIdPathParamDto,

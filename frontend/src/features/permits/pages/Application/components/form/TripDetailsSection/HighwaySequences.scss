@@ -1,0 +1,88 @@
+@use "../../../../../../../themes/orbcStyles";
+
+.highway-sequences {
+  & &__info {
+    color: orbcStyles.$bc-black;
+    margin: 1.5rem 0;
+
+    .highway-sequences-info {
+      &__example {
+        font-weight: normal;
+        font-size: 1rem;
+        margin: 0;
+      }
+
+      &__links {
+        font-weight: normal;
+        font-size: 1rem;
+        margin: 0.5rem 0 0 0;
+
+        .highways-link {
+          margin: 0 0.25rem;
+        }
+      }
+    }
+  }
+
+  & &__inputs {
+    .highway-sequence-rows {
+      &__row {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+
+        &--first {
+          margin-top: 0rem;
+        }
+      }
+
+      &__cell {
+        max-width: 6.25rem;
+        margin: 0;
+      }
+
+      &__error {
+        margin-top: 0.5rem;
+        color: orbcStyles.$bc-red;
+      }
+
+      .highway-number-form-control {
+        &__label {
+          font-size: 1rem;
+          font-weight: bold;
+          color: orbcStyles.$bc-black;
+          margin-bottom: 0.5rem;
+        }
+
+        &__input {
+          fieldset {
+            border: 2px solid orbcStyles.$bc-text-box-border-grey;
+          }
+
+          &--focus {
+            fieldset {
+              border: 2px solid orbcStyles.$focus-blue;
+            }
+          }
+
+          &--error {
+            fieldset {
+              border: 2px solid orbcStyles.$bc-red;
+            }
+          }
+        }
+      }
+    }
+
+    .add-highways-row-btn {
+      display: flex;
+      align-items: center;
+      margin-top: 1.5rem;
+
+      &__icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}

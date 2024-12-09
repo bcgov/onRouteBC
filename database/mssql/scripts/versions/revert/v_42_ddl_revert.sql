@@ -29,7 +29,8 @@ BEGIN TRY
     DROP TABLE [case].[ORBC_CASE_TYPE]
     DROP TABLE [case].[ORBC_CASE_STATUS_TYPE]
     DROP SCHEMA [case]
-    DELETE FROM [permit].[ORBC_PERMIT_STATUS_TYPE] WHERE [PERMIT_STATUS_TYPE] ='IN_QUEUE'
+   -- Commenting the below line to Avoid FK constraints while running moti-reset-db.sh
+   -- DELETE FROM [permit].[ORBC_PERMIT_STATUS_TYPE] WHERE [PERMIT_STATUS_TYPE] ='IN_QUEUE' 
     COMMIT
 END TRY
 

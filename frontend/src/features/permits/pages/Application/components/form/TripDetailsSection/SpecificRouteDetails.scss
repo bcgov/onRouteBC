@@ -1,0 +1,16 @@
+@import "../../../../../../../themes/orbcStyles";
+
+.specific-route-details {
+  & &__input {
+    max-width: 43.125rem;
+
+    .custom-form-control {
+      margin: 0;
+    }
+  }
+
+  & &__helper-text {
+    color: $bc-black;
+    margin: 0.25rem 0 0 0;
+  }
+}

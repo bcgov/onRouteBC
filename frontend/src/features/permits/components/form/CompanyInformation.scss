@@ -5,6 +5,8 @@
 @include orbcStyles.permit-right-box-style(".company-info__body");
 
 .company-info {
+  border-top: none;
+  
   & &__info-msg {
     width: 320px;
   }

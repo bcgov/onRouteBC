@@ -209,7 +209,7 @@ const ComponentWithWrapper = ({
           [testApplicationData],
         )}
       >
-        <ApplicationReview />
+        <ApplicationReview companyId={applicationData.companyId} />
       </ApplicationContext.Provider>
     </ThemeProvider>
   );

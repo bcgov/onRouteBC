@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from "react";
 
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
-import { mapToVehicleObjectById } from "../helpers/mappers";
+import { findFromExistingVehicles } from "../helpers/mappers";
 import { Nullable } from "../../../common/types/common";
-import { getDefaultVehicleDetails } from "../helpers/permitVehicles";
+import { getDefaultVehicleDetails } from "../helpers/vehicles/getDefaultVehicleDetails";
 import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import {
   usePowerUnitSubTypesQuery,
@@ -41,6 +41,7 @@ const transformByVehicleType = (
     countryCode: vehicleFormData.countryCode,
     provinceCode: vehicleFormData.provinceCode,
     powerUnitTypeCode: vehicleFormData.vehicleSubType,
+    licensedGvw: vehicleFormData.licensedGVW,
   };
 
   const defaultTrailer: Trailer = {
@@ -102,7 +103,7 @@ export const usePermitVehicleManagement = (companyId: number) => {
   const { data: powerUnitSubtypesData } = usePowerUnitSubTypesQuery();
   const { data: trailerSubtypesData } = useTrailerSubTypesQuery();
 
-  const fetchedVehicles = useMemo(() => [
+  const allVehiclesFromInventory = useMemo(() => [
     ...getDefaultRequiredVal(
       [],
       powerUnitsData,
@@ -119,8 +120,15 @@ export const usePermitVehicleManagement = (companyId: number) => {
     })),
   ], [powerUnitsData, trailersData]);
 
-  const powerUnitSubTypes = getDefaultRequiredVal([], powerUnitSubtypesData);
-  const trailerSubTypes = getDefaultRequiredVal([], trailerSubtypesData);
+  const powerUnitSubtypeNamesMap = useMemo(() => new Map<string, string>(
+    getDefaultRequiredVal([], powerUnitSubtypesData)
+      .map(({ typeCode, type }) => [typeCode, type]),
+  ), [powerUnitSubtypesData]);
+
+  const trailerSubtypeNamesMap = useMemo(() => new Map<string, string>(
+    getDefaultRequiredVal([], trailerSubtypesData)
+      .map(({ typeCode, type }) => [typeCode, type]),
+  ), [trailerSubtypesData]);
 
   const handleSaveVehicle = useCallback(async (
     vehicleData?: Nullable<PermitVehicleDetails>,
@@ -134,8 +142,8 @@ export const usePermitVehicleManagement = (companyId: number) => {
     // Check if the vehicle that is to be saved was created from an existing vehicle
     const vehicleId = vehicle.vehicleId;
 
-    const existingVehicle = mapToVehicleObjectById(
-      fetchedVehicles,
+    const existingVehicle = findFromExistingVehicles(
+      allVehiclesFromInventory,
       vehicle.vehicleType as VehicleType,
       vehicleId,
     );
@@ -164,12 +172,13 @@ export const usePermitVehicleManagement = (companyId: number) => {
 
       if (!modifyVehicleSuccess(res.status)) return null;
 
-      const { powerUnitId, powerUnitTypeCode, ...restOfPowerUnit } = res.data;
+      const { powerUnitId, powerUnitTypeCode, licensedGvw, ...restOfPowerUnit } = res.data;
       return getDefaultVehicleDetails({
         ...restOfPowerUnit,
         vehicleId: powerUnitId,
         vehicleSubType: powerUnitTypeCode,
         vehicleType: VEHICLE_TYPES.POWER_UNIT,
+        licensedGVW: licensedGvw,
       });
     }
 
@@ -197,7 +206,7 @@ export const usePermitVehicleManagement = (companyId: number) => {
       if (!modifyVehicleSuccess(res.status)) return null;
 
       const { trailerId, trailerTypeCode, ...restOfTrailer } = res.data;
-      return getDefaultRequiredVal({
+      return getDefaultVehicleDetails({
         ...restOfTrailer,
         vehicleId: trailerId,
         vehicleSubType: trailerTypeCode,
@@ -206,12 +215,12 @@ export const usePermitVehicleManagement = (companyId: number) => {
     }
 
     return undefined;
-  }, [fetchedVehicles]);
+  }, [allVehiclesFromInventory]);
 
   return {
     handleSaveVehicle,
-    powerUnitSubTypes,
-    trailerSubTypes,
-    vehicleOptions: fetchedVehicles,
+    powerUnitSubtypeNamesMap,
+    trailerSubtypeNamesMap,
+    allVehiclesFromInventory,
   };
 };

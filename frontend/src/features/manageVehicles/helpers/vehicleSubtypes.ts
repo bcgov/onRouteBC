@@ -1,3 +1,4 @@
+import { LCV_VEHICLE_SUBTYPES } from "../../permits/constants/constants";
 import {
   BaseVehicle,
   PowerUnit,
@@ -11,7 +12,7 @@ import {
  * @returns If the subtype is considered to be LCV vehicle subtype
  */
 export const isVehicleSubtypeLCV = (subtype: string) => {
-  return ["LCVRMDB", "LCVTPDB"].includes(subtype);
+  return LCV_VEHICLE_SUBTYPES.map(({ typeCode }) => typeCode).includes(subtype);
 };
 
 export const EMPTY_VEHICLE_SUBTYPE = {

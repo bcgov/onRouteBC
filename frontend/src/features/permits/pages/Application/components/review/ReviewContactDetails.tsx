@@ -72,6 +72,7 @@ export const ReviewContactDetails = ({
           Contact Information
         </Typography>
       </Box>
+
       <Box className="review-contact-details__body">
         <Box className="contact-details">
           <Typography className="contact-details__detail">
@@ -81,10 +82,13 @@ export const ReviewContactDetails = ({
             >
               {nameDisplay(contactDetails?.firstName, contactDetails?.lastName)}
             </span>
+
             {changedFields.name ? <DiffChip /> : null}
           </Typography>
+
           <Typography className="contact-details__detail">
             <span className="contact-details__label">Primary Phone:</span>
+
             <span
               className="contact-details__data"
               data-testid="review-contact-details-phone1"
@@ -94,11 +98,14 @@ export const ReviewContactDetails = ({
                 contactDetails?.phone1Extension,
               )}
             </span>
+
             {changedFields.phone1 ? <DiffChip /> : null}
           </Typography>
+
           {contactDetails?.phone2 ? (
             <Typography className="contact-details__detail">
               <span className="contact-details__label">Alternate Phone:</span>
+
               <span
                 className="contact-details__data"
                 data-testid="review-contact-details-phone2"
@@ -108,40 +115,50 @@ export const ReviewContactDetails = ({
                   contactDetails?.phone2Extension,
                 )}
               </span>
+
               {changedFields.phone2 ? <DiffChip /> : null}
             </Typography>
           ) : null}
+
           <Typography className="contact-details__detail">
             <span className="contact-details__label">Company Email:</span>
+
             <span
               className="contact-details__data"
               data-testid="review-contact-details-email"
             >
               {contactDetails?.email}
             </span>
+
             {changedFields.email ? <DiffChip /> : null}
           </Typography>
+
           {contactDetails?.additionalEmail ? (
             <Typography className="contact-details__detail">
               <span className="contact-details__label">Additional Email:</span>
+
               <span
                 className="contact-details__data"
                 data-testid="review-contact-details-additional-email"
               >
                 {contactDetails?.additionalEmail}
               </span>
+
               {changedFields.additionalEmail ? <DiffChip /> : null}
             </Typography>
           ) : null}
+
           {contactDetails?.fax ? (
             <Typography className="contact-details__detail">
               <span className="contact-details__label">Fax:</span>
+
               <span
                 className="contact-details__data"
                 data-testid="review-contact-details-fax"
               >
                 {phoneDisplay(contactDetails?.fax)}
               </span>
+              
               {changedFields.fax ? <DiffChip /> : null}
             </Typography>
           ) : null}

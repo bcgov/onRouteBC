@@ -9,18 +9,18 @@ import { CountryAndProvince } from "../../../../common/components/form/CountryAn
 import { CustomFormComponent } from "../../../../common/components/form/CustomFormComponents";
 import { SnackBarContext } from "../../../../App";
 import { VEHICLES_ROUTES } from "../../../../routes/constants";
-import { Nullable } from "../../../../common/types/common";
+import { now } from "../../../../common/helpers/formatDate";
+import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { convertToNumberIfValid } from "../../../../common/helpers/numeric/convertToNumberIfValid";
+import {
+  disableMouseWheelInputOnNumberField,
+} from "../../../../common/helpers/disableMouseWheelInputOnNumberField";
+
 import {
   usePowerUnitSubTypesQuery,
   useAddPowerUnitMutation,
   useUpdatePowerUnitMutation,
 } from "../../hooks/powerUnits";
-
-import {
-  getDefaultRequiredVal,
-  getDefaultNullableVal,
-  convertToNumberIfValid,
-} from "../../../../common/helpers/util";
 
 import {
   invalidNumber,
@@ -29,7 +29,6 @@ import {
   invalidYearMin,
   requiredMessage,
 } from "../../../../common/helpers/validationMessages";
-import { disableMouseWheelInputOnNumberField } from "../../../../common/helpers/disableMouseWheelInputOnNumberField";
 
 const FEATURE = "power-unit";
 
@@ -41,19 +40,21 @@ export const PowerUnitForm = ({
   powerUnit?: PowerUnit;
 }) => {
   const isEditMode = Boolean(powerUnit?.powerUnitId);
+  const getDefaultYear = () => now().year();
+  const defaultYear = getDefaultYear();
 
   // If data was passed to this component, then use that data, otherwise set fields to empty
   const powerUnitDefaultValues = {
     provinceCode: getDefaultRequiredVal("", powerUnit?.provinceCode),
     countryCode: getDefaultRequiredVal("", powerUnit?.countryCode),
     unitNumber: getDefaultRequiredVal("", powerUnit?.unitNumber),
-    licensedGvw: getDefaultNullableVal(powerUnit?.licensedGvw),
+    licensedGvw: convertToNumberIfValid(powerUnit?.licensedGvw, null),
     make: getDefaultRequiredVal("", powerUnit?.make),
     plate: getDefaultRequiredVal("", powerUnit?.plate),
     powerUnitTypeCode: getDefaultRequiredVal("", powerUnit?.powerUnitTypeCode),
-    steerAxleTireSize: getDefaultNullableVal(powerUnit?.steerAxleTireSize),
+    steerAxleTireSize: convertToNumberIfValid(powerUnit?.steerAxleTireSize, null),
     vin: getDefaultRequiredVal("", powerUnit?.vin),
-    year: getDefaultNullableVal(powerUnit?.year),
+    year: convertToNumberIfValid(powerUnit?.year, defaultYear),
   };
 
   const formMethods = useForm<PowerUnit>({
@@ -79,15 +80,15 @@ export const PowerUnitForm = ({
         powerUnit: {
           ...powerUnitToBeUpdated,
           // need to explicitly convert form values to number here (since we can't use valueAsNumber prop)
-          year: convertToNumberIfValid(data.year, data.year as string) as any,
+          year: convertToNumberIfValid(data.year, defaultYear),
           licensedGvw: convertToNumberIfValid(
             data.licensedGvw,
-            data.licensedGvw as string,
-          ) as any,
+            null,
+          ),
           steerAxleTireSize: convertToNumberIfValid(
             data.steerAxleTireSize,
             null,
-          ) as Nullable<number>,
+          ),
         },
       });
 
@@ -108,17 +109,12 @@ export const PowerUnitForm = ({
         powerUnit: {
           ...powerUnitToBeAdded,
           // need to explicitly convert form values to number here (since we can't use valueAsNumber prop)
-          year: !isNaN(Number(data.year)) ? Number(data.year) : data.year,
-          licensedGvw:
-            data.licensedGvw != null &&
-            data.licensedGvw !== "" &&
-            !isNaN(Number(data.licensedGvw))
-              ? Number(data.licensedGvw)
-              : data.licensedGvw,
+          year: convertToNumberIfValid(data.year, defaultYear),
+          licensedGvw: convertToNumberIfValid(data.licensedGvw, null),
           steerAxleTireSize: convertToNumberIfValid(
             data.steerAxleTireSize,
             null,
-          ) as Nullable<number>,
+          ),
         },
       });
 

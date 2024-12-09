@@ -6,11 +6,11 @@ import { PermitVehicleDetails } from "../types/PermitVehicleDetails";
 import { PermitData } from "../types/PermitData";
 import { PermitCondition } from "../types/PermitCondition";
 import { arePermitLOADetailsEqual, PermitLOA } from "../types/PermitLOA";
-import { doUniqueArraysHaveSameObjects } from "../../../common/helpers/equality";
-import {
-  DATE_FORMATS,
-  dayjsToLocalStr,
-} from "../../../common/helpers/formatDate";
+import { areOrderedSequencesEqual, doUniqueArraysHaveSameObjects } from "../../../common/helpers/equality";
+import { ReplaceDayjsWithString } from "../types/utility";
+import { PermittedCommodity } from "../types/PermittedCommodity";
+import { PermittedRoute } from "../types/PermittedRoute";
+import { PermitVehicleConfiguration } from "../types/PermitVehicleConfiguration";
 
 /**
  * Compare whether or not two mailing addresses are equal.
@@ -141,26 +141,112 @@ export const arePermitLOAsEqual = (
 };
 
 /**
- * Compare whether or not two application data info are equal.
- * @param data1 first application data info
- * @param data2 second application data info
- * @returns true when application data are equivalent, false otherwise
+ * Compare whether or not the permitted commodities for two permits are equal.
+ * @param permittedCommodity1 Permitted commodity belonging to the first permit
+ * @param permittedCommodity2 Permitted commodity belonging to the second permit
+ * @returns true when the two permitted commodities are equivalent, false otherwise
  */
-export const areApplicationDataEqual = (
-  data1: PermitData,
-  data2: PermitData,
+export const arePermittedCommoditiesEqual = (
+  permittedCommodity1?: Nullable<PermittedCommodity>,
+  permittedCommodity2?: Nullable<PermittedCommodity>,
+) => {
+  return (
+    getDefaultRequiredVal("", permittedCommodity1?.commodityType)
+      === getDefaultRequiredVal("", permittedCommodity2?.commodityType)
+  ) && (
+    getDefaultRequiredVal("", permittedCommodity1?.loadDescription)
+      === getDefaultRequiredVal("", permittedCommodity2?.loadDescription)
+  );
+};
+
+/**
+ * Compare whether or not the permitted route details for two permits are equal.
+ * @param permittedRoute1 Permitted route details belonging to the first permit
+ * @param permittedRoute2 Permitted route details belonging to the second permit
+ * @returns true when the permitted route details are considered equivalent, false otherwise
+ */
+export const areVehicleConfigurationsEqual = (
+  vehicleConfig1?: Nullable<PermitVehicleConfiguration>,
+  vehicleConfig2?: Nullable<PermitVehicleConfiguration>,
+) => {
+  return (
+    getDefaultRequiredVal(0, vehicleConfig1?.overallWidth)
+      === getDefaultRequiredVal(0, vehicleConfig2?.overallWidth)
+  ) && (
+    getDefaultRequiredVal(0, vehicleConfig1?.overallHeight)
+      === getDefaultRequiredVal(0, vehicleConfig2?.overallHeight)
+  ) && (
+    getDefaultRequiredVal(0, vehicleConfig1?.overallLength)
+      === getDefaultRequiredVal(0, vehicleConfig2?.overallLength)
+  ) && (
+    getDefaultRequiredVal(0, vehicleConfig1?.frontProjection)
+      === getDefaultRequiredVal(0, vehicleConfig2?.frontProjection)
+  ) && (
+    getDefaultRequiredVal(0, vehicleConfig1?.rearProjection)
+      === getDefaultRequiredVal(0, vehicleConfig2?.rearProjection)
+  ) && areOrderedSequencesEqual(
+    vehicleConfig1?.trailers,
+    vehicleConfig2?.trailers,
+    (trailer1, trailer2) => trailer1.vehicleSubType === trailer2.vehicleSubType,
+  );
+};
+
+/**
+ * Compare whether or not the permitted route details for two permits are equal.
+ * @param permittedRoute1 Permitted route details belonging to the first permit
+ * @param permittedRoute2 Permitted route details belonging to the second permit
+ * @returns true when the permitted route details are considered equivalent, false otherwise
+ */
+export const arePermittedRoutesEqual = (
+  permittedRoute1?: Nullable<PermittedRoute>,
+  permittedRoute2?: Nullable<PermittedRoute>,
+) => {
+  return (
+    getDefaultRequiredVal("", permittedRoute1?.manualRoute?.origin)
+      === getDefaultRequiredVal("", permittedRoute2?.manualRoute?.origin)
+  ) && (
+    getDefaultRequiredVal("", permittedRoute1?.manualRoute?.destination)
+      === getDefaultRequiredVal("", permittedRoute2?.manualRoute?.destination)
+  ) && (
+    getDefaultRequiredVal("", permittedRoute1?.manualRoute?.exitPoint)
+      === getDefaultRequiredVal("", permittedRoute2?.manualRoute?.exitPoint)
+  ) && (
+    getDefaultRequiredVal(0, permittedRoute1?.manualRoute?.totalDistance)
+      === getDefaultRequiredVal(0, permittedRoute2?.manualRoute?.totalDistance)
+  ) && (
+    getDefaultRequiredVal("", permittedRoute1?.routeDetails)
+      === getDefaultRequiredVal("", permittedRoute2?.routeDetails)
+  ) && areOrderedSequencesEqual(
+    permittedRoute1?.manualRoute?.highwaySequence,
+    permittedRoute2?.manualRoute?.highwaySequence,
+    (seqNumber1, seqNumber2) => seqNumber1 === seqNumber2,
+  );
+};
+
+/**
+ * Compare whether or not the permit data belonging to two applications are equal.
+ * @param data1 Permit data belonging to first application
+ * @param data2 Permit data belonging to second application
+ * @returns true when permit data are equivalent, false otherwise
+ */
+export const areApplicationPermitDataEqual = (
+  data1: ReplaceDayjsWithString<PermitData>,
+  data2: ReplaceDayjsWithString<PermitData>,
 ) => {
   return (
     data1.permitDuration === data2.permitDuration &&
-    dayjsToLocalStr(data1.startDate, DATE_FORMATS.DATEONLY) ===
-      dayjsToLocalStr(data2.startDate, DATE_FORMATS.DATEONLY) &&
-    dayjsToLocalStr(data1.expiryDate, DATE_FORMATS.DATEONLY) ===
-      dayjsToLocalStr(data2.expiryDate, DATE_FORMATS.DATEONLY) &&
+    data1.startDate === data2.startDate &&
+    data1.expiryDate === data2.expiryDate &&
     areContactDetailsEqual(data1.contactDetails, data2.contactDetails) &&
     areVehicleDetailsEqual(data1.vehicleDetails, data2.vehicleDetails) &&
     areConditionsEqual(data1.commodities, data2.commodities) &&
     areMailingAddressesEqual(data1.mailingAddress, data2.mailingAddress) &&
     arePermitLOAsEqual(data1.loas, data2.loas) &&
+    arePermittedCommoditiesEqual(data1.permittedCommodity, data2.permittedCommodity) &&
+    areVehicleConfigurationsEqual(data1.vehicleConfiguration, data2.vehicleConfiguration) &&
+    arePermittedRoutesEqual(data1.permittedRoute, data2.permittedRoute) &&
+    (getDefaultRequiredVal("", data1.applicationNotes)
+      === getDefaultRequiredVal("", data2.applicationNotes)) &&
     ((!data1.companyName && !data2.companyName) ||
       data1.companyName === data2.companyName) &&
     ((!data1.doingBusinessAs && !data2.doingBusinessAs) ||

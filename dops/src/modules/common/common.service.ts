@@ -22,7 +22,11 @@ export class CommonService {
           error.code === 'ECONNABORTED' ||
           error.code === 'ECONNREFUSED' ||
           error.code === 'ECONNRESET' ||
-          error.response?.status >= 500
+          error.response?.status >= 500 ||
+          //CDOGS has a bug that throws 404 when processing multiple requests at
+          //a time. It's resolved on retry.
+          (error.response?.status === 404 &&
+            error.config.url === process.env.CDOGS_URL)
         );
       },
       onRetry: (retryCount, error, requestConfig) => {

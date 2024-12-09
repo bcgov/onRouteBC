@@ -25,7 +25,7 @@ import { getFromCache } from '../../helper/cache.helper';
 import * as Handlebars from 'handlebars';
 import { CacheKey } from '../../enum/cache-key.enum';
 import { CreateGeneratedReportDto } from './dto/request/create-generated-report.dto';
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import { IFile } from '../../interface/file.interface';
 import { ReportTemplate } from '../../enum/report-template.enum';
 import { convertUtcToPt } from '../../helper/date-time.helper';
@@ -221,20 +221,33 @@ export class DgenService {
     };
 
     let browser: Browser;
+    let page: Page;
     try {
-      const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         args: [
           '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
           '--disable-gpu',
+          '--disable-software-rasterizer',
+          '--disable-infobars',
+          '--disable-dev-shm-usage',
+          '--disable-web-security', // Use with caution
+          '--disable-sync',
+          '--disable-translate',
+          '--disable-popup-blocking',
+          '--disable-background-timer-throttling',
+          '--disable-backgrounding-occluded-windows',
+          '--disable-breakpad',
+          '--disable-client-side-phishing-detection',
+          '--disable-extensions',
+          '--disable-plugins',
         ],
+        pipe: true,
         headless: true,
         env: {
           ELECTRON_DISABLE_SANDBOX: '1',
         },
       });
-      const page = await browser.newPage();
+      page = await browser.newPage();
       await page.setContent(htmlBody);
       await page.emulateMediaType('print');
 
@@ -255,6 +268,9 @@ export class DgenService {
       this.logger.error(error);
       throw error;
     } finally {
+      if (page) {
+        await page.close();
+      }
       if (browser) {
         await browser.close();
       }

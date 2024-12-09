@@ -7,11 +7,16 @@
 .review-fee-summary {
   &__body {
     .fee-summary-wrapper {
-      gap: 2.5rem;
-      padding-top: 1.5rem;
+      .fee-summary {
+        margin-top: 0;
+      }
 
       .fee-summary-banner {
         max-width: 690px;
+      }
+
+      .confirmation-checkboxes {
+        margin-top: 1.5rem;
       }
     }
   }

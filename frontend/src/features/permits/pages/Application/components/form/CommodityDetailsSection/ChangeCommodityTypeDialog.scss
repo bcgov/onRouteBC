@@ -1,0 +1,78 @@
+@use "../../../../../../../themes/orbcStyles";
+
+.change-commodity-type-dialog {
+  & &__title-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1.5rem;
+    color: orbcStyles.$bc-black;
+    background-color: orbcStyles.$bc-background-light-grey;
+  }
+
+  & &__icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: orbcStyles.$bc-messages-gold-text;
+    margin-right: 1rem;
+
+    .warning-icon {
+      color: orbcStyles.$white;
+    }
+  }
+
+  & &__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: orbcStyles.$bc-messages-gold-text;
+  }
+
+  & &__content {
+    padding: 0;
+  }
+
+  & &__warning-msg {
+    padding: 1.5rem;
+    color: orbcStyles.$bc-black;
+    font-size: 1rem;
+    font-weight: normal;
+  }
+
+  & &__actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  & &__action-btn {
+    &--cancel {
+      color: orbcStyles.$black;
+      background-color: orbcStyles.$bc-background-light-grey;
+      padding: 0.875rem 1rem;
+
+      &:hover {
+        color: orbcStyles.$black;
+        background-color: orbcStyles.$bc-background-light-grey;
+        border: 2px solid orbcStyles.$bc-text-box-border-grey;
+      }
+    }
+
+    &--continue {
+      color: orbcStyles.$white;
+      background-color: orbcStyles.$bc-primary-blue;
+      font-weight: bold;
+      margin-left: 1.5rem;
+      padding: 0.875rem 2rem;
+
+      &:hover {
+        background-color: orbcStyles.$button-hover;
+      }
+    }
+  }
+}

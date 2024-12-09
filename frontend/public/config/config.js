@@ -21,6 +21,7 @@ const envConfig = (() => {
     VITE_KEYCLOAK_ISSUER_URL: "",
     VITE_KEYCLOAK_AUDIENCE: "",
     VITE_SITEMINDER_LOG_OFF_URL: "",
-    VITE_FRONTEND_PR_NUM: ""
+    VITE_FRONTEND_PR_NUM: "",
+    VITE_POLICY_URL: "",
   };
 })();

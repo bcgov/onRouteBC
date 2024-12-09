@@ -1,0 +1,15 @@
+.trip-origin-destination {
+  & &__input {
+    max-width: 30.625rem;
+    
+    .custom-form-control {
+      margin: 1.5rem 0 0 0;
+    }
+
+    &--origin {
+      .custom-form-control {
+        margin: 0;
+      }
+    }
+  }
+}

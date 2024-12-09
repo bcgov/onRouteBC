@@ -2,19 +2,23 @@ import { Box, Button, FormLabel, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NestedMenuItem } from "mui-nested-menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+
+import "./StartApplicationAction.scss";
+import { useFeatureFlagsQuery } from "../../../../../../common/hooks/hooks";
 import { APPLICATIONS_ROUTES } from "../../../../../../routes/constants";
+import { PERMIT_CATEGORIES } from "../../../../types/PermitCategory";
 import {
   ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS,
   PermitTypeChooseFromItem,
 } from "../../../../constants/constants";
+
 import {
   EMPTY_PERMIT_TYPE_SELECT,
   PermitType,
   getFormattedPermitTypeName,
 } from "../../../../types/PermitType";
-import "./StartApplicationAction.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 export const StartApplicationAction = () => {
   const navigate = useNavigate();
@@ -23,6 +27,9 @@ export const StartApplicationAction = () => {
   >(EMPTY_PERMIT_TYPE_SELECT);
 
   const [isError, setIsError] = useState<boolean>(false);
+
+  const { data: featureFlags } = useFeatureFlagsQuery();
+  const enableSTOS = featureFlags?.["STOS"] === "ENABLED";
 
   const handleChooseFrom = (
     _event: React.MouseEvent<HTMLElement>,
@@ -42,19 +49,21 @@ export const StartApplicationAction = () => {
   };
 
   // Update the structure of menuItems to ensure the callback is applied correctly
-  const menuItems = ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS.map(
-    (item: PermitTypeChooseFromItem) => ({
-      ...item,
-      callback: (event: React.MouseEvent<HTMLElement>) =>
-        handleChooseFrom(event, item),
-      // Correctly set the nested item's callback
-      items: item?.items?.map((nestedItem) => ({
-        ...nestedItem,
+  const menuItems = ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS
+    .filter(option => enableSTOS ? true : option.value !== PERMIT_CATEGORIES.SINGLE_TRIP)
+    .map(
+      (item: PermitTypeChooseFromItem) => ({
+        ...item,
         callback: (event: React.MouseEvent<HTMLElement>) =>
-          handleChooseFrom(event, nestedItem),
-      })),
-    }),
-  );
+          handleChooseFrom(event, item),
+        // Correctly set the nested item's callback
+        items: item?.items?.map((nestedItem) => ({
+          ...nestedItem,
+          callback: (event: React.MouseEvent<HTMLElement>) =>
+            handleChooseFrom(event, nestedItem),
+        })),
+      }),
+    );
 
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>();
   const open = Boolean(anchorEl);

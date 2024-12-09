@@ -1,42 +1,140 @@
-import { OutlinedInput } from "@mui/material";
-import { useFormContext } from "react-hook-form";
-import { ORBC_FormTypes } from "../../../types/common";
-import { CustomOutlinedInputProps } from "./CustomOutlinedInput";
+import { useState } from "react";
+import {
+  OutlinedInput,
+  OutlinedInputProps,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+} from "@mui/material";
+
 import "./NumberInput.scss";
+import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../helpers/util";
+import { convertToNumberIfValid } from "../../../helpers/numeric/convertToNumberIfValid";
+import { isNull, RequiredOrNull } from "../../../types/common";
 
-/**
- * An onRouteBC customized MUI OutlineInput component
- * that automatically filters out non-numeric values as the user types
- */
-export const NumberInput = <T extends ORBC_FormTypes>(
-  props: CustomOutlinedInputProps<T>,
-): JSX.Element => {
-  const { register, setValue } = useFormContext();
-  /**
-   * Function to prevent non-numeric input as the user types
-   */
-  const filterNonNumericValue = (input?: string) => {
-    if (!input) return "";
-    // only allows 0-9 inputs
-    return input.replace(/[^\d]/g, "");
+type NumberInputClassKey =
+  "root" | "label";
+
+export interface NumberInputProps {
+  classes?: Partial<Record<NumberInputClassKey, string>>;
+  label?: {
+    id: string;
+    component: React.ReactNode;
   };
+  helperText?: {
+    messages?: string[];
+    errors?: string[];
+  };
+  inputProps: Omit<OutlinedInputProps, "type" | "value"> & {
+    value: RequiredOrNull<number>;
+    maskFn?: (numericVal: number) => string;
+  };
+}
 
-  // Everytime the user types, update the format of the users input
+export const NumberInput = (props: NumberInputProps) => {
+  const helperMessages = getDefaultRequiredVal([], props.helperText?.messages);
+  const errorMessages = getDefaultRequiredVal([], props.helperText?.errors);
+  const helperTexts = [
+    ...helperMessages.map(message => ({
+      type: "message",
+      message,
+    })),
+    ...errorMessages.map(message => ({
+      type: "error",
+      message,
+    })),
+  ];
+
+  const { maskFn, onChange, onBlur, ...inputProps} = props.inputProps;
+  const inputSlotProps = inputProps.slotProps?.input;
+  const initialValueDisplay = applyWhenNotNullable(
+    (num) => maskFn ? maskFn(num) : `${num}`,
+    inputProps.value,
+    "",
+  );
+
+  const [valueDisplay, setValueDisplay] = useState<string>(initialValueDisplay);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = filterNonNumericValue(e.target.value);
-    setValue<string>(props.name, formattedValue, { shouldValidate: true });
+    const updatedVal = e.target.value;
+    const numericVal = convertToNumberIfValid(updatedVal, null);
+
+    // If an invalid numeric string was inputted, do nothing
+    if (isNull(numericVal)) return;
+
+    // Otherwise display it without formatting it immediately (as that affects user's ability to input)
+    setValueDisplay(updatedVal);
+    onChange?.(e);
   };
 
-  const className = `custom-phone-input ${props.disabled ? "custom-phone-input--disabled" : ""} ${props.invalid ? "custom-phone-input--invalid" : ""}`;
+  // The user is free to enter numbers into the input field,
+  // but as they leave the input will be formatted if a maskFn is available
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const num = convertToNumberIfValid(valueDisplay, null);
+    if (maskFn && !isNull(num)) {
+      setValueDisplay(maskFn(num));
+    }
+    onBlur?.(e);
+  };
 
   return (
-    <OutlinedInput
-      className={className}
-      aria-labelledby={`${props.feature}-${props.name}-label`}
-      inputProps={props.inputProps}
-      {...register(props.name, props.rules)}
-      onChange={handleChange}
-      autoComplete="tel"
-    />
+    <FormControl
+      margin="normal"
+      className={`
+        number-input ${
+          props.classes?.root ? props.classes.root : ""
+        } ${
+          errorMessages.length > 0 ? "number-input--error" : ""
+        }
+      `}
+      error={errorMessages.length > 0}
+    >
+      {props.label ? (
+        <FormLabel
+          id={props.label.id}
+          className={`number-input__label ${
+            props.classes?.label ? props.classes.label : ""
+          }`}
+        >
+          {props.label.component}
+        </FormLabel>
+      ) : null}
+
+      <OutlinedInput
+        {...inputProps}
+        className={
+          `number-input__input ${
+            inputProps.className ? inputProps.className : ""
+          }`
+        }
+        type="number"
+        value={valueDisplay}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        slotProps={{
+          ...inputProps.slotProps,
+          input: {
+            ...inputSlotProps,
+            type: "number",
+          },
+        }}
+      />
+
+      {helperTexts.length > 0 ? (
+        <div className="number-input__helper-texts">
+          {helperTexts.map(({ message, type }) => (
+            <FormHelperText
+              key={message}
+              className={`
+                number-input__helper-text ${type === "error" ? "number-input__helper-text--error" : ""}
+              `}
+              error={type === "error"}
+            >
+              {message}
+            </FormHelperText>
+          ))}
+        </div>
+      ) : null}
+    </FormControl>
   );
 };

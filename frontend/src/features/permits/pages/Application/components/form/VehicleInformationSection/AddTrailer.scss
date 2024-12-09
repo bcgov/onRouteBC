@@ -1,0 +1,65 @@
+@import "../../../../../../../themes/orbcStyles";
+
+.add-trailer {
+  padding: 1.5rem 0 0 0;
+  border-top: 1px solid $bc-text-box-border-grey;
+
+  & &__trailer-list {
+    margin-top: 1rem;
+  }
+
+  & &__input {
+    width: 100%;
+    max-width: 30.625rem;
+    margin: 1.5rem 0 0 0;
+
+    .form-control {
+      &__label {
+        color: $bc-black;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+  
+        &--focused {
+          color: $bc-black;
+        }
+      }
+  
+      &__select {
+        fieldset {
+          border: 2px solid $bc-text-box-border-grey;
+        }
+
+        &:focus-within {
+          fieldset {
+            border: 2px solid $focus-blue;
+          }
+        }
+      }
+  
+      &__menu {
+        width: calc(100% - 10px);
+      }
+    }
+  }
+
+  & &__reset-btn {
+    margin-top: 1.5rem;
+    background-color: $bc-background-light-grey;
+    padding: 0.875rem 1rem;
+    box-shadow: none;
+    line-height: normal;
+    min-height: inherit;
+    border: none;
+
+    &:hover {
+      background-color: $bc-background-light-grey;
+      border: 2px solid $bc-text-box-border-grey;
+      box-shadow: none;
+    }
+  }
+
+  & &__error {
+    color: $bc-red;
+    margin: 0.5rem 0 0 0;
+  }
+}

@@ -22,7 +22,7 @@ import {
 import {
   serializeForCreateApplication,
   serializeForUpdateApplication,
-} from "../helpers/serializeApplication";
+} from "../helpers/serialize/serializeApplication";
 
 import {
   CompleteTransactionRequestData,
@@ -49,8 +49,8 @@ import {
 import {
   ApplicationResponseData,
   ApplicationListItem,
-  ApplicationFormData,
   ApplicationFilters,
+  ApplicationFormData,
 } from "../types/application";
 
 import {
@@ -68,28 +68,27 @@ import {
 
 /**
  * Create a new application.
- * @param application application data to be submitted
- * @returns response with created application data, or error if failed
+ * @param applicationFormData Application form data to be submitted
+ * @returns Response with created application, or error if failed
  */
 export const createApplication = async (
-  application: ApplicationFormData,
+  applicationFormData: ApplicationFormData,
   companyId: number,
 ): Promise<AxiosResponse<ApplicationResponseData>> => {
   return await httpPOSTRequest(
     APPLICATIONS_API_ROUTES.CREATE(companyId),
-    replaceEmptyValuesWithNull({
-      // must convert application to ApplicationRequestData (dayjs fields to strings)
-      ...serializeForCreateApplication(application),
-    }),
+    replaceEmptyValuesWithNull(
+      serializeForCreateApplication(applicationFormData),
+    ),
   );
 };
 
 /**
  * Update an existing application.
- * @param application application data
- * @param applicationId application number for the application to update
- * @param companyId id of the company that the application belongs to
- * @returns response with updated application data, or error if failed
+ * @param applicationFormData Application form data
+ * @param applicationId Application id for the application to update
+ * @param companyId Company id that the application belongs to
+ * @returns Response with updated application, or error if failed
  */
 export const updateApplication = async (
   application: ApplicationFormData,
@@ -98,10 +97,9 @@ export const updateApplication = async (
 ): Promise<AxiosResponse<ApplicationResponseData>> => {
   return await httpPUTRequest(
     APPLICATIONS_API_ROUTES.UPDATE(companyId, applicationId),
-    replaceEmptyValuesWithNull({
-      // must convert application to ApplicationRequestData (dayjs fields to strings)
-      ...serializeForUpdateApplication(application),
-    }),
+    replaceEmptyValuesWithNull(
+      serializeForUpdateApplication(application),
+    ),
   );
 };
 
