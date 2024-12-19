@@ -36,7 +36,8 @@
     "defaultMessage": "Your date is not valid",
     "start": {
       "past": {
-        "defaultMessage": "Start Date cannot be in the past."
+        "defaultMessage": "Start Date cannot be in the past.",
+        "warningMessage": "Start Date is in the past."
       },
       "max": {
         "messageTemplate": "Start Date must be within :max days.",
@@ -158,5 +159,12 @@
   },
   "powerUnit": {
     "required": "A Power Unit must be added."
+  },
+  "transactionId": {
+    "defaultMessage": "Invalid transaction ID",
+    "length": {
+      "messageTemplate": "Transaction ID length must be no longer than :max characters",
+      "placeholders": [":max"]
+    }
   }
 }

@@ -16,7 +16,10 @@ import {
 import "./RefundPage.scss";
 import { getPermitTypeName, PermitType } from "../../types/PermitType";
 import { RefundFormData } from "./types/RefundFormData";
-import { requiredMessage } from "../../../../common/helpers/validationMessages";
+import {
+  invalidTranactionIdLength,
+  requiredMessage,
+} from "../../../../common/helpers/validationMessages";
 import { getErrorMessage } from "../../../../common/components/form/CustomFormComponents";
 import { PermitHistory } from "../../types/PermitHistory";
 import { TransactionHistoryTable } from "./components/TransactionHistoryTable";
@@ -65,6 +68,9 @@ const transactionIdRules = {
         (value != null && value.trim() !== "") ||
         requiredMessage()
       );
+    },
+    validateTransactionId: (value: Optional<string>) => {
+      return (value && value.length <= 15) || invalidTranactionIdLength(15);
     },
   },
 };
@@ -205,6 +211,23 @@ export const RefundPage = ({
     setShouldUsePrevPaymentMethod(usePrev);
     setValue("refundOnlineMethod", usePrev ? getRefundOnlineMethod() : "");
     clearErrors("transactionId");
+  };
+
+  /**
+   * Function to prevent non-numeric input as the user types
+   */
+  const filterNonNumericValue = (input?: string) => {
+    if (!input) return "";
+    // only allows 0-9 inputs
+    return input.replace(/[^\d]/g, "");
+  };
+
+  // Everytime the user types, update the format of the users input
+  const handleTransactionIdChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const formattedValue = filterNonNumericValue(e.target.value);
+    setValue("transactionId", formattedValue, { shouldValidate: true });
   };
 
   const handleFinish = () => {
@@ -348,6 +371,7 @@ export const RefundPage = ({
                                     "transactionId",
                                     transactionIdRules,
                                   )}
+                                  onChange={handleTransactionIdChange}
                                 />
                                 {invalid ? (
                                   <FormHelperText

@@ -1,0 +1,94 @@
+name: E2E Regression Tests
+
+on:
+  workflow_run:
+    workflows: ['PR Opened']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      ### Required
+      target:
+        description: 'PR number, test, uat or prod.'
+        default: 'test'
+        required: true
+        type: string
+
+jobs:
+  vars:
+    name: Set Variables
+    outputs:
+      target: ${{ steps.env.outputs.target }}
+      environment: ${{ steps.env.outputs.environment }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: env
+        id: env
+        run: |
+          pr="${{github.event.workflow_run.pull_requests[0].number}}"
+          if [[ $pr ]]; then
+            target="$pr"
+            environment="dev"
+          else
+            target=${{inputs.target}}
+            environment=${{inputs.target}}
+          fi
+          echo "target=$target" >> $GITHUB_OUTPUT
+          echo "environment=$environment" >> $GITHUB_OUTPUT
+
+  e2e-tests:
+    name: ${{matrix.test}}
+    needs: [vars]
+    environment: ${{needs.vars.outputs.environment}}
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: tests/
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - chrome
+            #- edge
+            #- firefox
+        test: 
+          - 'bceid-crud-power-units.cy.js'
+          - 'bceid-crud-trailers.cy.js'
+          - 'bceid-new-term-oversize.cy.js'
+          - 'bceid-new-term-overweight.cy.js'
+          - 'bceid-update-term-oversize.cy.js'
+          - 'idir-amend-term-oversize.cy.js'
+          - 'idir-void-term-oversize.cy.js'
+
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cypress-io/github-action@v6.7.7
+        name: Cypress run
+        env:
+          CYPRESS_baseUrl: https://${{ github.event.repository.name }}-${{ needs.vars.outputs.target || 'test' }}-frontend.apps.silver.devops.gov.bc.ca/
+          CYPRESS_bceid_username: ${{vars.BCEID_USERNAME}}
+          CYPRESS_bceid_password: ${{secrets.BCEID_PASSWORD}}
+          CYPRESS_idir_username: ${{vars.IDIR_USERNAME}}
+          CYPRESS_idir_password: ${{secrets.IDIR_PASSWORD}}
+        with:
+          browser: ${{ matrix.browser }}
+          config: pageLoadTimeout=10000,video=true
+          spec: cypress/e2e/${{matrix.test}}
+          working-directory: tests
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ${{matrix.test}}-${{matrix.browser}} screenshot
+          path: tests/cypress/screenshots/
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ${{matrix.test}}-${{matrix.browser}} video
+          path: tests/cypress/videos/
+          overwrite: true
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+  

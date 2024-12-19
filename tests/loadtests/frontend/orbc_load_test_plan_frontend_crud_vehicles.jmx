@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="Duration" elementType="Argument">
+            <stringProp name="Argument.name">Duration</stringProp>
+            <stringProp name="Argument.value">3180</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="NUM_THREADS" elementType="Argument">
+            <stringProp name="Argument.name">NUM_THREADS</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="FRONTEND_URL" elementType="Argument">
+            <stringProp name="Argument.name">FRONTEND_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="RESULTS_DIR" elementType="Argument">
+            <stringProp name="Argument.name">RESULTS_DIR</stringProp>
+            <stringProp name="Argument.value">~/results</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="USER" elementType="Argument">
+            <stringProp name="Argument.name">USER</stringProp>
+            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">PASSWORD</stringProp>
+            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="NEW_POWER_UNIT_URL" elementType="Argument">
+            <stringProp name="Argument.name">NEW_POWER_UNIT_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/manage-vehicles/add-powerunit</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="UPDATE_POWER_UNIT_URL" elementType="Argument">
+            <stringProp name="Argument.name">UPDATE_POWER_UNIT_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/manage-vehicles/power-units/106</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="MANAGE_VEHICLES_URL" elementType="Argument">
+            <stringProp name="Argument.name">MANAGE_VEHICLES_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/manage-vehicles</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="NEW_TRAILER_URL" elementType="Argument">
+            <stringProp name="Argument.name">NEW_TRAILER_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/manage-vehicles/add-trailer</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="UPDATE_TRAILER_URL" elementType="Argument">
+            <stringProp name="Argument.name">UPDATE_TRAILER_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/manage-vehicles/trailers/106</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig guiclass="com.googlecode.jmeter.plugins.webdriver.config.gui.ChromeDriverConfigGui" testclass="com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig" testname="jp@gc - Chrome Driver Config" enabled="true">
+        <boolProp name="WebDriverConfig.acceptinsecurecerts">false</boolProp>
+        <boolProp name="WebDriverConfig.reset_per_iteration">true</boolProp>
+        <stringProp name="WebDriverConfig.driver_path">${__P(CHROME_DRIVER_PATH)}</stringProp>
+        <boolProp name="WebDriverConfig.dev_mode">false</boolProp>
+        <boolProp name="WebDriverConfig.headless">false</boolProp>
+        <boolProp name="WebDriverConfig.maximize_browser">true</boolProp>
+        <stringProp name="ChromeDriverConfig.additional_args"></stringProp>
+        <stringProp name="ChromeDriverConfig.binary_path"></stringProp>
+        <stringProp name="WebDriverConfig.proxy_type">SYSTEM</stringProp>
+        <stringProp name="WebDriverConfig.proxy_pac_url"></stringProp>
+        <stringProp name="WebDriverConfig.http_host"></stringProp>
+        <intProp name="WebDriverConfig.http_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_http_for_all_protocols">true</boolProp>
+        <stringProp name="WebDriverConfig.https_host"></stringProp>
+        <intProp name="WebDriverConfig.https_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_ftp_proxy">true</boolProp>
+        <stringProp name="WebDriverConfig.ftp_host"></stringProp>
+        <intProp name="WebDriverConfig.ftp_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_socks_proxy">true</boolProp>
+        <stringProp name="WebDriverConfig.socks_host"></stringProp>
+        <intProp name="WebDriverConfig.socks_port">8080</intProp>
+        <stringProp name="WebDriverConfig.no_proxy">localhost</stringProp>
+        <stringProp name="WebDriverConfig.custom_capabilites"></stringProp>
+      </com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="login" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+def frontendUrl = WDS.vars.get(&quot;FRONTEND_URL&quot;)
+WDS.browser.get(frontendUrl);
+Thread.sleep(5000)
+
+
+def loginButton = WDS.browser.findElement(By.id(&apos;login-bceid&apos;))
+if (loginButton != null) {
+    loginButton.click()
+    WDS.log.info(&quot;Clicked on the login-bceid button&quot;)
+} else {
+    WDS.log.info(&quot;Button with id &apos;login-bceid&apos; not found&quot;)
+}
+
+Thread.sleep(10000)
+def user = WDS.browser.findElement(By.id(&apos;user&apos;))
+def password = WDS.browser.findElement(By.id(&apos;password&apos;))
+
+def userValue = WDS.vars.get(&quot;USER&quot;)
+def passwordValue = WDS.vars.get(&quot;PASSWORD&quot;)
+user.sendKeys(userValue)
+password.sendKeys(passwordValue)
+Thread.sleep(5000)
+
+def submitButton = WDS.browser.findElement(By.name(&apos;btnSubmit&apos;))
+if (submitButton != null) {
+    submitButton.click()
+} else {
+    WDS.log.info(&apos;Submit button with name=&quot;btnSubmit&quot; not found&apos;)
+}
+Thread.sleep(10000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="createNewPowerUnit" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+Thread.sleep(50000)
+
+// create a new power unit
+def newPowerUnitUrl = WDS.vars.get(&quot;NEW_POWER_UNIT_URL&quot;)
+WDS.browser.get(newPowerUnitUrl);
+Thread.sleep(5000)
+
+def unitNumber = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;unitNumber&quot;]&apos;))
+unitNumber.sendKeys(&quot;MCL37&quot;)
+Thread.sleep(5000)
+
+def make = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;make&quot;]&apos;))
+make.sendKeys(&quot;Toyota&quot;)
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;year&quot;]&apos;))
+year.sendKeys(&quot;2002&quot;)
+Thread.sleep(5000)
+
+def vin = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;vin&quot;]&apos;))
+vin.sendKeys(&quot;MCL37A&quot;)
+Thread.sleep(5000)
+
+def plate = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;plate&quot;]&apos;))
+plate.sendKeys(&quot;VB0007&quot;)
+Thread.sleep(5000)
+
+def vehicleSubType = WDS.browser.findElement(By.id(&apos;mui-component-select-powerUnitTypeCode&apos;))
+vehicleSubType.click()
+def bus = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;BUSCRUM&quot;]&apos;))
+bus.click()
+Thread.sleep(5000)
+
+def country = WDS.browser.findElement(By.id(&apos;mui-component-select-countryCode&apos;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, country)
+country.click()
+Thread.sleep(5000)
+def ca = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;CA&quot;]&apos;))
+ca.click()
+Thread.sleep(5000)
+
+def province = WDS.browser.findElement(By.id(&apos;mui-component-select-provinceCode&apos;))
+province.click()
+Thread.sleep(5000)
+def ab = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;AB&quot;]&apos;))
+ab.click()
+Thread.sleep(5000)
+
+def licensedGvw = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;licensedGvw&quot;]&apos;))
+licensedGvw.sendKeys(&quot;2000&quot;)
+Thread.sleep(5000)
+
+def addToInventory = WDS.browser.findElement(By.className(&apos;css-xie432&apos;))
+addToInventory.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="updatePowerUnit" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+Thread.sleep(5000)
+
+// update a power unit
+def updatePowerUnitUrl = WDS.vars.get(&quot;UPDATE_POWER_UNIT_URL&quot;)
+WDS.browser.get(updatePowerUnitUrl);
+Thread.sleep(5000)
+
+def make = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;make&quot;]&apos;))
+make.clear()
+make.sendKeys(&quot;Toyota&quot;)
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;year&quot;]&apos;))
+year.clear()
+year.sendKeys(&quot;2021&quot;)
+Thread.sleep(5000)
+
+def licensedGvw = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;licensedGvw&quot;]&apos;))
+licensedGvw.clear()
+licensedGvw.sendKeys(&quot;5000&quot;)
+Thread.sleep(5000)
+
+def save = WDS.browser.findElement(By.className(&apos;css-xie432&apos;))
+save.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="deletePowerUnit" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+
+Thread.sleep(10000)
+
+// delete a power unit
+def manageVehiclesUrl = WDS.vars.get(&quot;MANAGE_VEHICLES_URL&quot;)
+WDS.browser.get(manageVehiclesUrl);
+Thread.sleep(5000)
+
+def checkbox = WDS.browser.findElement(By.xpath(&quot;(//input[@type=&apos;checkbox&apos;])[2]&quot;))
+if (!checkbox.isSelected()) {
+    checkbox.click()
+}
+
+def delete = WDS.browser.findElement(By.className(&apos;delete-btn--active&apos;))
+delete.click()
+Thread.sleep(5000)
+
+def deleteConfirm = WDS.browser.findElement(By.className(&apos;css-1a53fri&apos;))
+deleteConfirm.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="createNewTrailer" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+Thread.sleep(5000)
+
+// create a new trailer
+def newTrailerUrl = WDS.vars.get(&quot;NEW_TRAILER_URL&quot;)
+WDS.browser.get(newTrailerUrl);
+Thread.sleep(5000)
+
+def unitNumber = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;unitNumber&quot;]&apos;))
+unitNumber.sendKeys(&quot;TCL37&quot;)
+Thread.sleep(5000)
+
+def make = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;make&quot;]&apos;))
+make.sendKeys(&quot;Toyota&quot;)
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;year&quot;]&apos;))
+year.sendKeys(&quot;2002&quot;)
+Thread.sleep(5000)
+
+def vin = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;vin&quot;]&apos;))
+vin.sendKeys(&quot;TCL37A&quot;)
+Thread.sleep(5000)
+
+def plate = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;plate&quot;]&apos;))
+plate.sendKeys(&quot;VT0007&quot;)
+Thread.sleep(5000)
+
+def vehicleSubType = WDS.browser.findElement(By.id(&apos;mui-component-select-trailerTypeCode&apos;))
+vehicleSubType.click()
+def bus = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;BOOSTER&quot;]&apos;))
+bus.click()
+Thread.sleep(5000)
+
+def country = WDS.browser.findElement(By.id(&apos;mui-component-select-countryCode&apos;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, country)
+country.click()
+Thread.sleep(5000)
+def ca = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;CA&quot;]&apos;))
+ca.click()
+Thread.sleep(5000)
+
+def province = WDS.browser.findElement(By.id(&apos;mui-component-select-provinceCode&apos;))
+province.click()
+Thread.sleep(5000)
+def ab = WDS.browser.findElement(By.cssSelector(&apos;[data-value=&quot;AB&quot;]&apos;))
+ab.click()
+Thread.sleep(5000)
+
+def addToInventory = WDS.browser.findElement(By.className(&apos;css-xie432&apos;))
+addToInventory.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="updateTrailer" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+Thread.sleep(5000)
+
+// update a trailer
+def updateTrailerUrl = WDS.vars.get(&quot;UPDATE_TRAILER_URL&quot;)
+WDS.browser.get(updateTrailerUrl);
+Thread.sleep(5000)
+
+def unitNumber = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;unitNumber&quot;]&apos;))
+unitNumber.clear()
+unitNumber.sendKeys(&quot;TCL37&quot;)
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;year&quot;]&apos;))
+year.clear()
+year.sendKeys(&quot;2021&quot;)
+Thread.sleep(5000)
+
+def save = WDS.browser.findElement(By.className(&apos;css-xie432&apos;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, save)
+save.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="deleteTrailer" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+Thread.sleep(5000)
+
+// delete a trailer
+def manageVehiclesUrl = WDS.vars.get(&quot;MANAGE_VEHICLES_URL&quot;)
+WDS.browser.get(manageVehiclesUrl);
+Thread.sleep(5000)
+
+def trailerTab = WDS.browser.findElement(By.id(&apos;layout-tab-1&apos;))
+trailerTab.click()
+Thread.sleep(5000)
+
+def checkbox = WDS.browser.findElement(By.xpath(&quot;(//input[@type=&apos;checkbox&apos;])[2]&quot;))
+if (!checkbox.isSelected()) {
+    checkbox.click()
+}
+
+def delete = WDS.browser.findElement(By.className(&apos;delete-btn--active&apos;))
+delete.click()
+Thread.sleep(5000)
+
+def deleteConfirm = WDS.browser.findElement(By.className(&apos;css-1a53fri&apos;))
+deleteConfirm.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${RESULTS_DIR}/frontend.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

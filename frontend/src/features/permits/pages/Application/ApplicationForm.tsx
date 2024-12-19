@@ -25,7 +25,10 @@ import { PAST_START_DATE_STATUSES } from "../../../../common/components/form/sub
 import { useFetchLOAs } from "../../../settings/hooks/LOA";
 import { useFetchSpecialAuthorizations } from "../../../settings/hooks/specialAuthorizations";
 import { ApplicationFormContext } from "../../context/ApplicationFormContext";
-import { filterLOAsForPermitType, filterNonExpiredLOAs } from "../../helpers/permitLOA";
+import {
+  filterLOAsForPermitType,
+  filterNonExpiredLOAs,
+} from "../../helpers/permitLOA";
 import { usePolicyEngine } from "../../../policy/hooks/usePolicyEngine";
 import { Loading } from "../../../../common/pages/Loading";
 import { serializePermitVehicleDetails } from "../../helpers/serialize/serializePermitVehicleDetails";
@@ -63,21 +66,19 @@ export const ApplicationForm = ({
   // Context to hold all of the application data related to the application
   const applicationContext = useContext(ApplicationContext);
 
-  const {
-    userDetails,
-    idirUserDetails,
-  } = useContext(OnRouteBCContext);
+  const { userDetails, idirUserDetails } = useContext(OnRouteBCContext);
 
   const isStaffUser = Boolean(idirUserDetails?.userRole);
   const { data: companyInfo } = useCompanyInfoDetailsQuery(companyId);
 
   const { data: activeLOAs } = useFetchLOAs(companyId, false);
-  const companyLOAs = useMemo(() => getDefaultRequiredVal(
-    [],
-    activeLOAs,
-  ), [activeLOAs]);
+  const companyLOAs = useMemo(
+    () => getDefaultRequiredVal([], activeLOAs),
+    [activeLOAs],
+  );
 
-  const { data: specialAuthorizations } = useFetchSpecialAuthorizations(companyId);
+  const { data: specialAuthorizations } =
+    useFetchSpecialAuthorizations(companyId);
   const isLcvDesignated = Boolean(specialAuthorizations?.isLcvAllowed);
 
   const {
@@ -94,29 +95,23 @@ export const ApplicationForm = ({
   // 2. Generate those default values and register them to the form
   // 3. Listens for changes to application context (which happens when application is fetched/submitted/updated)
   // 4. Updates form values (override existing ones) whenever the application context data changes
-  const {
-    initialFormData,
-    currentFormData,
-    formMethods,
-  } = useInitApplicationFormData({
-    permitType,
-    isLcvDesignated,
-    companyLOAs,
-    inventoryVehicles: allVehiclesFromInventory,
-    companyInfo,
-    applicationData: applicationContext?.applicationData,
-    userDetails,
-    policyEngine,
-  });
+  const { initialFormData, currentFormData, formMethods } =
+    useInitApplicationFormData({
+      permitType,
+      isLcvDesignated,
+      companyLOAs,
+      inventoryVehicles: allVehiclesFromInventory,
+      companyInfo,
+      applicationData: applicationContext?.applicationData,
+      userDetails,
+      policyEngine,
+    });
 
   // Applicable LOAs must be:
   // 1. Applicable for the current permit type
   // 2. Have expiry date that is on or after the start date for an application
   const applicableLOAs = filterNonExpiredLOAs(
-    filterLOAsForPermitType(
-      companyLOAs,
-      permitType,
-    ),
+    filterLOAsForPermitType(companyLOAs, permitType),
     currentFormData.permitData.startDate,
   );
 
@@ -141,13 +136,16 @@ export const ApplicationForm = ({
 
   const navigate = useNavigate();
 
-  const [policyViolations, setPolicyViolations] = useState<Record<string, string>>({});
+  const [policyViolations, setPolicyViolations] = useState<
+    Record<string, string>
+  >({});
 
   const clearViolation = (fieldReference: string) => {
     if (fieldReference in policyViolations) {
-      const otherViolations = Object.entries(policyViolations)
-        .filter(([fieldRef]) => fieldRef !== fieldReference);
-      
+      const otherViolations = Object.entries(policyViolations).filter(
+        ([fieldRef]) => fieldRef !== fieldReference,
+      );
+
       setPolicyViolations(Object.fromEntries(otherViolations));
     }
   };
@@ -163,14 +161,17 @@ export const ApplicationForm = ({
       [],
       validationResults?.violations
         .filter(({ fieldReference }) => Boolean(fieldReference))
-        .map(violation => ({
+        .map((violation) => ({
           fieldReference: violation.fieldReference as string,
           message: violation.message,
         })),
     );
 
     const updatedViolations = Object.fromEntries(
-      violations.map(({ fieldReference, message }) => [fieldReference, message]),
+      violations.map(({ fieldReference, message }) => [
+        fieldReference,
+        message,
+      ]),
     );
 
     setPolicyViolations(updatedViolations);
@@ -189,11 +190,14 @@ export const ApplicationForm = ({
   // When "Continue" button is clicked
   const onContinue = async (data: ApplicationFormData) => {
     const updatedViolations = await triggerPolicyValidation();
-    if (Object.keys(updatedViolations).length > 0) {
+    // prevent CV client continuing if there are policy engine validation errors
+    if (Object.keys(updatedViolations).length > 0 && !isStaffUser) {
       return;
     }
 
-    const vehicleData = serializePermitVehicleDetails(data.permitData.vehicleDetails);
+    const vehicleData = serializePermitVehicleDetails(
+      data.permitData.vehicleDetails,
+    );
     const savedVehicleDetails = await handleSaveVehicle(vehicleData);
 
     // Save application before continuing
@@ -239,28 +243,31 @@ export const ApplicationForm = ({
           },
         };
 
-    await saveApplication({
-      data: applicationToBeSaved,
-      companyId,
-    }, {
-      onSuccess: ({ data, status }) => {
-        const savedApplication = deserializeApplicationResponse(data);
-        const savedPermitId = onSaveSuccess(savedApplication, status);
-        additionalSuccessAction?.(savedPermitId);
+    await saveApplication(
+      {
+        data: applicationToBeSaved,
+        companyId,
       },
-      onError: (e) => {
-        console.error(e);
-        if (isAxiosError(e)) {
-          navigate(ERROR_ROUTES.UNEXPECTED, {
-            state: {
-              correlationId: e?.response?.headers["x-correlation-id"],
-            },
-          });
-        } else {
-          navigate(ERROR_ROUTES.UNEXPECTED);
-        }
+      {
+        onSuccess: ({ data, status }) => {
+          const savedApplication = deserializeApplicationResponse(data);
+          const savedPermitId = onSaveSuccess(savedApplication, status);
+          additionalSuccessAction?.(savedPermitId);
+        },
+        onError: (e) => {
+          console.error(e);
+          if (isAxiosError(e)) {
+            navigate(ERROR_ROUTES.UNEXPECTED, {
+              state: {
+                correlationId: e?.response?.headers["x-correlation-id"],
+              },
+            });
+          } else {
+            navigate(ERROR_ROUTES.UNEXPECTED);
+          }
+        },
       },
-    });
+    );
   };
 
   const onSave = async () => {
@@ -290,52 +297,55 @@ export const ApplicationForm = ({
   const pastStartDateStatus = isStaffUser
     ? PAST_START_DATE_STATUSES.WARNING
     : PAST_START_DATE_STATUSES.FAIL;
-  
-  const applicationFormContextData = useMemo(() => ({
-    initialFormData,
-    formData: currentFormData,
-    policyEngine,
-    durationOptions,
-    allVehiclesFromInventory,
-    powerUnitSubtypeNamesMap,
-    trailerSubtypeNamesMap,
-    isLcvDesignated,
-    feature: FEATURE,
-    companyInfo,
-    isAmendAction: false,
-    createdDateTime,
-    updatedDateTime,
-    pastStartDateStatus,
-    companyLOAs: applicableLOAs,
-    revisionHistory: [],
-    policyViolations,
-    clearViolation,
-    triggerPolicyValidation,
-    onLeave: handleLeaveApplication,
-    onSave,
-    onCancel: undefined,
-    onContinue: handleSubmit(onContinue),
-  }), [
-    initialFormData,
-    currentFormData,
-    policyEngine,
-    durationOptions,
-    allVehiclesFromInventory,
-    powerUnitSubtypeNamesMap,
-    trailerSubtypeNamesMap,
-    isLcvDesignated,
-    companyInfo,
-    createdDateTime,
-    updatedDateTime,
-    pastStartDateStatus,
-    applicableLOAs,
-    policyViolations,
-    clearViolation,
-    triggerPolicyValidation,
-    handleLeaveApplication,
-    onSave,
-    onContinue,
-  ]);
+
+  const applicationFormContextData = useMemo(
+    () => ({
+      initialFormData,
+      formData: currentFormData,
+      policyEngine,
+      durationOptions,
+      allVehiclesFromInventory,
+      powerUnitSubtypeNamesMap,
+      trailerSubtypeNamesMap,
+      isLcvDesignated,
+      feature: FEATURE,
+      companyInfo,
+      isAmendAction: false,
+      createdDateTime,
+      updatedDateTime,
+      pastStartDateStatus,
+      companyLOAs: applicableLOAs,
+      revisionHistory: [],
+      policyViolations,
+      clearViolation,
+      triggerPolicyValidation,
+      onLeave: handleLeaveApplication,
+      onSave,
+      onCancel: undefined,
+      onContinue: handleSubmit(onContinue),
+    }),
+    [
+      initialFormData,
+      currentFormData,
+      policyEngine,
+      durationOptions,
+      allVehiclesFromInventory,
+      powerUnitSubtypeNamesMap,
+      trailerSubtypeNamesMap,
+      isLcvDesignated,
+      companyInfo,
+      createdDateTime,
+      updatedDateTime,
+      pastStartDateStatus,
+      applicableLOAs,
+      policyViolations,
+      clearViolation,
+      triggerPolicyValidation,
+      handleLeaveApplication,
+      onSave,
+      onContinue,
+    ],
+  );
 
   if (isUndefined(policyEngine)) return <Loading />;
   if (isNull(policyEngine)) return <Navigate to={ERROR_ROUTES.UNEXPECTED} />;
@@ -345,9 +355,7 @@ export const ApplicationForm = ({
       <ApplicationBreadcrumb applicationStep={APPLICATION_STEPS.DETAILS} />
 
       <FormProvider {...formMethods}>
-        <ApplicationFormContext.Provider
-          value={applicationFormContextData}
-        >
+        <ApplicationFormContext.Provider value={applicationFormContextData}>
           <PermitForm />
         </ApplicationFormContext.Provider>
       </FormProvider>

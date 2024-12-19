@@ -323,7 +323,8 @@ export class ShoppingCartService {
     } else {
       const selectResult = await this.applicationRepository
         .createQueryBuilder('application')
-        .where('permitId IN (:...applicationIds)', {
+        .leftJoin('application.company', 'company')
+        .where('application.permitId IN (:...applicationIds)', {
           applicationIds,
         })
         .andWhere('company.companyId = :companyId', {

@@ -44,6 +44,9 @@ export const invalidDate = () => validationMessages.date.defaultMessage;
 export const invalidPastStartDate = () =>
   validationMessages.date.start.past.defaultMessage;
 
+export const warnPastStartDate = () =>
+  validationMessages.date.start.past.warningMessage;
+
 export const invalidMaxStartDate = (max: number) => {
   const { messageTemplate, placeholders } = validationMessages.date.start.max;
   return replacePlaceholders(messageTemplate, placeholders, max);
@@ -120,6 +123,12 @@ export const licensedGVWExceeded = (max: number, localizeNumber?: boolean) => {
 export const invalidDBALength = (min: number, max: number) => {
   const { messageTemplate, placeholders } = validationMessages.dba.length;
   return replacePlaceholders(messageTemplate, placeholders, min, max);
+};
+
+export const invalidTranactionIdLength = (max: number) => {
+  const { messageTemplate, placeholders } =
+    validationMessages.transactionId.length;
+  return replacePlaceholders(messageTemplate, placeholders, max);
 };
 
 export const uploadSizeExceeded = () => {

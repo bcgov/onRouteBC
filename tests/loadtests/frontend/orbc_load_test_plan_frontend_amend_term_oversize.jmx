@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="Duration" elementType="Argument">
+            <stringProp name="Argument.name">Duration</stringProp>
+            <stringProp name="Argument.value">3180</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="FRONTEND_URL" elementType="Argument">
+            <stringProp name="Argument.name">FRONTEND_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="RESULTS_DIR" elementType="Argument">
+            <stringProp name="Argument.name">RESULTS_DIR</stringProp>
+            <stringProp name="Argument.value">~/results</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="USER" elementType="Argument">
+            <stringProp name="Argument.name">USER</stringProp>
+            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">PASSWORD</stringProp>
+            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="AMEND_URL" elementType="Argument">
+            <stringProp name="Argument.name">AMEND_URL</stringProp>
+            <stringProp name="Argument.value">https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/companies/1/permits/421/amend</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig guiclass="com.googlecode.jmeter.plugins.webdriver.config.gui.ChromeDriverConfigGui" testclass="com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig" testname="jp@gc - Chrome Driver Config" enabled="true">
+        <boolProp name="WebDriverConfig.acceptinsecurecerts">false</boolProp>
+        <boolProp name="WebDriverConfig.reset_per_iteration">true</boolProp>
+        <stringProp name="WebDriverConfig.driver_path">${__P(CHROME_DRIVER_PATH)}</stringProp>
+        <boolProp name="WebDriverConfig.dev_mode">false</boolProp>
+        <boolProp name="WebDriverConfig.headless">false</boolProp>
+        <boolProp name="WebDriverConfig.maximize_browser">true</boolProp>
+        <stringProp name="ChromeDriverConfig.additional_args"></stringProp>
+        <stringProp name="ChromeDriverConfig.binary_path"></stringProp>
+        <stringProp name="WebDriverConfig.proxy_type">SYSTEM</stringProp>
+        <stringProp name="WebDriverConfig.proxy_pac_url"></stringProp>
+        <stringProp name="WebDriverConfig.http_host"></stringProp>
+        <intProp name="WebDriverConfig.http_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_http_for_all_protocols">true</boolProp>
+        <stringProp name="WebDriverConfig.https_host"></stringProp>
+        <intProp name="WebDriverConfig.https_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_ftp_proxy">true</boolProp>
+        <stringProp name="WebDriverConfig.ftp_host"></stringProp>
+        <intProp name="WebDriverConfig.ftp_port">8080</intProp>
+        <boolProp name="WebDriverConfig.use_socks_proxy">true</boolProp>
+        <stringProp name="WebDriverConfig.socks_host"></stringProp>
+        <intProp name="WebDriverConfig.socks_port">8080</intProp>
+        <stringProp name="WebDriverConfig.no_proxy">localhost</stringProp>
+        <stringProp name="WebDriverConfig.custom_capabilites"></stringProp>
+      </com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="login" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v129.network.Network;
+import java.util.Optional;
+import org.openqa.selenium.logging.LogType
+import org.openqa.selenium.logging.LogEntries
+import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.logging.LoggingPreferences
+import java.util.logging.Level
+import java.util.function.Consumer
+
+WDS.sampleResult.sampleStart() 
+
+WDS.log.info &quot;Groovy version: ${GroovySystem.version}&quot;
+
+
+def frontendUrl = WDS.vars.get(&quot;FRONTEND_URL&quot;)
+WDS.browser.get(frontendUrl)
+Thread.sleep(5000)
+
+def loginButton = WDS.browser.findElement(By.id(&apos;login-idir&apos;))
+if (loginButton != null) {
+    loginButton.click()
+    WDS.log.info(&quot;Clicked on the login-idir button&quot;)
+    Thread.sleep(5000)
+    /*
+    try {
+	    def user = WDS.browser.findElement(By.id(&apos;user&apos;))
+	    def password = WDS.browser.findElement(By.id(&apos;password&apos;))
+	    if (user != null) {      
+		def userValue = WDS.vars.get(&quot;USER&quot;)
+		def passwordValue = WDS.vars.get(&quot;PASSWORD&quot;)
+		user.sendKeys(userValue)
+		password.sendKeys(passwordValue)
+		Thread.sleep(5000)
+		
+		def submitButton = WDS.browser.findElement(By.name(&apos;btnSubmit&apos;))
+		if (submitButton != null) {
+		    submitButton.click()
+		} else {
+		    WDS.log.info(&apos;Submit button with name=&quot;btnSubmit&quot; not found&apos;)
+		}
+		Thread.sleep(5000)
+		}
+	} catch (NoSuchElementException e) {
+		WDS.log.info(&apos;User element not found.&apos;)
+	}
+	*/
+} else {
+    WDS.log.info(&quot;Button with id &apos;login-idir&apos; not found&quot;)
+}
+
+Thread.sleep(5000)	
+
+def devTools = ((org.openqa.selenium.chrome.ChromeDriver) WDS.browser).getDevTools()
+devTools.createSession()
+devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()))
+devTools.addListener(Network.requestWillBeSent(), { request -&gt;
+    if (request.getRequest().getUrl().contains(&quot;https&quot;)) {
+        def headers = request.getRequest().getHeaders()
+        def authHeader = headers.get(&quot;Authorization&quot;)
+        if (authHeader != null &amp;&amp; authHeader.startsWith(&quot;Bearer &quot;)) {
+            def token = authHeader.replace(&quot;Bearer &quot;, &quot;&quot;)
+            WDS.log.info(&quot;Extracted Token: &quot; + token)
+            WDS.vars.put(&quot;BEARER_TOKEN&quot;, token)
+        }
+    }
+    else {
+    	WDS.log.info(&quot;bruce test no token: &quot;)
+    	}
+} as Consumer)
+Thread.sleep(5000)
+
+WDS.browser.get(frontendUrl)
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()
+</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+        <com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler guiclass="com.googlecode.jmeter.plugins.webdriver.sampler.gui.WebDriverSamplerGui" testclass="com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler" testname="amendApplications" enabled="true">
+          <stringProp name="WebDriverSampler.script">import org.openqa.selenium.By
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.WebElement
+
+WDS.sampleResult.sampleStart() 
+def frontendUrl = WDS.vars.get(&quot;FRONTEND_URL&quot;)
+WDS.browser.get(frontendUrl);
+Thread.sleep(5000)
+/*
+def loginButton = WDS.browser.findElement(By.id(&apos;login-idir&apos;))
+if (loginButton != null) {
+    loginButton.click()
+    WDS.log.info(&quot;Clicked on the login-bceid button&quot;)
+} else {
+    WDS.log.info(&quot;Button with id &apos;login-bceid&apos; not found&quot;)
+}
+Thread.sleep(10000)
+
+def searchIcon = WDS.browser.findElement(By.className(&apos;search-button&apos;))
+searchIcon.click()
+Thread.sleep(5000)
+
+def company = WDS.browser.findElement(By.cssSelector(&apos;[value=&quot;companies&quot;]&apos;))
+company.click()
+Thread.sleep(5000)
+
+
+def searchInput = WDS.browser.findElement(By.className(&apos;css-1pog434&apos;))
+searchInput.sendKeys(&apos;p&apos;)
+Thread.sleep(5000)
+
+def searchButton = WDS.browser.findElement(By.className(&apos;search-by__search&apos;))
+searchButton.click()
+Thread.sleep(5000)
+
+def button = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Test Transport Inc.&apos;]&quot;))
+button.click()
+Thread.sleep(5000)
+def tab = WDS.browser.findElement(By.xpath(&quot;//div[@class=&apos;tab__label&apos; and text()=&apos;Active Permits&apos;]&quot;))
+tab.click()
+Thread.sleep(5000)
+
+def amendUrl = WDS.vars.get(&quot;AMEND_URL&quot;)
+WDS.browser.get(amendUrl);
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;permitData.vehicleDetails.year&quot;]&apos;))
+year.clear()
+year.sendKeys(&quot;2008&quot;)
+Thread.sleep(5000)
+
+def amendment = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;comment&quot;]&apos;))
+amendment.clear()
+amendment.sendKeys(&quot;Make year updated&quot;)
+Thread.sleep(5000)
+
+
+def continueButton = WDS.browser.findElement(By.cssSelector(&apos;[data-testid=&quot;continue-application-button&quot;]&apos;))
+Thread.sleep(5000)
+
+if (continueButton != null) {
+    continueButton.click()
+    WDS.log.info(&apos;Clicked the button with data-testid=&quot;continue-application-button&quot;&apos;)
+} else {
+    WDS.log.info(&apos;Button with data-testid=&quot;continue-application-button&quot; not found&apos;)
+}
+
+Thread.sleep(10000)
+def checkboxes = WDS.browser.findElements(By.cssSelector(&apos;input[type=&quot;checkbox&quot;]&apos;))
+checkboxes.each { checkbox -&gt;
+    WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, checkbox)
+    if (!checkbox.isSelected()) {
+        checkbox.click()
+    }
+}
+Thread.sleep(5000)
+
+def continueBtn = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Continue&apos;]&quot;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, continueBtn)
+continueBtn.click()
+Thread.sleep(5000)
+
+def finish = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Finish&apos;]&quot;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, finish)
+finish.click()
+Thread.sleep(5000)
+*/
+
+def searchIcon = WDS.browser.findElement(By.className(&apos;search-button&apos;))
+searchIcon.click()
+Thread.sleep(5000)
+
+def company = WDS.browser.findElement(By.cssSelector(&apos;[value=&quot;companies&quot;]&apos;))
+company.click()
+Thread.sleep(5000)
+
+
+def searchInput = WDS.browser.findElement(By.className(&apos;css-1pog434&apos;))
+searchInput.sendKeys(&apos;t&apos;)
+Thread.sleep(5000)
+
+def searchButton = WDS.browser.findElement(By.className(&apos;search-by__search&apos;))
+searchButton.click()
+Thread.sleep(5000)
+
+def button = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Test Transport Inc.&apos;]&quot;))
+button.click()
+Thread.sleep(5000)
+def tab = WDS.browser.findElement(By.xpath(&quot;//div[@class=&apos;tab__label&apos; and text()=&apos;Active Permits&apos;]&quot;))
+tab.click()
+Thread.sleep(5000)
+
+def firstDotButton = WDS.browser.findElement(By.className(&apos;css-15mydm5&apos;))
+firstDotButton.click()
+Thread.sleep(5000)
+def amendButton = WDS.browser.findElement(By.xpath(&quot;//li[text()=&apos;Amend&apos;]&quot;))
+amendButton.click()
+Thread.sleep(5000)
+
+def year = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;permitData.vehicleDetails.year&quot;]&apos;))
+year.clear()
+year.sendKeys(&quot;2008&quot;)
+Thread.sleep(5000)
+
+def amendment = WDS.browser.findElement(By.cssSelector(&apos;[name=&quot;comment&quot;]&apos;))
+amendment.clear()
+amendment.sendKeys(&quot;Make year updated&quot;)
+Thread.sleep(5000)
+
+
+def continueButton = WDS.browser.findElement(By.cssSelector(&apos;[data-testid=&quot;continue-application-button&quot;]&apos;))
+Thread.sleep(5000)
+
+if (continueButton != null) {
+    continueButton.click()
+    WDS.log.info(&apos;Clicked the button with data-testid=&quot;continue-application-button&quot;&apos;)
+} else {
+    WDS.log.info(&apos;Button with data-testid=&quot;continue-application-button&quot; not found&apos;)
+}
+
+Thread.sleep(10000)
+def checkboxes = WDS.browser.findElements(By.cssSelector(&apos;input[type=&quot;checkbox&quot;]&apos;))
+checkboxes.each { checkbox -&gt;
+    WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, checkbox)
+    if (!checkbox.isSelected()) {
+        checkbox.click()
+    }
+}
+Thread.sleep(5000)
+
+def continueBtn = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Continue&apos;]&quot;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, continueBtn)
+continueBtn.click()
+Thread.sleep(5000)
+
+def finish = WDS.browser.findElement(By.xpath(&quot;//button[text()=&apos;Finish&apos;]&quot;))
+WDS.browser.executeScript(&quot;window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - 100);&quot;, finish)
+finish.click()
+Thread.sleep(5000)
+
+WDS.sampleResult.sampleEnd()
+</stringProp>
+          <stringProp name="WebDriverSampler.parameters"></stringProp>
+          <stringProp name="WebDriverSampler.language">groovy</stringProp>
+        </com.googlecode.jmeter.plugins.webdriver.sampler.WebDriverSampler>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${RESULTS_DIR}/amend_term_oversize.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

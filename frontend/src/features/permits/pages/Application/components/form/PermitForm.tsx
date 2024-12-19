@@ -65,9 +65,7 @@ export const PermitForm = () => {
       <Box className="permit-form__form">
         <ApplicationDetails
           permitType={permitType}
-          infoNumber={
-            isAmendAction ? permitNumber : applicationNumber
-          }
+          infoNumber={isAmendAction ? permitNumber : applicationNumber}
           infoNumberType={isAmendAction ? "permit" : "application"}
           createdDateTime={createdDateTime}
           updatedDateTime={updatedDateTime}
@@ -103,7 +101,7 @@ export const PermitForm = () => {
           selectedCommodityType={commodityType}
           onChangeCommodityType={onChangeCommodityType}
         />
-        
+
         <VehicleInformationSection
           permitType={permitType}
           feature={feature}
@@ -135,10 +133,7 @@ export const PermitForm = () => {
           onUpdateHighwaySequence={onUpdateHighwaySequence}
         />
 
-        <ApplicationNotesSection
-          feature={feature}
-          permitType={permitType}
-        />
+        <ApplicationNotesSection feature={feature} permitType={permitType} />
 
         {isAmendAction ? (
           <>

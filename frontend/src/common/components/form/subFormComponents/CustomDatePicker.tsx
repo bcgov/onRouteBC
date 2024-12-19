@@ -1,12 +1,9 @@
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, DateValidationError } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Box, FormControl, FormHelperText, FormLabel } from "@mui/material";
-import {
-  useState,
-  useEffect,
-} from "react";
+import { useState, useEffect } from "react";
 
 import {
   FieldValues,
@@ -18,13 +15,18 @@ import {
 } from "react-hook-form";
 
 import "./CustomDatePicker.scss";
-import { Nullable, ORBC_FormTypes, RequiredOrNull } from "../../../types/common";
+import {
+  Nullable,
+  ORBC_FormTypes,
+  RequiredOrNull,
+} from "../../../types/common";
 import { getStartOfDate, now } from "../../../helpers/formatDate";
 import { getErrorMessage } from "../CustomFormComponents";
 import {
   invalidDate,
   invalidMaxStartDate,
   invalidPastStartDate,
+  warnPastStartDate,
 } from "../../../helpers/validationMessages";
 
 export const PAST_START_DATE_STATUSES = {
@@ -34,7 +36,7 @@ export const PAST_START_DATE_STATUSES = {
 } as const;
 
 export type PastStartDateStatus =
-  typeof PAST_START_DATE_STATUSES[keyof typeof PAST_START_DATE_STATUSES];
+  (typeof PAST_START_DATE_STATUSES)[keyof typeof PAST_START_DATE_STATUSES];
 
 // Properties of the onrouteBC customized Date Picker MUI component/
 export interface CustomDatePickerProps<T extends FieldValues> {
@@ -101,25 +103,28 @@ export const CustomDatePicker = <T extends ORBC_FormTypes>({
     validate: {
       ...rules.validate,
       disablePast: (value: Nullable<Dayjs>) => {
-        return pastStartDateStatus !== PAST_START_DATE_STATUSES.FAIL
-          || (dateError !== "disablePast" && dateError !== "minDate")
-          || !value
-          || (value.isAfter(getStartOfDate(now())))
-          || (value.isSame(getStartOfDate(now())))
-          || invalidPastStartDate();
+        return (
+          pastStartDateStatus !== PAST_START_DATE_STATUSES.FAIL ||
+          (dateError !== "disablePast" && dateError !== "minDate") ||
+          !value ||
+          value.isAfter(getStartOfDate(now())) ||
+          value.isSame(getStartOfDate(now())) ||
+          invalidPastStartDate()
+        );
       },
       maxDate: (value: Nullable<Dayjs>) => {
-        return !maxDaysInFuture
-          || (dateError !== "maxDate")
-          || !maxDate
-          || !value
-          || (value.isBefore(getStartOfDate(maxDate)))
-          || (value.isSame(getStartOfDate(maxDate)))
-          || invalidMaxStartDate(maxDaysInFuture);
+        return (
+          !maxDaysInFuture ||
+          dateError !== "maxDate" ||
+          !maxDate ||
+          !value ||
+          value.isBefore(getStartOfDate(maxDate)) ||
+          value.isSame(getStartOfDate(maxDate)) ||
+          invalidMaxStartDate(maxDaysInFuture)
+        );
       },
       invalidDate: () => {
-        return (dateError !== "invalidDate")
-          || invalidDate();
+        return dateError !== "invalidDate" || invalidDate();
       },
     },
   };
@@ -137,12 +142,13 @@ export const CustomDatePicker = <T extends ORBC_FormTypes>({
     // Revalidate whenever the date picker error is updated (new error or no errors)
     trigger(name);
   }, [dateError]);
-  
+
   const rulesViolationMessage = getErrorMessage(errors, name);
   const startDateWarningMessage =
-    (dateError === "minDate" || dateError === "disablePast")
-      && (pastStartDateStatus === PAST_START_DATE_STATUSES.WARNING)
-      ? invalidPastStartDate() : null;
+    dayjs().isAfter(value, "day") &&
+    pastStartDateStatus === PAST_START_DATE_STATUSES.WARNING
+      ? warnPastStartDate()
+      : null;
 
   return (
     <Box className={`custom-date-picker ${className ? className : ""}`}>
@@ -173,9 +179,13 @@ export const CustomDatePicker = <T extends ORBC_FormTypes>({
                 disabled={disabled}
                 readOnly={readOnly}
                 onChange={(value) => handleDateChange(value)}
-                disablePast={pastStartDateStatus !== PAST_START_DATE_STATUSES.ALLOWED}
+                disablePast={
+                  pastStartDateStatus === PAST_START_DATE_STATUSES.FAIL
+                }
                 maxDate={maxDate}
-                onError={(dateValidationError) => setDateError(dateValidationError)}
+                onError={(dateValidationError) =>
+                  setDateError(dateValidationError)
+                }
                 slotProps={{
                   textField: {
                     inputProps: {

@@ -1,0 +1,7 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1731007898927,27140,login,200,OK,Thread Group 1-1,text,true,,19992,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/home,0,0,0
+1731007926113,90377,amendApplications,200,OK,Thread Group 1-1,text,true,,43812,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/search-results?searchEntity=permits&searchByFilter=permitNumber&searchString=P2-00010506,0,0,0
+1731008129597,27172,login,200,OK,Thread Group 1-1,text,true,,19992,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/home,0,0,0
+1731008156806,91452,amendApplications,200,OK,Thread Group 1-1,text,true,,41490,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/search-results?searchEntity=permits&searchByFilter=permitNumber&searchString=P2-00010514,0,0,0
+1731008607583,26278,login,200,OK,Thread Group 1-1,text,true,,19992,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/home,0,0,0
+1731008633889,91847,amendApplications,200,OK,Thread Group 1-1,text,true,,43820,0,1,1,https://onroutebc-test-frontend.apps.silver.devops.gov.bc.ca/idir/search-results?searchEntity=permits&searchByFilter=permitNumber&searchString=P2-00010511,0,0,0
