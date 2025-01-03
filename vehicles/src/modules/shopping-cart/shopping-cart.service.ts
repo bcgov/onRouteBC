@@ -294,6 +294,10 @@ export class ShoppingCartService {
       .update()
       .set({
         permitStatus: statusToUpdateTo,
+        issuer:
+          statusToUpdateTo === ApplicationStatus.IN_CART
+            ? { userGUID: currentUser.userGUID }
+            : null,
         updatedUser: currentUser.userName,
         updatedDateTime: new Date(),
         updatedUserDirectory: currentUser.orbcUserDirectory,

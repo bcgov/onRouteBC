@@ -38,6 +38,8 @@ export const formatTemplateData = (
     revisions: [],
     permitData: null,
     loas: '',
+    permitIssueDateTime: '',
+    revisionIssueDateTime: '',
   };
 
   template.permitData = JSON.parse(permit.permitData.permitData) as PermitData;
@@ -95,22 +97,34 @@ export const formatTemplateData = (
     permit.permitTransactions?.at(0)?.transactionAmount,
   ).toString();
 
+  if (permit.revision > 0) {
+    template.revisionIssueDateTime = convertUtcToPt(
+      permit.permitIssueDateTime,
+      'MMM. D, YYYY, hh:mm a Z',
+    );
+  }
+
   revisionHistory?.forEach((revision) => {
     if (
       revision.permitStatus == ApplicationStatus.ISSUED ||
       revision.permitStatus == ApplicationStatus.VOIDED ||
       revision.permitStatus == ApplicationStatus.REVOKED ||
-      revision.permitId === permit.permitId
+      revision.permitStatus == ApplicationStatus.SUPERSEDED
     ) {
-      template.revisions.push({
-        timeStamp: convertUtcToPt(
-          revision.permitId === permit.permitId
-            ? permit.permitIssueDateTime
-            : revision.permitIssueDateTime,
+      if (permit.originalPermitId === revision.permitId) {
+        template.permitIssueDateTime = convertUtcToPt(
+          revision.permitIssueDateTime,
           'MMM. D, YYYY, hh:mm a Z',
-        ),
-        description: revision.comment,
-      });
+        );
+      } else {
+        template.revisions.push({
+          timeStamp: convertUtcToPt(
+            revision.permitIssueDateTime,
+            'MMM. D, YYYY, hh:mm a Z',
+          ),
+          description: revision.comment,
+        });
+      }
     }
   });
 

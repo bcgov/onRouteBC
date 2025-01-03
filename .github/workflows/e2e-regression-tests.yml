@@ -1,9 +1,19 @@
 name: E2E Regression Tests
 
 on:
-  workflow_run:
-    workflows: ['PR Opened']
-    types: [completed]
+  workflow_call:
+    inputs:
+      ### Required
+      target:
+        description: 'PR number, test, uat or prod.'
+        default: 'test'
+        required: true
+        type: string
+      show_artifact:
+        description: 'boolean to show artifacts on run (default is on failure)'
+        default: 'false'
+        required: true
+        type: boolean
   workflow_dispatch:
     inputs:
       ### Required
@@ -12,6 +22,12 @@ on:
         default: 'test'
         required: true
         type: string
+      show_artifact:
+        description: 'boolean to show artifacts on run (default is on failure)'
+        default: 'false'
+        required: true
+        type: boolean
+        
 
 jobs:
   vars:
@@ -24,8 +40,8 @@ jobs:
       - name: env
         id: env
         run: |
-          pr="${{github.event.workflow_run.pull_requests[0].number}}"
-          if [[ $pr ]]; then
+          pr="${{inputs.target}}"
+          if [[ $pr != 'test' && $pr != 'demo' && $pr != 'uat' && $pr != 'prod'  ]]; then
             target="$pr"
             environment="dev"
           else
@@ -78,14 +94,14 @@ jobs:
           working-directory: tests
 
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: failure() || inputs.show_artifact
         with:
           name: ${{matrix.test}}-${{matrix.browser}} screenshot
           path: tests/cypress/screenshots/
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
       
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: failure() || inputs.show_artifact
         with:
           name: ${{matrix.test}}-${{matrix.browser}} video
           path: tests/cypress/videos/

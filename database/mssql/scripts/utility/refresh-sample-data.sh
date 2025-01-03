@@ -14,7 +14,6 @@ sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -Q "SET QUOTED_IDENTIFIER ON; SET NOCOUNT ON; DELETE FROM dbo.ORBC_COMPANY"
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -Q "SET QUOTED_IDENTIFIER ON; SET NOCOUNT ON; DELETE FROM dbo.ORBC_CONTACT"
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -Q "SET QUOTED_IDENTIFIER ON; SET NOCOUNT ON; DELETE FROM dbo.ORBC_ADDRESS"
-sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -Q "SET QUOTED_IDENTIFIER ON; SET NOCOUNT ON; DELETE FROM dbo.ORBC_POLICY_CONFIGURATION"
 echo "Finished deleting existing sample data"
 
 echo "Loading sample data...please wait"
@@ -26,7 +25,6 @@ sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -i ${SCRIPT_DIR}/sampledata/dbo.ORBC_POWER_UNIT.Table.sql
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -i ${SCRIPT_DIR}/sampledata/dbo.ORBC_TRAILER.Table.sql
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -i ${SCRIPT_DIR}/sampledata/dbo.ORBC_FEATURE_FLAG.Table.sql
-sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -i ${SCRIPT_DIR}/sampledata/dbo.ORBC_POLICY_CONFIGURATION.Table.sql
 
 echo "Setting credit account sequence restart to current timestamp (used only for lower environments)"
 sqlcmd -C -U ${ORBC_USER} -P "${ORBC_PASS}" -S ${ORBC_SERVER} -d ${ORBC_DATABASE} -i ${SCRIPT_DIR}/sampledata/permit.ORBC_CREDIT_ACCOUNT_NUMBER_SEQ.sql

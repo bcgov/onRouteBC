@@ -1,0 +1,222 @@
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET NOCOUNT ON
+GO
+
+SET XACT_ABORT ON
+GO
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+GO
+
+BEGIN TRANSACTION
+GO
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'permit-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'permit-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'permit-void-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'permit-void-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'permit-revoked-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'permit-revoked-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'stos-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'stos-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'stos-void-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'stos-void-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'stos-revoked-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'stos-revoked-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'mfp-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'mfp-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'mfp-void-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'mfp-void-template-v2.docx'
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT_TEMPLATE]
+WHERE DOCUMENT_ID IN (
+		SELECT ID
+		FROM [dops].[ORBC_DOCUMENT]
+		WHERE FILE_NAME = 'mfp-revoked-template-v2.docx'
+		)
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DELETE [dops].[ORBC_DOCUMENT]
+WHERE FILE_NAME = 'mfp-revoked-template-v2.docx'
+
+DECLARE @VersionDescription VARCHAR(255)
+
+SET @VersionDescription = 'Revert permit templates from v2 to v1'
+
+INSERT [dbo].[ORBC_SYS_VERSION] (
+	[VERSION_ID]
+	,[DESCRIPTION]
+	,[RELEASE_DATE]
+	)
+VALUES (
+	52
+	,@VersionDescription
+	,getutcdate()
+	)
+GO
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+COMMIT TRANSACTION
+GO
+
+IF @@ERROR <> 0
+	SET NOEXEC ON
+GO
+
+DECLARE @Success AS BIT
+
+SET @Success = 1
+SET NOEXEC OFF
+
+IF (@Success = 1)
+	PRINT 'The database revert succeeded'
+ELSE
+BEGIN
+	IF @@TRANCOUNT > 0
+		ROLLBACK TRANSACTION
+
+	PRINT 'The database revert failed'
+END
+GO

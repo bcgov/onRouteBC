@@ -21,7 +21,7 @@
     "material-react-table": "^2.13.3",
     "mui-nested-menu": "^3.4.0",
     "oidc-client-ts": "^3.1.0",
-    "onroute-policy-engine": "^1.0.0",
+    "onroute-policy-engine": "^1.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.1.2",

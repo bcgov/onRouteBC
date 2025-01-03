@@ -270,6 +270,7 @@ export class ApplicationService {
       .innerJoinAndSelect('permit.permitTransactions', 'permitTransactions')
       .innerJoinAndSelect('permitTransactions.transaction', 'transaction')
       .innerJoinAndSelect('transaction.receipt', 'receipt')
+      .leftJoinAndSelect('permit.issuer', 'issuer')
       .leftJoinAndSelect('permit.applicationOwner', 'applicationOwner')
       .leftJoinAndSelect(
         'applicationOwner.userContact',
@@ -697,6 +698,13 @@ export class ApplicationService {
           fetchedApplication.permitNumber = permitNumber;
           fetchedApplication.permitStatus = ApplicationStatus.ISSUED;
           fetchedApplication.permitIssueDateTime = new Date();
+          const issuer =
+            fetchedApplication?.issuer?.userGUID || currentUser.userGUID;
+          const permitIssuedBy =
+            currentUser.orbcUserDirectory === Directory.IDIR ||
+            currentUser.orbcUserDirectory === Directory.SERVICE_ACCOUNT
+              ? PermitIssuedBy.PPC
+              : PermitIssuedBy.SELF_ISSUED;
           const queryRunner = this.dataSource.createQueryRunner();
           await queryRunner.connect();
           await queryRunner.startTransaction();
@@ -707,13 +715,9 @@ export class ApplicationService {
               {
                 permitStatus: fetchedApplication.permitStatus,
                 permitNumber: fetchedApplication.permitNumber,
-                issuer: { userGUID: currentUser.userGUID },
+                issuer: { userGUID: issuer },
                 permitApprovalSource: PermitApprovalSourceEnum.AUTO, //TODO : Hardcoding for release 1
-                permitIssuedBy:
-                  currentUser.orbcUserDirectory == Directory.IDIR ||
-                  currentUser.orbcUserDirectory === Directory.SERVICE_ACCOUNT
-                    ? PermitIssuedBy.PPC
-                    : PermitIssuedBy.SELF_ISSUED,
+                permitIssuedBy: permitIssuedBy,
                 permitIssueDateTime: fetchedApplication.permitIssueDateTime,
                 updatedDateTime: new Date(),
                 updatedUser: currentUser.userName,
@@ -1092,6 +1096,10 @@ export class ApplicationService {
         Permit,
         { permitId: applicationId },
         {
+          issuer:
+            caseActivityType === CaseActivityType.APPROVED
+              ? { userGUID: currentUser.userGUID }
+              : null,
           permitStatus:
             caseActivityType === CaseActivityType.APPROVED
               ? ApplicationStatus.IN_CART

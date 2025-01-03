@@ -46,6 +46,7 @@ const client_id =
  */
 const oidcConfig: AuthProviderProps = {
   authority: authority,
+  accessTokenExpiringNotificationTimeInSeconds: 120,
   client_id: client_id,
   redirect_uri: window.location.origin + "/",
   scope: "openid",

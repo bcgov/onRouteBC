@@ -14,6 +14,8 @@ export interface PermitTemplateData {
   revisions: Revision[];
   permitData?: PermitData;
   loas?: string;
+  permitIssueDateTime?: string;
+  revisionIssueDateTime?: string;
 }
 
 interface Revision {

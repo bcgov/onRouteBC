@@ -74,7 +74,9 @@ export class CdogsService {
     }
     // The above implemenation is a fail proof version to always get the latest version --end
 
-    const templateFile = filteredTemplateFiles.at(0);
+    const templateFile = filteredTemplateFiles.at(
+      filteredTemplateFiles?.length - 1,
+    );
 
     const token = await getAccessToken(
       GovCommonServices.COMMON_DOCUMENT_GENERATION_SERVICE,
