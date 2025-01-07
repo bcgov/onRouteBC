@@ -168,3 +168,15 @@ export const doesUserHaveRole = (
   // This function checks if the given value is present in the enumObject array
   return Object.values(enumObject).includes(value);
 };
+
+/**
+ * Checks if the provided directory is either an IDIR or a Service Account.
+ *
+ * @param {Directory} directory - The directory type to check against.
+ * @returns {boolean} Returns true if the directory is IDIR or Service Account, otherwise false.
+ */
+export const isIdirOrSAUser = (directory: Directory) => {
+  return (
+    directory === Directory.IDIR || directory === Directory.SERVICE_ACCOUNT
+  );
+};

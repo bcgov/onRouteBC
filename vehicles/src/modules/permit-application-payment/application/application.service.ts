@@ -35,7 +35,6 @@ import {
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DopsService } from '../../common/dops.service';
-import { Directory } from '../../../common/enum/directory.enum';
 import { PermitIssuedBy } from '../../../common/enum/permit-issued-by.enum';
 import { LogAsyncMethodExecution } from '../../../common/decorator/log-async-method-execution.decorator';
 import { PageMetaDto } from '../../../common/dto/paginate/page-meta';
@@ -47,7 +46,10 @@ import {
 } from '../../../common/enum/user-role.enum';
 import { DeleteDto } from '../../common/dto/response/delete.dto';
 import { ReadApplicationMetadataDto } from './dto/response/read-application-metadata.dto';
-import { doesUserHaveRole } from '../../../common/helper/auth.helper';
+import {
+  doesUserHaveRole,
+  isIdirOrSAUser,
+} from '../../../common/helper/auth.helper';
 import {
   ACTIVE_APPLICATION_STATUS,
   ACTIVE_APPLICATION_STATUS_FOR_ISSUANCE,
@@ -698,13 +700,22 @@ export class ApplicationService {
           fetchedApplication.permitNumber = permitNumber;
           fetchedApplication.permitStatus = ApplicationStatus.ISSUED;
           fetchedApplication.permitIssueDateTime = new Date();
-          const issuer =
-            fetchedApplication?.issuer?.userGUID || currentUser.userGUID;
-          const permitIssuedBy =
-            currentUser.orbcUserDirectory === Directory.IDIR ||
-            currentUser.orbcUserDirectory === Directory.SERVICE_ACCOUNT
+          let issuer: string;
+          let permitIssuedBy: PermitIssuedBy;
+          if (fetchedApplication?.issuer?.userGUID) {
+            issuer = fetchedApplication?.issuer?.userGUID;
+            permitIssuedBy = isIdirOrSAUser(
+              fetchedApplication?.issuer?.directory,
+            )
               ? PermitIssuedBy.PPC
               : PermitIssuedBy.SELF_ISSUED;
+          } else {
+            issuer = currentUser.userGUID;
+            permitIssuedBy = isIdirOrSAUser(currentUser.orbcUserDirectory)
+              ? PermitIssuedBy.PPC
+              : PermitIssuedBy.SELF_ISSUED;
+          }
+
           const queryRunner = this.dataSource.createQueryRunner();
           await queryRunner.connect();
           await queryRunner.startTransaction();

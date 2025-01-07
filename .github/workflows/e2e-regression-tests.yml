@@ -87,6 +87,7 @@ jobs:
           CYPRESS_bceid_password: ${{secrets.BCEID_PASSWORD}}
           CYPRESS_idir_username: ${{vars.IDIR_USERNAME}}
           CYPRESS_idir_password: ${{secrets.IDIR_PASSWORD}}
+          CYPRESS_wait_time: 2000
         with:
           browser: ${{ matrix.browser }}
           config: pageLoadTimeout=10000,video=true

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 
 import "./PermitPayFeeSummary.scss";
 import { PermitType } from "../../../../types/PermitType";
 import { FeeSummary } from "../../../../components/feeSummary/FeeSummary";
+import OnRouteBCContext from "../../../../../../common/authentication/OnRouteBCContext";
+import { useFeatureFlagsQuery } from "../../../../../../common/hooks/hooks";
 
 export const PermitPayFeeSummary = ({
   calculatedFee,
@@ -20,6 +22,9 @@ export const PermitPayFeeSummary = ({
 }) => {
   const [showTooltip, setShowTooltip] = useState<boolean>(false);
   const disablePay = selectedItemsCount === 0;
+  const { idirUserDetails } = useContext(OnRouteBCContext);
+  const isStaffActingAsCompany = Boolean(idirUserDetails?.userRole);
+  const { data: featureFlags } = useFeatureFlagsQuery();
 
   const handlePayNow = () => {
     if (disablePay) {
@@ -57,7 +62,11 @@ export const PermitPayFeeSummary = ({
             className="permit-pay-fee-summary__btn"
             variant="contained"
             onClick={handlePayNow}
-            disabled={transactionPending}
+            disabled={
+              transactionPending ||
+              (isStaffActingAsCompany &&
+                featureFlags?.["STAFF-CAN-PAY"] !== "ENABLED")
+            }
           >
             Pay Now
           </Button>

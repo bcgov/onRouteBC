@@ -16,6 +16,7 @@ import { UpdatePaymentGatewayTransactionDto } from '../dto/request/update-paymen
 import { ReadPaymentGatewayTransactionDto } from '../dto/response/read-payment-gateway-transaction.dto';
 import { Directory } from 'src/common/enum/directory.enum';
 import { PPC_FULL_TEXT } from 'src/common/constants/api.constant';
+import { PaymentMethodType } from '../../../../common/enum/payment-method-type.enum';
 
 @Injectable()
 export class TransactionProfile extends AutomapperProfile {
@@ -63,6 +64,17 @@ export class TransactionProfile extends AutomapperProfile {
         mapper,
         CreateTransactionDto,
         Transaction,
+        forMember(
+          (transaction) => transaction.payerName,
+          mapWithArguments((source, { directory, firstName, lastName }) => {
+            if (source.paymentMethodTypeCode !== PaymentMethodType.WEB) {
+              return directory === Directory.IDIR ||
+                directory === Directory.SERVICE_ACCOUNT
+                ? PPC_FULL_TEXT
+                : String(firstName) + ' ' + String(lastName);
+            }
+          }),
+        ),
         forMember(
           (d) => d.createdUserGuid,
           mapWithArguments((source, { userGUID }) => {

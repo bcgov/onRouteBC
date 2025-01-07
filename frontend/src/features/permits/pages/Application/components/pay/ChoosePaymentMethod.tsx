@@ -9,6 +9,7 @@ import {
   DEFAULT_EMPTY_CARD_TYPE,
   DEFAULT_EMPTY_PAYMENT_TYPE,
 } from "./types/PaymentMethodData";
+import { useFeatureFlagsQuery } from "../../../../../../common/hooks/hooks";
 
 export const ChoosePaymentMethod = ({
   availablePaymentMethods,
@@ -19,6 +20,7 @@ export const ChoosePaymentMethod = ({
 }) => {
   const { control, watch, setValue, clearErrors } = useFormContext();
   const currPaymentMethod = watch("paymentMethod");
+  const { data: featureFlags } = useFeatureFlagsQuery();
 
   const handlePaymentMethodChange = (
     selectedPaymentMethod: PaymentMethodTypeCode,
@@ -71,8 +73,8 @@ export const ChoosePaymentMethod = ({
                 handlePaymentMethodChange={handlePaymentMethodChange}
               />
             ))}
-
-            {showPayInPersonInfo ? (
+            {showPayInPersonInfo &&
+            featureFlags?.["STAFF-CAN-PAY"] === "ENABLED" ? (
               <CVPayInPersonInfo />
             ) : null}
           </RadioGroup>

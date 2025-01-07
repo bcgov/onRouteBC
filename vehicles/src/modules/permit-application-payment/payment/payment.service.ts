@@ -13,14 +13,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { Transaction } from './entities/transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Brackets,
-  DataSource,
-  In,
-  QueryRunner,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { DataSource, In, QueryRunner, Repository, UpdateResult } from 'typeorm';
 import { PermitTransaction } from './entities/permit-transaction.entity';
 import { IUserJWT } from 'src/common/interface/user-jwt.interface';
 import { callDatabaseSequence } from 'src/common/helper/database.helper';
@@ -43,7 +36,6 @@ import { UpdatePaymentGatewayTransactionDto } from './dto/request/update-payment
 import { PaymentCardType } from './entities/payment-card-type.entity';
 import { PaymentMethodType } from './entities/payment-method-type.entity';
 import { LogAsyncMethodExecution } from '../../../common/decorator/log-async-method-execution.decorator';
-import { PermitHistoryDto } from '../permit/dto/response/permit-history.dto';
 import {
   calculatePermitAmount,
   permitFee,
@@ -56,11 +48,13 @@ import {
   validApplicationDates,
 } from '../../../common/helper/permit-application.helper';
 import { isCfsPaymentMethodType } from 'src/common/helper/payment.helper';
-import { PgApprovesStatus } from 'src/common/enum/pg-approved-status-type.enum';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CacheKey } from 'src/common/enum/cache-key.enum';
-import { getFromCache } from '../../../common/helper/cache.helper';
+import {
+  getFromCache,
+  getMapFromCache,
+} from '../../../common/helper/cache.helper';
 import { doesUserHaveRole } from '../../../common/helper/auth.helper';
 import { IDIR_USER_ROLE_LIST } from '../../../common/enum/user-role.enum';
 import {
@@ -71,8 +65,12 @@ import {
   isCVClient,
   isFeatureEnabled,
 } from '../../../common/helper/common.helper';
-import { SpecialAuth } from 'src/modules/special-auth/entities/special-auth.entity';
 import { TIMEZONE_PACIFIC } from 'src/common/constants/api.constant';
+import { FeatureFlagValue } from '../../../common/enum/feature-flag-value.enum';
+import { PermitData } from 'src/common/interface/permit.template.interface';
+import { isValidLoa } from 'src/common/helper/validate-loa.helper';
+import { PermitHistoryDto } from '../permit/dto/response/permit-history.dto';
+import { SpecialAuthService } from 'src/modules/special-auth/special-auth.service';
 
 @Injectable()
 export class PaymentService {
@@ -87,6 +85,9 @@ export class PaymentService {
     private paymentMethodTypeRepository: Repository<PaymentMethodType>,
     @InjectRepository(PaymentCardType)
     private paymentCardTypeRepository: Repository<PaymentCardType>,
+    @InjectRepository(Permit)
+    private permitRepository: Repository<Permit>,
+    private readonly specialAuthService: SpecialAuthService,
     @InjectMapper() private readonly classMapper: Mapper,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
@@ -269,6 +270,18 @@ export class PaymentService {
     createTransactionDto: CreateTransactionDto,
     nestedQueryRunner?: QueryRunner,
   ): Promise<ReadTransactionDto> {
+    const featureFlags = await getMapFromCache(
+      this.cacheManager,
+      CacheKey.FEATURE_FLAG_TYPE,
+    );
+    if (
+      doesUserHaveRole(currentUser.orbcUserRole, IDIR_USER_ROLE_LIST) &&
+      featureFlags?.['STAFF-CAN-PAY'] &&
+      (featureFlags['STAFF-CAN-PAY'] as FeatureFlagValue) !==
+        FeatureFlagValue.ENABLED
+    ) {
+      throwUnprocessableEntityException('Disabled feature');
+    }
     if (
       !doesUserHaveRole(currentUser.orbcUserRole, IDIR_USER_ROLE_LIST) &&
       createTransactionDto?.paymentMethodTypeCode !==
@@ -331,12 +344,18 @@ export class PaymentService {
           throw new BadRequestException(
             'Application in its current status cannot be processed for payment.',
           );
+        const permitData = JSON.parse(
+          application.permitData.permitData,
+        ) as PermitData;
+        // If application includes LoAs then validate Loa data.
+        if (permitData.loas) {
+          await isValidLoa(application, queryRunner, this.classMapper);
+        }
       }
       const totalTransactionAmount = await this.validateApplicationAndPayment(
         createTransactionDto,
         existingApplications,
         currentUser,
-        queryRunner,
       );
       const transactionOrderNumber =
         await this.generateTransactionOrderNumber();
@@ -509,7 +528,6 @@ export class PaymentService {
     createTransactionDto: CreateTransactionDto,
     applications: Permit[],
     currentUser: IUserJWT,
-    queryRunner: QueryRunner,
   ) {
     let totalTransactionAmountCalculated = 0;
     const isCVClientUser: boolean = isCVClient(currentUser.identity_provider);
@@ -524,10 +542,8 @@ export class PaymentService {
           `Atleast one of the application has invalid startDate or expiryDate.`,
         );
       }
-      totalTransactionAmountCalculated += await this.permitFeeCalculator(
-        application,
-        queryRunner,
-      );
+      totalTransactionAmountCalculated +=
+        await this.permitFeeCalculator(application);
     }
     const totalTransactionAmount =
       createTransactionDto.applicationDetails?.reduce(
@@ -795,21 +811,15 @@ export class PaymentService {
    * @param queryRunner - An optional QueryRunner for database transactions.
    * @returns {Promise<number>} - The calculated permit fee or refund amount.
    */
-  @LogAsyncMethodExecution()
-  async permitFeeCalculator(
-    application: Permit,
-    queryRunner?: QueryRunner,
-  ): Promise<number> {
+  async permitFeeCalculator(application: Permit): Promise<number> {
     if (application.permitStatus === ApplicationStatus.REVOKED) return 0;
+    const companyId = application.company.companyId;
 
     const permitPaymentHistory = await this.findPermitHistory(
       application.originalPermitId,
-      queryRunner,
+      companyId,
     );
-    const isNoFee = await this.findNoFee(
-      application.company.companyId,
-      queryRunner,
-    );
+    const isNoFee = await this.specialAuthService.findNoFee(companyId);
     const oldAmount =
       permitPaymentHistory.length > 0
         ? calculatePermitAmount(permitPaymentHistory)
@@ -818,51 +828,26 @@ export class PaymentService {
     return fee;
   }
 
-  @LogAsyncMethodExecution()
-  async findNoFee(
-    companyId: number,
-    queryRunner: QueryRunner,
-  ): Promise<boolean> {
-    const specialAuth = await queryRunner.manager
-      .createQueryBuilder()
-      .select('specialAuth')
-      .from(SpecialAuth, 'specialAuth')
-      .innerJoinAndSelect('specialAuth.company', 'company')
-      .where('company.companyId = :companyId', { companyId: companyId })
-      .getOne();
-    return !!specialAuth && !!specialAuth.noFeeType;
-  }
 
+  /**
+   * 
+   * This function is deprecated and will be removed once the validation endpoints are established.
+   */
   @LogAsyncMethodExecution()
-  async findPermitHistory(
+  public async findPermitHistory(
     originalPermitId: string,
-    queryRunner: QueryRunner,
+    companyId?: number,
   ): Promise<PermitHistoryDto[]> {
-    // Fetches the permit history for a given originalPermitId using the provided QueryRunner
-    // This includes all related transactions and filters permits by non-null permit numbers
-    // Orders the results by transaction submission date in descending order
-
-    const permits = await queryRunner.manager
-      .createQueryBuilder()
-      .select('permit')
-      .from(Permit, 'permit')
+    const permits = await this.permitRepository
+      .createQueryBuilder('permit')
+      .leftJoinAndSelect('permit.company', 'company')
       .innerJoinAndSelect('permit.permitTransactions', 'permitTransactions')
       .innerJoinAndSelect('permitTransactions.transaction', 'transaction')
       .where('permit.permitNumber IS NOT NULL')
       .andWhere('permit.originalPermitId = :originalPermitId', {
         originalPermitId: originalPermitId,
       })
-      .andWhere(
-        new Brackets((qb) => {
-          qb.where(
-            'transaction.paymentMethodTypeCode != :paymentType OR ( transaction.paymentMethodTypeCode = :paymentType AND transaction.pgApproved = :approved)',
-            {
-              paymentType: PaymentMethodTypeEnum.WEB,
-              approved: PgApprovesStatus.APPROVED,
-            },
-          );
-        }),
-      )
+      .andWhere('company.companyId = :companyId', { companyId: companyId })
       .orderBy('transaction.transactionSubmitDate', 'DESC')
       .getMany();
 

@@ -22,5 +22,6 @@ import { SpecialAuthProfile } from './profile/special-auth.profile';
   ],
   controllers: [SpecialAuthController, LoaController],
   providers: [SpecialAuthService, LoaService, LoaProfile, SpecialAuthProfile],
+  exports: [SpecialAuthService],
 })
 export class SpecialAuthModule {}
