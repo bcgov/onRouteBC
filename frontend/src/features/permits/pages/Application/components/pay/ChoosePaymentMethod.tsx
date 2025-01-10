@@ -74,7 +74,7 @@ export const ChoosePaymentMethod = ({
               />
             ))}
             {showPayInPersonInfo &&
-            featureFlags?.["STAFF-CAN-PAY"] === "ENABLED" ? (
+            featureFlags?.["CVCLIENT-PAY-IN-PERSON"] === "ENABLED" ? (
               <CVPayInPersonInfo />
             ) : null}
           </RadioGroup>

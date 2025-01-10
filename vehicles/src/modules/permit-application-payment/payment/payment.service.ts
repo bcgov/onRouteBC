@@ -274,13 +274,26 @@ export class PaymentService {
       this.cacheManager,
       CacheKey.FEATURE_FLAG_TYPE,
     );
+    const isStaffCanPayEnabled =
+      featureFlags?.['STAFF-CAN-PAY'] &&
+      (featureFlags['STAFF-CAN-PAY'] as FeatureFlagValue) ===
+        FeatureFlagValue.ENABLED;
+    const isRefundOrNoPayment =
+      createTransactionDto.transactionTypeId == TransactionType.REFUND ||
+      createTransactionDto.paymentMethodTypeCode ===
+        PaymentMethodTypeEnum.NO_PAYMENT;
+
+    // If the user is a staff user,
+    // transacation is NOT a refund or no payment and STAFF-CAN-PAY is disabled,
+    // throw an error
     if (
       doesUserHaveRole(currentUser.orbcUserRole, IDIR_USER_ROLE_LIST) &&
-      featureFlags?.['STAFF-CAN-PAY'] &&
-      (featureFlags['STAFF-CAN-PAY'] as FeatureFlagValue) !==
-        FeatureFlagValue.ENABLED
+      !isRefundOrNoPayment &&
+      !isStaffCanPayEnabled
     ) {
-      throwUnprocessableEntityException('Disabled feature');
+      throwUnprocessableEntityException(
+        'Disabled feature - Feature flag: STAFF-CAN-PAY',
+      );
     }
     if (
       !doesUserHaveRole(currentUser.orbcUserRole, IDIR_USER_ROLE_LIST) &&
@@ -356,6 +369,7 @@ export class PaymentService {
         createTransactionDto,
         existingApplications,
         currentUser,
+        queryRunner,
       );
       const transactionOrderNumber =
         await this.generateTransactionOrderNumber();
@@ -465,9 +479,10 @@ export class PaymentService {
         )
       ) {
         const receiptNumber = await this.generateReceiptNumber();
-        const receipt = new Receipt();
+        //const receipt = new Receipt();
+        let receipt = new Receipt();
         receipt.receiptNumber = receiptNumber;
-        receipt.transaction = createdTransaction;
+        //receipt.transaction = createdTransaction;
         receipt.createdDateTime = new Date();
         receipt.createdUser = currentUser.userName;
         receipt.createdUserDirectory = currentUser.orbcUserDirectory;
@@ -476,7 +491,20 @@ export class PaymentService {
         receipt.updatedUser = currentUser.userName;
         receipt.updatedUserDirectory = currentUser.orbcUserDirectory;
         receipt.updatedUserGuid = currentUser.userGUID;
-        await queryRunner.manager.save(receipt);
+        // await queryRunner.manager.save(receipt);
+        receipt = await queryRunner.manager.save(receipt);
+
+        await queryRunner.manager.update(
+          Transaction,
+          { transactionId: createdTransaction.transactionId },
+          {
+            receipt: receipt,
+            updatedDateTime: new Date(),
+            updatedUser: currentUser.userName,
+            updatedUserDirectory: currentUser.orbcUserDirectory,
+            updatedUserGuid: currentUser.userGUID,
+          },
+        );
       }
 
       readTransactionDto = await this.classMapper.mapAsync(
@@ -528,6 +556,7 @@ export class PaymentService {
     createTransactionDto: CreateTransactionDto,
     applications: Permit[],
     currentUser: IUserJWT,
+    queryRunner: QueryRunner,
   ) {
     let totalTransactionAmountCalculated = 0;
     const isCVClientUser: boolean = isCVClient(currentUser.identity_provider);
@@ -542,8 +571,10 @@ export class PaymentService {
           `Atleast one of the application has invalid startDate or expiryDate.`,
         );
       }
-      totalTransactionAmountCalculated +=
-        await this.permitFeeCalculator(application);
+      totalTransactionAmountCalculated += await this.permitFeeCalculator(
+        application,
+        queryRunner,
+      );
     }
     const totalTransactionAmount =
       createTransactionDto.applicationDetails?.reduce(
@@ -711,9 +742,10 @@ export class PaymentService {
 
       if (updateTransactionTemp.pgApproved === 1) {
         const receiptNumber = await this.generateReceiptNumber();
-        const receipt = new Receipt();
+        //const receipt = new Receipt();
+        let receipt = new Receipt();
         receipt.receiptNumber = receiptNumber;
-        receipt.transaction = updatedTransaction;
+        //receipt.transaction = updatedTransaction;
         receipt.receiptNumber = receiptNumber;
         receipt.createdDateTime = new Date();
         receipt.createdUser = currentUser.userName;
@@ -723,7 +755,20 @@ export class PaymentService {
         receipt.updatedUser = currentUser.userName;
         receipt.updatedUserDirectory = currentUser.orbcUserDirectory;
         receipt.updatedUserGuid = currentUser.userGUID;
-        await queryRunner.manager.save(receipt);
+        //await queryRunner.manager.save(receipt);
+        receipt = await queryRunner.manager.save(receipt);
+
+        await queryRunner.manager.update(
+          Transaction,
+          { transactionId: updatedTransaction.transactionId },
+          {
+            receipt: receipt,
+            updatedDateTime: new Date(),
+            updatedUser: currentUser.userName,
+            updatedUserDirectory: currentUser.orbcUserDirectory,
+            updatedUserGuid: currentUser.userGUID,
+          },
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -811,12 +856,17 @@ export class PaymentService {
    * @param queryRunner - An optional QueryRunner for database transactions.
    * @returns {Promise<number>} - The calculated permit fee or refund amount.
    */
-  async permitFeeCalculator(application: Permit): Promise<number> {
+  @LogAsyncMethodExecution()
+  async permitFeeCalculator(
+    application: Permit,
+    queryRunner?: QueryRunner,
+  ): Promise<number> {
     if (application.permitStatus === ApplicationStatus.REVOKED) return 0;
     const companyId = application.company.companyId;
 
     const permitPaymentHistory = await this.findPermitHistory(
       application.originalPermitId,
+      queryRunner,
       companyId,
     );
     const isNoFee = await this.specialAuthService.findNoFee(companyId);
@@ -828,18 +878,20 @@ export class PaymentService {
     return fee;
   }
 
-
   /**
-   * 
+   *
    * This function is deprecated and will be removed once the validation endpoints are established.
    */
   @LogAsyncMethodExecution()
   public async findPermitHistory(
     originalPermitId: string,
+    queryRunner: QueryRunner,
     companyId?: number,
   ): Promise<PermitHistoryDto[]> {
-    const permits = await this.permitRepository
-      .createQueryBuilder('permit')
+    const permits = await queryRunner.manager
+      .createQueryBuilder()
+      .select('permit')
+      .from(Permit, 'permit')
       .leftJoinAndSelect('permit.company', 'company')
       .innerJoinAndSelect('permit.permitTransactions', 'permitTransactions')
       .innerJoinAndSelect('permitTransactions.transaction', 'transaction')

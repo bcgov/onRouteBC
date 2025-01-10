@@ -28,7 +28,12 @@ import { SpecialAuth } from 'src/modules/special-auth/entities/special-auth.enti
     ]),
   ],
   controllers: [PaymentController],
-  providers: [PaymentService, TransactionProfile, PaymentReportService, SpecialAuthService],
+  providers: [
+    PaymentService,
+    TransactionProfile,
+    PaymentReportService,
+    SpecialAuthService,
+  ],
   exports: [PaymentService],
 })
 export class PaymentModule {}

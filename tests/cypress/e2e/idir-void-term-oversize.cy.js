@@ -141,20 +141,19 @@ describe('Login Test for OnRouteBC', () => {
     cy.get('.shopping-cart-button').click({force: true});
     cy.wait(wait_time);
 
-    // cy.get('div.MuiSelect-select[aria-controls=":r1g:"]').click();
+    // Disable idir account payment
+    // cy.get('div[role="combobox"]')
+    // .contains('Select')  
+    // .click(); 
+
+    // cy.contains('li', 'Mastercard (Debit)').first().click();
     // cy.wait(wait_time);
-    cy.get('div[role="combobox"]')
-    .contains('Select')  
-    .click(); 
 
-    cy.contains('li', 'Mastercard (Debit)').first().click();
-    cy.wait(wait_time);
+    // cy.get('[name="additionalPaymentData.icepayTransactionId"]').type(1234);
+    // cy.wait(wait_time);
 
-    cy.get('[name="additionalPaymentData.icepayTransactionId"]').type(1234);
-    cy.wait(wait_time);
-
-    cy.get('button[data-testid="pay-now-btn"]').click({force: true});
-    cy.wait(wait_time);
+    // cy.get('button[data-testid="pay-now-btn"]').click({force: true});
+    // cy.wait(wait_time);
 
     cy.visit('/');
     cy.wait(wait_time);

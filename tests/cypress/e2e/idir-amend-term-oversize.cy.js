@@ -40,10 +40,7 @@ describe('Login Test for OnRouteBC', () => {
       .click();
     cy.wait(wait_time);
 
-
     // create a new application in case there is no activate permit over there
-    // create a permit first
-    // click select
     cy.get('[aria-label="Select"]').eq(1).click({ force: true });
     cy.wait(wait_time);
 
@@ -131,68 +128,153 @@ describe('Login Test for OnRouteBC', () => {
     cy.wait(wait_time);
 
     cy.get('[data-testid="add-to-cart-btn"]').click({force: true});
-    cy.wait(wait_time);
+    cy.wait(1000);
 
+    // got to the cart and get the first item to edit
     cy.get('.shopping-cart-button').click({force: true});
-    cy.wait(wait_time);
+          cy.wait(wait_time);
 
-    // cy.get('div.MuiSelect-select[aria-controls=":r1g:"]').click();
-    // cy.wait(wait_time);
-    cy.get('div[role="combobox"]')
-    .contains('Select')  
-    .click(); 
-
-    cy.contains('li', 'Mastercard (Debit)').first().click();
-    cy.wait(wait_time);
-
-    cy.get('[name="additionalPaymentData.icepayTransactionId"]').type(1234);
-    cy.wait(wait_time);
-
-    cy.get('button[data-testid="pay-now-btn"]').click({force: true});
-    cy.wait(wait_time);
-
-    cy.visit('/');
-    cy.wait(wait_time);
-
-
-    // Find the search button by its class name and click it
-    cy.get('.search-button').click();
-    cy.wait(wait_time);
-
-    // Find the element with value="companies" and interact with it
-    cy.get('[value="companies"]').click();
-    cy.wait(wait_time);
-
-    // Find elements to amend application
-    cy.get('.css-1pog434').type('t');
-    cy.wait(wait_time);
-    cy.get('.search-by__search').click();
-    cy.wait(wait_time);
-    // cy.xpath("//button[text()='Test Transport Inc.']").click();
-    cy.get('button.MuiTypography-root.MuiTypography-body2.MuiLink-root.MuiLink-underlineAlways.MuiLink-button.custom-action-link.css-mn35dv')
+    cy.get('button.css-mn35dv')
+      .contains("-A00")  
       .first()
       .click();
+
     cy.wait(wait_time);
 
-
-
-    cy.xpath("//div[@class='tab__label' and text()='Active Permits']").click();
-    cy.wait(wait_time);
-    cy.get('.css-15mydm5').first().scrollIntoView().wait(3000).click({ force: true });
-    cy.wait(wait_time);
-    cy.xpath("//li[text()='Amend']").click();
+    cy.get('button')
+      .contains("Edit Application")
+      .click();
     cy.wait(wait_time);
     cy.get('[name="permitData.vehicleDetails.year"').clear().type('2008');
-    cy.wait(wait_time);
-    cy.get('[name="comment"').clear().type('Make year updated');
     cy.wait(wait_time);
     cy.get('[data-testid="continue-application-button"]').click();
     cy.wait(wait_time);
     cy.get('[type="checkbox"]').check();
     cy.wait(wait_time);
-    cy.xpath("//button[text()='Continue']").click();
+    cy.xpath("//button[text()='Add to Cart']").click();
     cy.wait(wait_time);
-    cy.xpath("//button[text()='Finish']").click();
-    cy.wait(wait_time);
+
+    // let permit_number = '';
+    // let real_permit_number = '';
+
+    // cy.get('.MuiAlert-message') 
+    //   .invoke('text') 
+    //   .then((text) => {
+    //     permit_number = text; 
+    //     cy.log('Stored text:', permit_number); 
+    //     const regex = /A1-(\d+-\d+)-A00/;
+    //     const match = permit_number.match(regex);
+
+    //     if (match && match[1]) {
+    //       real_permit_number = match[1];
+          
+    //       cy.get('.shopping-cart-button').click({force: true});
+    //       cy.wait(wait_time);
+
+    //       cy.get('button')
+    //         .contains(real_permit_number)
+    //         .first() 
+    //         .click(); 
+    //       cy.wait(wait_time);
+
+    //       cy.get('button')
+    //         .contains("Edit Application")
+    //         .click();
+    //       cy.wait(wait_time);
+
+    //       // Disable idir account payment
+    //       // cy.get('div[role="combobox"]')
+    //       // .contains('Select')  
+    //       // .click(); 
+
+    //       // cy.contains('li', 'Mastercard (Debit)').first().click();
+    //       // cy.wait(wait_time);
+
+    //       // cy.get('[name="additionalPaymentData.icepayTransactionId"]').type(1234);
+    //       // cy.wait(wait_time);
+
+    //       // cy.get('button[data-testid="pay-now-btn"]').click({force: true});
+    //       // cy.wait(wait_time);
+
+    //       // cy.visit('/');
+    //       // cy.wait(wait_time);
+
+    //       // // Find the search button by its class name and click it
+    //       // cy.get('.search-button').click();
+    //       // cy.wait(wait_time);
+
+    //       // // Find the element with value="companies" and interact with it
+    //       // cy.get('[value="companies"]').click();
+    //       // cy.wait(wait_time);
+
+    //       // // Find elements to amend application
+    //       // cy.get('.css-1pog434').type('t');
+    //       // cy.wait(wait_time);
+    //       // cy.get('.search-by__search').click();
+    //       // cy.wait(wait_time);
+    //       // // cy.xpath("//button[text()='Test Transport Inc.']").click();
+    //       // cy.get('button.MuiTypography-root.MuiTypography-body2.MuiLink-root.MuiLink-underlineAlways.MuiLink-button.custom-action-link.css-mn35dv')
+    //       //   .first()
+    //       //   .click();
+    //       // cy.wait(wait_time);
+
+    //       // cy.log('Extracted Part 3:', real_permit_number);
+
+    //       // cy.xpath("//div[@class='tab__label' and text()='Active Permits']").click();
+    //       // cy.wait(wait_time);
+
+    //       // // Start the recursive search
+    //       // findRowAndClick(real_permit_number, wait_time);
+
+    //       // cy.xpath("//li[text()='Amend']").click();
+    //       // cy.wait(wait_time);
+
+
+
+    //       cy.get('[name="permitData.vehicleDetails.year"').clear().type('2008');
+    //       cy.wait(wait_time);
+    //       // cy.get('[name="comment"').clear().type('Make year updated');
+    //       // cy.wait(wait_time);
+    //       cy.get('[data-testid="continue-application-button"]').click();
+    //       cy.wait(wait_time);
+    //       cy.get('[type="checkbox"]').check();
+    //       cy.wait(wait_time);
+    //       cy.xpath("//button[text()='Add to Cart']").click();
+    //       cy.wait(wait_time);
+    //       // cy.xpath("//button[text()='Finish']").click();
+    //       // cy.wait(wait_time);
+    //     }
+    //   });
+
+
+
   });
 });
+
+function findRowAndClick(real_permit_number, wait_time) {
+  cy.get('tr') // Get all rows on the current page
+    .then(($rows) => {
+      // Check if any row matches the criteria
+      const matchingRow = [...$rows].find((row) =>
+        Cypress.$(row).find('td').first().text().includes(real_permit_number)
+      );
+
+      if (matchingRow) {
+        // If a matching row is found, click the button inside it
+        cy.wrap(matchingRow)
+          .scrollIntoView()
+          .find('.css-15mydm5')
+          .click({ force: true }); 
+      } else {
+        // If no matching row is found, check if a "Next Page" button exists
+        cy.get('button.css-wpmsjn') // "Next Page" button selector
+          .last()
+          .should('be.visible') // Ensure the button is visible
+          .click({ force: true }) // Click the "Next Page" button
+          .wait(wait_time); // Wait for the next page to load
+
+        // Recursively call the function to search on the next page
+        findRowAndClick(real_permit_number, wait_time);
+      }
+    });
+}

@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, NotBrackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import { LogAsyncMethodExecution } from '../../common/decorator/log-async-method-execution.decorator';
 import { ApplicationStatus } from '../../common/enum/application-status.enum';
-import { Directory } from '../../common/enum/directory.enum';
 import {
   CLIENT_USER_ROLE_LIST,
   ClientUserRole,
@@ -198,17 +197,6 @@ export class ShoppingCartService {
       queryBuilder.andWhere('applicationOwner.userGUID = :userGUID', {
         userGUID,
       });
-    }
-    // If the user is a BCeID user, select only those applications
-    // where the applicationOwner isn't a staff user.
-    if (!doesUserHaveRole(orbcUserRole, IDIR_USER_ROLE_LIST)) {
-      queryBuilder.andWhere(
-        new NotBrackets((qb) => {
-          qb.where('applicationOwner.directory = :directory', {
-            directory: Directory.IDIR,
-          });
-        }),
-      );
     }
     return queryBuilder;
   }

@@ -3,8 +3,9 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
   OneToMany,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
 import { Base } from '../../../common/entities/base.entity';
@@ -222,8 +223,9 @@ export class Transaction extends Base {
   })
   pgMessageText: string;
 
-  @OneToOne(() => Receipt, (receipt) => receipt.transaction)
-  receipt: Receipt;
+  @ManyToOne(() => Receipt, (receipt) => receipt.transactions)
+  @JoinColumn({ name: 'RECEIPT_ID' })
+  public receipt: Receipt;
 
   @OneToMany(
     () => PermitTransaction,

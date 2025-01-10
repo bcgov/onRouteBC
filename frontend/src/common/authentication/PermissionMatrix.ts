@@ -36,7 +36,7 @@ const MANAGE_VEHICLE_INVENTORY = {
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   ADD_VEHICLE: {
-    allowedBCeIDRoles: [CA, PA],
+    allowedBCeIDRoles: ALL_BCeID_ROLES,
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   /**
@@ -47,11 +47,11 @@ const MANAGE_VEHICLE_INVENTORY = {
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   UPDATE_POWER_UNIT: {
-    allowedBCeIDRoles: [CA, PA],
+    allowedBCeIDRoles: ALL_BCeID_ROLES,
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   DELETE_POWER_UNIT: {
-    allowedBCeIDRoles: [CA, PA],
+    allowedBCeIDRoles: ALL_BCeID_ROLES,
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   /**
@@ -62,11 +62,11 @@ const MANAGE_VEHICLE_INVENTORY = {
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   UPDATE_TRAILER: {
-    allowedBCeIDRoles: [CA, PA],
+    allowedBCeIDRoles: ALL_BCeID_ROLES,
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   DELETE_TRAILER: {
-    allowedBCeIDRoles: [CA, PA],
+    allowedBCeIDRoles: ALL_BCeID_ROLES,
     allowedIDIRRoles: [PC, SA, CTPO],
   },
   /**
