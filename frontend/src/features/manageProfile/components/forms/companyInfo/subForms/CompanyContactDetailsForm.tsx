@@ -2,12 +2,10 @@ import isEmail from "validator/lib/isEmail";
 
 import "./CompanyContactDetailsForm.scss";
 import { CustomFormComponent } from "../../../../../../common/components/form/CustomFormComponents";
-import {
-  invalidEmail,
-  invalidExtensionLength,
-  invalidPhoneLength,
-  requiredMessage,
-} from "../../../../../../common/helpers/validationMessages";
+import { validatePhoneNumber } from "../../../../../../common/helpers/phone/validatePhoneNumber";
+import { validatePhoneExtension } from "../../../../../../common/helpers/phone/validatePhoneExtension";
+import { validateOptionalPhoneNumber } from "../../../../../../common/helpers/phone/validateOptionalPhoneNumber";
+import { invalidEmail, requiredMessage } from "../../../../../../common/helpers/validationMessages";
 
 export const CompanyContactDetailsForm = ({
   feature,
@@ -40,6 +38,7 @@ export const CompanyContactDetailsForm = ({
       disabled={disableEmail}
       readOnly={disableEmail}
     />
+
     <div className="side-by-side-inputs">
       <CustomFormComponent
         type="phone"
@@ -49,9 +48,7 @@ export const CompanyContactDetailsForm = ({
           rules: {
             required: { value: true, message: requiredMessage() },
             validate: {
-              validatePhone: (phone: string) =>
-                (phone.length >= 10 && phone.length <= 20) ||
-                invalidPhoneLength(10, 20),
+              validatePhone: (phone: string) => validatePhoneNumber(phone),
             },
           },
           label: "Phone",
@@ -59,6 +56,7 @@ export const CompanyContactDetailsForm = ({
         }}
         className="company-contact-details-form__input company-contact-details-form__input--left"
       />
+
       <CustomFormComponent
         type="ext"
         feature={feature}
@@ -68,10 +66,7 @@ export const CompanyContactDetailsForm = ({
             required: false,
             validate: {
               validateExt: (ext?: string) =>
-                ext == null ||
-                ext === "" ||
-                (ext != null && ext !== "" && ext.length <= 5) ||
-                invalidExtensionLength(5),
+                validatePhoneExtension(ext),
             },
           },
           label: "Ext",
@@ -79,6 +74,7 @@ export const CompanyContactDetailsForm = ({
         className="company-contact-details-form__input company-contact-details-form__input--right"
       />
     </div>
+
     <CustomFormComponent
       type="phone"
       feature={feature}
@@ -87,14 +83,7 @@ export const CompanyContactDetailsForm = ({
         rules: {
           required: false,
           validate: {
-            validateFax: (fax?: string) =>
-              fax == null ||
-              fax === "" ||
-              (fax != null &&
-                fax !== "" &&
-                fax.length >= 10 &&
-                fax.length <= 20) ||
-              invalidPhoneLength(10, 20),
+            validateFax: (fax?: string) => validateOptionalPhoneNumber(fax),
           },
         },
         label: "Fax",

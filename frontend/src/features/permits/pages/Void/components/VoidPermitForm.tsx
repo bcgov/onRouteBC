@@ -16,22 +16,19 @@ import { useVoidPermit } from "../hooks/useVoidPermit";
 import { mapToRevokeRequestData } from "../helpers/mapper";
 import { Nullable } from "../../../../../common/types/common";
 import { hasPermitsActionFailed } from "../../../helpers/permitState";
+import { usePermitHistoryQuery } from "../../../hooks/hooks";
+import { isValidTransaction } from "../../../helpers/payment";
+import { invalidEmail, requiredMessage } from "../../../../../common/helpers/validationMessages";
+import { validateOptionalPhoneNumber } from "../../../../../common/helpers/phone/validateOptionalPhoneNumber";
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
 } from "../../../../../common/helpers/util";
-import { usePermitHistoryQuery } from "../../../hooks/hooks";
+
 import {
   CustomFormComponent,
   getErrorMessage,
 } from "../../../../../common/components/form/CustomFormComponents";
-
-import {
-  invalidEmail,
-  invalidPhoneLength,
-  requiredMessage,
-} from "../../../../../common/helpers/validationMessages";
-import { isValidTransaction } from "../../../helpers/payment";
 
 const FEATURE = "void-permit";
 
@@ -129,6 +126,7 @@ export const VoidPermitForm = ({
       <div className="void-permit__form">
         <div className="form-section form-section--send">
           <div className="form-section__label">Send Permit and Receipt to</div>
+
           <div className="form-section__input-area">
             <CustomFormComponent
               type="input"
@@ -148,6 +146,7 @@ export const VoidPermitForm = ({
               }}
               className="void-input void-input--email"
             />
+
             <CustomFormComponent
               type="input"
               feature={FEATURE}
@@ -167,6 +166,7 @@ export const VoidPermitForm = ({
               }}
               className="void-input void-input--additional-email"
             />
+
             <CustomFormComponent
               type="phone"
               feature={FEATURE}
@@ -175,14 +175,7 @@ export const VoidPermitForm = ({
                 rules: {
                   required: false,
                   validate: {
-                    validateFax: (fax?: string) =>
-                      fax == null ||
-                      fax === "" ||
-                      (fax != null &&
-                        fax !== "" &&
-                        fax.length >= 10 &&
-                        fax.length <= 20) ||
-                      invalidPhoneLength(10, 20),
+                    validateFax: (fax?: string) => validateOptionalPhoneNumber(fax),
                   },
                 },
                 label: "Fax",
@@ -194,6 +187,7 @@ export const VoidPermitForm = ({
 
         <div className="form-section form-section--reason">
           <div className="form-section__label">Reason for Voiding</div>
+
           <div className="form-section__input-area">
             <div className="reason-container">
               <div className="reason-container__left">
@@ -219,14 +213,17 @@ export const VoidPermitForm = ({
                     </FormControl>
                   )}
                 />
+
                 <FeeSummary
                   permitType={permit?.permitType}
                   feeSummary={`${amountToRefund}`}
                 />
               </div>
+
               <div className="reason-container__right">
                 <div className="revoke">
                   <div className="revoke__header">Revoke this permit?</div>
+
                   <div className="revoke__body">
                     <div className="revoke__msg">
                       Revoking a permit is a severe action that{" "}
@@ -237,6 +234,7 @@ export const VoidPermitForm = ({
                       <span className="revoke__msg--bold">no refunds</span> for
                       revoked permits.
                     </div>
+
                     <Button
                       className="revoke__btn"
                       onClick={handleOpenRevokeDialog}
@@ -264,6 +262,7 @@ export const VoidPermitForm = ({
             >
               Cancel
             </Button>
+
             <Button
               key="continue-void-button"
               aria-label="Continue"

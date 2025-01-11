@@ -3,13 +3,14 @@ import isEmail from "validator/lib/isEmail";
 import "./CompanyPrimaryContactForm.scss";
 import { CountryAndProvince } from "../../../../../../common/components/form/CountryAndProvince";
 import { CustomFormComponent } from "../../../../../../common/components/form/CustomFormComponents";
+import { validatePhoneNumber } from "../../../../../../common/helpers/phone/validatePhoneNumber";
+import { validatePhoneExtension } from "../../../../../../common/helpers/phone/validatePhoneExtension";
+import { validateOptionalPhoneNumber } from "../../../../../../common/helpers/phone/validateOptionalPhoneNumber";
 import {
   invalidCityLength,
   invalidEmail,
-  invalidExtensionLength,
   invalidFirstNameLength,
   invalidLastNameLength,
-  invalidPhoneLength,
   requiredMessage,
 } from "../../../../../../common/helpers/validationMessages";
 
@@ -32,6 +33,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
       }}
       className="company-primary-contact-form__input"
     />
+
     <CustomFormComponent
       type="input"
       feature={feature}
@@ -49,6 +51,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
       }}
       className="company-primary-contact-form__input"
     />
+
     <CustomFormComponent
       type="input"
       feature={feature}
@@ -74,9 +77,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
           rules: {
             required: { value: true, message: requiredMessage() },
             validate: {
-              validatePhone1: (phone: string) =>
-                (phone.length >= 10 && phone.length <= 20) ||
-                invalidPhoneLength(10, 20),
+              validatePhone1: (phone: string) => validatePhoneNumber(phone),
             },
           },
           label: "Primary Phone",
@@ -93,10 +94,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
             required: false,
             validate: {
               validateExt1: (ext?: string) =>
-                ext == null ||
-                ext === "" ||
-                (ext != null && ext !== "" && ext.length <= 5) ||
-                invalidExtensionLength(5),
+                validatePhoneExtension(ext),
             },
           },
           label: "Ext",
@@ -114,14 +112,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
           rules: {
             required: false,
             validate: {
-              validatePhone2: (phone2?: string) =>
-                phone2 == null ||
-                phone2 === "" ||
-                (phone2 != null &&
-                  phone2 !== "" &&
-                  phone2.length >= 10 &&
-                  phone2.length <= 20) ||
-                invalidPhoneLength(10, 20),
+              validatePhone2: (phone?: string) => validateOptionalPhoneNumber(phone),
             },
           },
           label: "Alternate Phone",
@@ -138,10 +129,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
             required: false,
             validate: {
               validateExt2: (ext?: string) =>
-                ext == null ||
-                ext === "" ||
-                (ext != null && ext !== "" && ext.length <= 5) ||
-                invalidExtensionLength(5),
+                validatePhoneExtension(ext),
             },
           },
           label: "Ext",
@@ -159,6 +147,7 @@ export const CompanyPrimaryContactForm = ({ feature }: { feature: string }) => (
       isProvinceRequired={true}
       provinceClassName="company-primary-contact-form__input"
     />
+
     <CustomFormComponent
       type="input"
       feature={feature}

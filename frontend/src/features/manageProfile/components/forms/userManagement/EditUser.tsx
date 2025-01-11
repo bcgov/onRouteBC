@@ -3,29 +3,30 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 
 import { CustomActionLink } from "../../../../../common/components/links/CustomActionLink";
 import { SnackBarContext } from "../../../../../App";
-import { formatPhoneNumber } from "../../../../../common/components/form/subFormComponents/PhoneNumberInput";
 import { requiredMessage } from "../../../../../common/helpers/validationMessages";
 import { ERROR_ROUTES, PROFILE_ROUTES } from "../../../../../routes/constants";
 import { BC_COLOURS } from "../../../../../themes/bcGovStyles";
 import { updateUserInfo } from "../../../apiManager/manageProfileAPI";
+import { BCeID_USER_ROLE } from "../../../../../common/authentication/types";
+import UserGroupsAndPermissionsModal from "../../user-management/UserGroupsAndPermissionsModal";
+import { ReusableUserInfoForm } from "../common/ReusableUserInfoForm";
+import "../myInfo/MyInfoForm.scss";
+import { UserAuthRadioGroup } from "./UserAuthRadioGroup";
+import { getFormattedPhoneNumber } from "../../../../../common/helpers/phone/getFormattedPhoneNumber";
 import {
   BCEID_PROFILE_TABS,
   ReadUserInformationResponse,
   UserInfoRequest,
 } from "../../../types/manageProfile.d";
-import UserGroupsAndPermissionsModal from "../../user-management/UserGroupsAndPermissionsModal";
-import { ReusableUserInfoForm } from "../common/ReusableUserInfoForm";
-import "../myInfo/MyInfoForm.scss";
-import { UserAuthRadioGroup } from "./UserAuthRadioGroup";
+
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
 } from "../../../../../common/helpers/util";
-import { BCeID_USER_ROLE } from "../../../../../common/authentication/types";
-import { AxiosError } from "axios";
 
 /**
  * Edit User form for User Management.
@@ -41,11 +42,11 @@ export const EditUserForm = memo(
         firstName: getDefaultRequiredVal("", userInfo?.firstName),
         lastName: getDefaultRequiredVal("", userInfo?.lastName),
         email: getDefaultRequiredVal("", userInfo?.email),
-        phone1: applyWhenNotNullable(formatPhoneNumber, userInfo?.phone1, ""),
+        phone1: applyWhenNotNullable(getFormattedPhoneNumber, userInfo?.phone1, ""),
         phone1Extension: getDefaultRequiredVal("", userInfo?.phone1Extension),
-        phone2: applyWhenNotNullable(formatPhoneNumber, userInfo?.phone2, ""),
+        phone2: applyWhenNotNullable(getFormattedPhoneNumber, userInfo?.phone2, ""),
         phone2Extension: getDefaultRequiredVal("", userInfo?.phone2Extension),
-        fax: applyWhenNotNullable(formatPhoneNumber, userInfo?.fax, ""),
+        fax: applyWhenNotNullable(getFormattedPhoneNumber, userInfo?.fax, ""),
         countryCode: getDefaultRequiredVal("", userInfo?.countryCode),
         provinceCode: getDefaultRequiredVal("", userInfo?.provinceCode),
         city: getDefaultRequiredVal("", userInfo?.city),

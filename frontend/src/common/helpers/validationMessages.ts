@@ -66,6 +66,8 @@ export const invalidPhoneLength = (min: number, max: number) => {
   return replacePlaceholders(messageTemplate, placeholders, min, max);
 };
 
+export const invalidExtension = () => validationMessages.extension.defaultMessage;
+
 export const invalidExtensionLength = (max: number) => {
   const { messageTemplate, placeholders } = validationMessages.extension.length;
   return replacePlaceholders(messageTemplate, placeholders, max);
