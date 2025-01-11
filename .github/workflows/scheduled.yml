@@ -20,7 +20,7 @@ jobs:
         name: [dops, frontend, vehicles, policy, scheduler]
     steps:
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.10.0
+        uses: zaproxy/action-full-scan@v0.12.0
         with:
           allow_issue_writing: true
           artifact_name: "zap_${{ matrix.name }}"
@@ -30,7 +30,7 @@ jobs:
 
   generate-schema-spy:
     name: Generate SchemaSpy Documentation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres

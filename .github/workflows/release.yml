@@ -16,7 +16,7 @@ jobs:
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
       release-name: ${{ steps.release-name.outputs.release-name }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 1
     steps:
       # Get PR number for squash merges to main
@@ -35,7 +35,7 @@ jobs:
   promote-images-release:
     name: Promote Images - Release
     needs: [vars]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -61,7 +61,7 @@ jobs:
   promote-images-uat:
     name: Promote Images - Uat
     needs: [vars,deploys-uat]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
@@ -87,7 +87,7 @@ jobs:
   promote-images-prod:
     name: Promote Images - Prod
     needs: [vars,deploys-prod]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
