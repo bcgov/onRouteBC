@@ -30,7 +30,6 @@ import { ApiPaginatedResponse } from 'src/common/decorator/api-paginate-response
 import { GetPermitQueryParamsDto } from './dto/request/queryParam/getPermit.query-params.dto';
 import {
   CLIENT_USER_ROLE_LIST,
-  ClientUserRole,
   IDIR_USER_ROLE_LIST,
 } from 'src/common/enum/user-role.enum';
 import { ReadPermitMetadataDto } from './dto/response/read-permit-metadata.dto';
@@ -82,11 +81,6 @@ export class CompanyPermitController {
       );
     }
 
-    const userGuid =
-      ClientUserRole.PERMIT_APPLICANT === currentUser.orbcUserRole
-        ? currentUser.userGUID
-        : null;
-
     return await this.permitService.findPermit({
       page: getPermitQueryParamsDto.page,
       take: getPermitQueryParamsDto.take,
@@ -95,7 +89,6 @@ export class CompanyPermitController {
       expired: getPermitQueryParamsDto.expired,
       searchColumn: getPermitQueryParamsDto.searchColumn,
       searchString: getPermitQueryParamsDto.searchString,
-      userGUID: userGuid,
       currentUser: currentUser,
     });
   }
