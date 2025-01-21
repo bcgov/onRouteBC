@@ -7,12 +7,12 @@ import "./DisplayCompanyInfo.scss";
 import { getUserEmailFromSession } from "../../../common/apiManager/httpRequestHandler";
 import { CLAIMS } from "../../../common/authentication/types";
 import { DoesUserHaveClaimWithContext } from "../../../common/authentication/util";
-import { formatPhoneNumber } from "../../../common/components/form/subFormComponents/PhoneNumberInput";
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
 import { CompanyProfile } from "../types/manageProfile";
 import { getProvinceFullName } from "../../../common/helpers/countries/getProvinceFullName";
 import { getCountryFullName } from "../../../common/helpers/countries/getCountryFullName";
 import { Nullable } from "../../../common/types/common";
+import { getFormattedPhoneNumber } from "../../../common/helpers/phone/getFormattedPhoneNumber";
 
 export const DisplayInfo = memo(
   ({
@@ -37,7 +37,7 @@ export const DisplayInfo = memo(
 
     const phoneDisplay = (phone: string, ext?: Nullable<string>) => {
       const extDisplay = ext ? `Ext: ${ext}` : "";
-      return `${formatPhoneNumber(
+      return `${getFormattedPhoneNumber(
         phone,
       )} ${extDisplay}`;
     };
@@ -79,12 +79,6 @@ export const DisplayInfo = memo(
           <Typography>
             {`Phone: ${phoneDisplay(companyInfo.phone, companyInfo.extension)}`}
           </Typography>
-
-          {companyInfo?.fax ? (
-            <Typography>
-              Fax: {formatPhoneNumber(companyInfo.fax)}
-            </Typography>
-          ) : null}
 
           <Typography variant="h3">Company Primary Contact</Typography>
 

@@ -12,25 +12,25 @@ import {
 
 import "./PermitResendDialog.scss";
 import { getDefaultRequiredVal } from "../../../../common/helpers/util";
+import { Optional } from "../../../../common/types/common";
 import {
-  invalidPhoneLength,
   requiredMessage,
   selectionRequired,
 } from "../../../../common/helpers/validationMessages";
+
 import {
   CustomFormComponent,
   getErrorMessage,
 } from "../../../../common/components/form/CustomFormComponents";
+
 import {
   EMAIL_NOTIFICATION_TYPES,
   EmailNotificationType,
 } from "../../../permits/types/EmailNotificationType";
-import { Optional } from "../../../../common/types/common";
 
 interface PermitResendFormData {
   permitId: string;
   email: string;
-  fax: string;
   notificationTypes: {
     EMAIL_PERMIT: boolean;
     EMAIL_RECEIPT: boolean;
@@ -53,7 +53,7 @@ const notificationTypesRules = {
 };
 
 /**
- *  A dialog box for resending permit by email or fax.
+ *  A dialog box for resending permit by email.
  */
 export default function PermitResendDialog({
   shouldOpen,
@@ -62,20 +62,17 @@ export default function PermitResendDialog({
   permitId,
   permitNumber,
   email,
-  fax,
 }: Readonly<{
   shouldOpen: boolean;
   onResend: (
     permitId: string,
     email: string,
-    fax: string,
     notificationTypes: EmailNotificationType[],
   ) => Promise<void>;
   onCancel: () => void;
   permitId: string;
   permitNumber: string;
   email?: string;
-  fax?: string;
 }>) {
   const [notificationTypes, setNotificationTypes] = useState({
     EMAIL_PERMIT: false,
@@ -86,7 +83,6 @@ export default function PermitResendDialog({
     defaultValues: {
       permitId,
       email: getDefaultRequiredVal("", email),
-      fax: getDefaultRequiredVal("", fax),
       notificationTypes,
     },
     mode: "onSubmit",
@@ -112,18 +108,13 @@ export default function PermitResendDialog({
     onCancel();
   };
 
-  const unformatFax = (fax: string) => {
-    return fax.replace(/[+()-\s]/g, "");
-  };
-
   const handleResend = (formData: PermitResendFormData) => {
-    const { permitId, email, fax: formattedFax, notificationTypes } = formData;
-    const fax = unformatFax(formattedFax);
+    const { permitId, email, notificationTypes } = formData;
     const selectedNotificationTypes = Object.keys(notificationTypes).filter(
       (type) => notificationTypes[type as EmailNotificationType],
     ) as EmailNotificationType[];
 
-    onResend(permitId, email, fax, selectedNotificationTypes);
+    onResend(permitId, email, selectedNotificationTypes);
   };
 
   const toggleNotificationType = (type: EmailNotificationType) => {
@@ -216,29 +207,6 @@ export default function PermitResendDialog({
               },
               label: "Email",
             }}
-          />
-
-          <CustomFormComponent
-            type="phone"
-            feature={FEATURE}
-            options={{
-              name: "fax",
-              label: "Fax",
-              rules: {
-                required: false,
-                validate: {
-                  validateFax: (fax?: string) =>
-                    fax == null ||
-                    fax === "" ||
-                    (fax != null &&
-                      fax !== "" &&
-                      unformatFax(fax).length >= 10 &&
-                      unformatFax(fax).length <= 11) ||
-                    invalidPhoneLength(10, 11),
-                },
-              },
-            }}
-            className="permit-resend-info__input permit-resend-info__input--fax"
           />
         </div>
 

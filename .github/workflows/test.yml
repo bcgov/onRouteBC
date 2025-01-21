@@ -23,7 +23,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
-      autoscaling: true
+      autoscaling: false
       environment: test
       release: test
       tag: ${{ inputs.tag }}

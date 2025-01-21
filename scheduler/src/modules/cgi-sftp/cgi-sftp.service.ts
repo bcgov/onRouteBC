@@ -17,7 +17,9 @@ export class CgiSftpService {
 
     try {
       await sftp.connect(connectionInfo);
-      this.logger.log(`Successfully connected to ${process.env.CFS_SFTP_HOST} via SFTP.`);
+      this.logger.log(
+        `Successfully connected to ${process.env.CFS_SFTP_HOST} via SFTP.`,
+      );
     } catch (error) {
       this.logger.error('Cannot connect to sftp.');
       this.logger.error(error);

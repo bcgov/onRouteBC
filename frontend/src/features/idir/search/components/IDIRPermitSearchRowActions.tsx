@@ -143,13 +143,11 @@ export const IDIRPermitSearchRowActions = ({
   const handleResend = async (
     permitId: string,
     email: string,
-    fax: string,
     notificationTypes: EmailNotificationType[],
   ) => {
     const response = await resendPermitMutation.mutateAsync({
       permitId,
       email,
-      fax,
       notificationTypes,
     });
 

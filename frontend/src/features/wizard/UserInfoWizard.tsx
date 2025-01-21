@@ -49,7 +49,6 @@ export const UserInfoWizard = React.memo(() => {
           phone2: responseBody.phone2,
           phone2Extension: responseBody.phone2Extension,
           email: responseBody.email,
-          fax: responseBody.fax,
           userRole: responseBody.userRole,
         };
         setIsProfileCreated(() => true);

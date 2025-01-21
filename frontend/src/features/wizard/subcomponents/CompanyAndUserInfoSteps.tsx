@@ -70,7 +70,6 @@ export const CompanyAndUserInfoSteps = ({
           phone2: responseBody.adminUser?.phone2,
           phone2Extension: responseBody.adminUser?.phone2Extension,
           email: responseBody.adminUser?.email,
-          fax: responseBody.adminUser?.fax,
           userRole: responseBody.adminUser?.userRole,
         };
         setUserDetails?.(() => userDetails);

@@ -4,5 +4,4 @@ export class ReadNotificationDto {
   notificationType?: NotificationType;
   message: string;
   transactionId: string;
-  faxTransactionId?: string;
 }

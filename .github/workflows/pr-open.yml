@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 1
     steps:
-      - uses: bcgov-nr/action-pr-description-add@v1.1.2
+      - uses: bcgov/action-pr-description-add@v1.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -51,9 +51,9 @@ jobs:
     steps:
       - name: PR Number
         id: pr
-        uses: bcgov-nr/action-get-pr@v0.0.1
+        uses: bcgov/action-get-pr@v0.0.1
 
-  # https://github.com/bcgov-nr/action-builder-ghcr
+  # https://github.com/bcgov/action-builder-ghcr
   builds:
     name: Builds
     needs: [vars]
@@ -65,7 +65,7 @@ jobs:
         package: [dops, vehicles, frontend, scheduler, policy]
     timeout-minutes: 10
     steps:
-      - uses: bcgov-nr/action-builder-ghcr@v2.2.0
+      - uses: bcgov/action-builder-ghcr@v2.2.0
         with:
           #keep_versions: 50
           package: ${{ matrix.package }}
@@ -73,7 +73,7 @@ jobs:
           tag_fallback: latest
           triggers: '${{ matrix.package }}/' #omit to build everything
 
-  # https://github.com/bcgov-nr/action-deployer-openshift
+  # https://github.com/bcgov/action-deployer-openshift
   deploys-dev:
     name: Deploys (Dev)
     needs: [builds, vars]

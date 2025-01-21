@@ -71,7 +71,6 @@ export const IDIRCreateCompany = React.memo(() => {
       email: getDefaultRequiredVal("", migratedClient?.email),
       phone: getDefaultRequiredVal("", migratedClient?.phone),
       extension: getDefaultRequiredVal("", migratedClient?.extension),
-      fax: getDefaultRequiredVal("", migratedClient?.fax),
       // A migrated but unclaimed company will not have primaryContact.
       primaryContact: {
         firstName: "",

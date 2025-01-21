@@ -609,30 +609,22 @@ export const modifyAmendmentApplication = async ({
  * Resend permit and/or receipt to email.
  * @param permitId Permit id of the permit to resend
  * @param email Email to resend to
- * @param fax Fax number to resend to
  * @param notificationTypes Types of email notifications to send (EMAIL_PERMIT and/or EMAIL_RECEIPT)
  * @returns Response if the resend action was successful
  */
 export const resendPermit = async ({
   permitId,
   email,
-  fax,
   notificationTypes,
 }: {
   permitId: string;
   email: string;
-  fax?: string;
   notificationTypes: EmailNotificationType[];
 }) => {
   const data: any = {
     to: [email],
     notificationType: [...notificationTypes],
   };
-
-  // Conditionally include the fax property if it is not an empty string
-  if (fax && fax.trim() !== "") {
-    data.fax = [fax];
-  }
 
   return await httpPOSTRequest(
     `${PERMITS_API_ROUTES.RESEND(permitId)}`,

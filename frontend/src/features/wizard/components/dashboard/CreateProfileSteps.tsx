@@ -59,7 +59,6 @@ export const CreateProfileSteps = React.memo(() => {
       email: getDefaultRequiredVal("", user?.profile?.email),
       phone: getDefaultRequiredVal("", migratedClient?.phone),
       extension: getDefaultRequiredVal("", migratedClient?.extension),
-      fax: getDefaultRequiredVal("", migratedClient?.fax),
       adminUser: {
         firstName: "",
         lastName: "",
@@ -68,7 +67,6 @@ export const CreateProfileSteps = React.memo(() => {
         phone1Extension: "",
         phone2: "",
         phone2Extension: "",
-        fax: "",
         countryCode: "",
         provinceCode: "",
         city: "",

@@ -91,7 +91,6 @@ interface ContactDetails {
   phone2Extension?: string;
   email: string;
   additionalEmail?: string;
-  fax?: string;
 }
 
 interface VehicleDetails {

@@ -5,9 +5,9 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 import "./DisplayMyInfo.scss";
 import { ReadUserInformationResponse } from "../types/manageProfile";
-import { formatPhoneNumber } from "../../../common/components/form/subFormComponents/PhoneNumberInput";
 import { getProvinceFullName } from "../../../common/helpers/countries/getProvinceFullName";
 import { getCountryFullName } from "../../../common/helpers/countries/getCountryFullName";
+import { getFormattedPhoneNumber } from "../../../common/helpers/phone/getFormattedPhoneNumber";
 
 export const DisplayMyInfo = memo(
   ({
@@ -30,19 +30,15 @@ export const DisplayMyInfo = memo(
           <Typography>Email: {myInfo.email}</Typography>
 
           <Typography>
-            Primary Phone: {formatPhoneNumber(myInfo.phone1)}{" "}
+            Primary Phone: {getFormattedPhoneNumber(myInfo.phone1)}{" "}
             {myInfo.phone1Extension ? `Ext: ${myInfo.phone1Extension}` : ""}
           </Typography>
 
           {myInfo.phone2 ? (
             <Typography>
-              Alternate Phone: {formatPhoneNumber(myInfo.phone2)}{" "}
+              Alternate Phone: {getFormattedPhoneNumber(myInfo.phone2)}{" "}
               {myInfo.phone2Extension ? `Ext: ${myInfo.phone2Extension}` : ""}
             </Typography>
-          ) : null}
-
-          {myInfo.fax ? (
-            <Typography>Fax: {formatPhoneNumber(myInfo.fax)}</Typography>
           ) : null}
 
           {countryFullName ? (

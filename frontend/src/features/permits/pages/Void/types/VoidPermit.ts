@@ -15,7 +15,6 @@ export interface VoidPermitFormData {
   revoke: boolean;
   email?: Nullable<string>;
   additionalEmail?: Nullable<string>;
-  fax?: Nullable<string>;
 }
 
 export interface VoidPermitRequestData {
@@ -28,7 +27,6 @@ export interface VoidPermitRequestData {
   pgCardType?: PaymentCardTypeCode;
   comment: string;
   transactionTypeId: TransactionType;
-  fax?: Nullable<string>;
   additionalEmail?: Nullable<string>;
 }
 
@@ -39,7 +37,6 @@ export interface RevokePermitRequestData {
   transactionAmount: 0;
   comment: string;
   transactionTypeId: typeof TRANSACTION_TYPES.P;
-  fax?: Nullable<string>;
   additionalEmail?: Nullable<string>;
 }
 

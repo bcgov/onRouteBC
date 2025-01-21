@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { AutoMap } from '@automapper/classes';
 import { Base } from '../../common/entities/base.entity';
 import { Transaction } from './transaction.entity';
@@ -43,7 +37,6 @@ export class Receipt extends Base {
   })
   receiptDocumentId: string;
 
-  @OneToOne(() => Transaction, (transaction) => transaction.receipt)
-  @JoinColumn({ name: 'TRANSACTION_ID' })
-  transaction: Transaction;
+  @OneToMany(() => Transaction, (transaction) => transaction.receipt)
+  public transactions: Transaction[];
 }

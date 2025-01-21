@@ -90,19 +90,6 @@ export class CreateContactDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'The fax number of the contact (if there is one).',
-    required: false,
-    maxLength: 20,
-    minLength: 10,
-    example: '9999999999',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(10, 20)
-  fax?: string;
-
-  @AutoMap()
-  @ApiProperty({
     description: 'The email address of the contact.',
     required: true,
     example: 'test@test.gov.bc.ca',

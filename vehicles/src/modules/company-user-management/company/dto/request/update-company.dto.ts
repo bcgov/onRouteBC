@@ -72,19 +72,6 @@ export class UpdateCompanyDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'The fax number of the company (if there is one).',
-    required: false,
-    maxLength: 20,
-    minLength: 10,
-    example: '9999999999',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(10, 20)
-  fax?: string;
-
-  @AutoMap()
-  @ApiProperty({
     description: 'The email address of the company.',
     required: true,
     example: 'test@test.gov.bc.ca',

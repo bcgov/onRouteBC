@@ -47,16 +47,6 @@ export class NotificationDto {
   bcc?: string[];
 
   @ApiProperty({
-    description: 'Notification fax emails.',
-    example: ['<faxnumber>@mycompany.co'],
-  })
-  @IsOptional()
-  @IsEmail(undefined, {
-    each: true,
-  })
-  fax?: string[];
-
-  @ApiProperty({
     enum: NotificationTemplate,
     example: NotificationTemplate.COMPANY_SUSPEND,
     description: 'The template that will be used to render the notification.',

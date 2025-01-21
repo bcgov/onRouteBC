@@ -69,8 +69,15 @@ const transactionIdRules = {
         requiredMessage()
       );
     },
-    validateTransactionId: (value: Optional<string>) => {
-      return (value && value.length <= 15) || invalidTranactionIdLength(15);
+    validateTransactionId: (
+      value: Optional<string>,
+      formValues: RefundFormData,
+    ) => {
+      return (
+        !formValues.shouldUsePrevPaymentMethod ||
+        (value && value.length <= 15) ||
+        invalidTranactionIdLength(15)
+      );
     },
   },
 };
@@ -82,7 +89,6 @@ export const RefundPage = ({
   permitHistory,
   email,
   additionalEmail,
-  fax,
   reason,
   permitNumber,
   permitType,
@@ -93,7 +99,6 @@ export const RefundPage = ({
   permitHistory: PermitHistory[];
   email?: Nullable<string>;
   additionalEmail?: Nullable<string>;
-  fax?: Nullable<string>;
   reason?: Nullable<string>;
   permitNumber?: Nullable<string>;
   permitType?: Nullable<PermitType>;
@@ -210,6 +215,7 @@ export const RefundPage = ({
     const usePrev = shouldUsePrev === "true";
     setShouldUsePrevPaymentMethod(usePrev);
     setValue("refundOnlineMethod", usePrev ? getRefundOnlineMethod() : "");
+    setValue("transactionId", "");
     clearErrors("transactionId");
   };
 
@@ -227,6 +233,7 @@ export const RefundPage = ({
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const formattedValue = filterNonNumericValue(e.target.value);
+    handleRefundMethodChange("true");
     setValue("transactionId", formattedValue, { shouldValidate: true });
   };
 
@@ -246,11 +253,13 @@ export const RefundPage = ({
           <div className="refund-info__header">Transaction History</div>
           <TransactionHistoryTable permitHistory={validTransactionHistory} />
         </div>
+
         {showSendSection ? (
           <div className="refund-info refund-info--send">
             <div className="refund-info__header">
               Send Permit and Receipt to
             </div>
+
             {email ? (
               <div className="refund-info__info">
                 <span className="info-label">Company Email: </span>
@@ -259,6 +268,7 @@ export const RefundPage = ({
                 </span>
               </div>
             ) : null}
+
             {additionalEmail ? (
               <div className="refund-info__info">
                 <span className="info-label">Additional Email: </span>
@@ -270,29 +280,25 @@ export const RefundPage = ({
                 </span>
               </div>
             ) : null}
-            {fax ? (
-              <div className="refund-info__info">
-                <span className="info-label">Fax: </span>
-                <span className="info-value" data-testid="send-to-fax">
-                  {fax}
-                </span>
-              </div>
-            ) : null}
           </div>
         ) : null}
+
         {showReasonSection ? (
           <div className="refund-info refund-info--reason">
             <div className="refund-info__header">
               Reason for {permitActionText(permitAction)}
             </div>
+
             <div className="refund-info__info">{reason}</div>
           </div>
         ) : null}
       </div>
+
       <div className="refund-page__section refund-page__section--right">
         {enableRefundMethodSelection ? (
           <div className="refund-info refund-info--refund-methods">
             <div className="refund-info__header">Choose a Refund Method</div>
+
             <FormProvider {...formMethods}>
               <Controller
                 control={control}
@@ -320,6 +326,7 @@ export const RefundPage = ({
                             <Radio key="refund-by-prev-payment-method" />
                           }
                         />
+
                         <div className="refund-payment">
                           <Controller
                             name="refundMethod"
@@ -362,6 +369,7 @@ export const RefundPage = ({
                                 <FormLabel className="refund-payment__label">
                                   Transaction ID
                                 </FormLabel>
+
                                 <OutlinedInput
                                   className={`refund-payment__input refund-payment__input--transaction ${
                                     invalid ? "refund-payment__input--err" : ""
@@ -373,6 +381,7 @@ export const RefundPage = ({
                                   )}
                                   onChange={handleTransactionIdChange}
                                 />
+
                                 {invalid ? (
                                   <FormHelperText
                                     className="refund-payment__err"
@@ -408,21 +417,25 @@ export const RefundPage = ({
             </FormProvider>
           </div>
         ) : null}
+
         <div className="refund-info refund-info--fee-summary">
           <div className="refund-fee-summary">
             <div className="refund-fee-summary__header">
               <div className="refund-fee-summary__title">
                 {getPermitTypeName(permitType)}
               </div>
+
               <div className="refund-fee-summary__permit-number">
                 <span>{permitActionText(permitAction)} Permit #: </span>
                 <span data-testid="voiding-permit-number">{permitNumber}</span>
               </div>
             </div>
+
             <FeeSummary
               permitType={permitType}
               feeSummary={`${amountToRefund}`}
             />
+            
             <div className="refund-fee-summary__footer">
               <Button
                 className="finish-btn"

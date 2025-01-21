@@ -103,13 +103,6 @@ export class Company extends Base {
   extension: string;
 
   /**
-   * The company's fax number.
-   */
-  @AutoMap()
-  @Column({ length: 20, name: 'FAX', nullable: false })
-  fax: string;
-
-  /**
    * The company's email address.
    */
   @AutoMap()

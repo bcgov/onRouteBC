@@ -35,7 +35,6 @@ import {
   companyNameLabel,
   contactInfoAdditionalEmail,
   contactInfoEmail,
-  contactInfoFax,
   contactInfoHeaderTitle,
   contactInfoName,
   contactInfoPhone1,
@@ -211,9 +210,6 @@ describe("Review and Confirm Application Details", () => {
       expect(await contactInfoAdditionalEmail()).toHaveTextContent(
         `${newAdditionalEmail}`,
       );
-      expect(await contactInfoFax()).toHaveTextContent(
-        `${fullContactInfo.fax}`,
-      );
     });
 
     it("should display proper partial contact info in the permit", async () => {
@@ -231,7 +227,6 @@ describe("Review and Confirm Application Details", () => {
         phone1Extension: undefined,
         phone2: undefined,
         phone2Extension: undefined,
-        fax: undefined,
       };
       const applicationData = {
         ...defaultApplicationData,
@@ -259,7 +254,6 @@ describe("Review and Confirm Application Details", () => {
         `${partialContactInfo.email}`,
       );
       expect(async () => await contactInfoAdditionalEmail()).rejects.toThrow();
-      expect(async () => await contactInfoFax()).rejects.toThrow();
     });
 
     it("should display proper permit details", async () => {

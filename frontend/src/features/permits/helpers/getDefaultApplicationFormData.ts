@@ -58,7 +58,6 @@ export const getDefaultContactDetails = (
       phone2Extension: getDefaultRequiredVal("", userDetails?.phone2Extension),
       email: getDefaultRequiredVal("", companyEmail),
       additionalEmail: getDefaultRequiredVal("", userDetails?.email),
-      fax: getDefaultRequiredVal("", userDetails?.fax),
     };
   }
 
@@ -71,7 +70,6 @@ export const getDefaultContactDetails = (
     phone2Extension: getDefaultRequiredVal("", contactDetails?.phone2Extension),
     email: getDefaultRequiredVal("", contactDetails?.email, companyEmail),
     additionalEmail: getDefaultRequiredVal("", contactDetails?.additionalEmail),
-    fax: getDefaultRequiredVal("", contactDetails?.fax),
   };
 };
 

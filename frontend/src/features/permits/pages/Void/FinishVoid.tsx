@@ -26,7 +26,7 @@ export const FinishVoid = ({
   const { voidPermitData } = useContext(VoidPermitContext);
   const { companyId: companyIdParam } = useParams();
 
-  const { email, additionalEmail, fax, reason } = voidPermitData;
+  const { email, additionalEmail, reason } = voidPermitData;
   const companyId: number = getDefaultRequiredVal(
     0,
     permit?.companyId,
@@ -82,7 +82,6 @@ export const FinishVoid = ({
       amountToRefund={amountToRefund}
       email={email}
       additionalEmail={additionalEmail}
-      fax={fax}
       reason={reason}
       permitNumber={permit?.permitNumber}
       permitType={permit?.permitType}

@@ -111,7 +111,7 @@ env:
   package_tag: ${{ inputs.tag }}
 
 jobs:
-  # https://github.com/bcgov-nr/action-deployer-openshift
+  # https://github.com/bcgov/action-deployer-openshift
   deploys:
     name: Helm
     environment: ${{ inputs.environment }}

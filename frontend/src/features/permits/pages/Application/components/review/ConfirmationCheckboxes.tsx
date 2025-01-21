@@ -23,7 +23,7 @@ export const ConfirmationCheckboxes = ({
     },
     {
       description:
-        "Confirm compliance with the appropriate policy for the selected commodity(s).",
+        "Confirm compliance with the appropriate policy for the selected vehicle(s) and/or commodity(s).",
       checked: shouldDisableCheckboxes,
     },
     {

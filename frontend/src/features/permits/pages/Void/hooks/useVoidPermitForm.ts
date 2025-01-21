@@ -15,7 +15,6 @@ export const useVoidPermitForm = () => {
     revoke: voidPermitData.revoke,
     email: getDefaultRequiredVal("", voidPermitData.email),
     additionalEmail: getDefaultRequiredVal("", voidPermitData.additionalEmail),
-    fax: getDefaultRequiredVal("", voidPermitData.fax),
   };
 
   const formMethods = useForm<VoidPermitFormData>({
@@ -35,10 +34,6 @@ export const useVoidPermitForm = () => {
       getDefaultRequiredVal("", voidPermitData.additionalEmail),
     );
   }, [voidPermitData.additionalEmail]);
-
-  useEffect(() => {
-    setValue("fax", getDefaultRequiredVal("", voidPermitData.fax));
-  }, [voidPermitData.fax]);
 
   return {
     permitId: voidPermitData.permitId,

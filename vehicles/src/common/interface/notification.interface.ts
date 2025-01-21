@@ -9,7 +9,6 @@ export interface INotification {
   to: string[];
   cc?: string[];
   bcc?: string[];
-  fax?: string[];
   templateName: NotificationTemplate;
   data?:
     | CompanyDataNotification

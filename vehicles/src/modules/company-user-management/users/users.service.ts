@@ -260,7 +260,6 @@ export class UsersService {
           extension1: updateUserDto.phone1Extension,
           phone2: updateUserDto.phone2,
           extension2: updateUserDto.phone2Extension,
-          fax: updateUserDto.fax,
           city: updateUserDto.city,
           province: {
             provinceId: getProvinceId(

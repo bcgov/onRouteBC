@@ -67,16 +67,6 @@ export class ReadContactDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'The fax number of the contact (if there is one).',
-    required: false,
-    maxLength: 20,
-    minLength: 10,
-    example: '9999999999',
-  })
-  fax?: string;
-
-  @AutoMap()
-  @ApiProperty({
     description: 'The email address of the contact.',
     required: true,
     example: 'test@test.gov.bc.ca',

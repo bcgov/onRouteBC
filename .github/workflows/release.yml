@@ -23,7 +23,7 @@ jobs:
       - name: Get PR Number From Event
         if: ${{ github.event_name == 'release' }}
         id: pr_no
-        uses: bcgov-nr/action-get-pr@main
+        uses: bcgov/action-get-pr@main
       - name: PR Number
         id: pr
         run: echo pr=${{ steps.pr_no.outputs.pr || inputs.pr}} >> $GITHUB_OUTPUT
@@ -56,8 +56,8 @@ jobs:
     uses: ./.github/workflows/uat.yml
     secrets: inherit
     with:
-      tag: ${{ needs.vars.outputs.pr }}
-  
+      tag: ${{ needs.vars.outputs.release-name }}
+        
   promote-images-uat:
     name: Promote Images - Uat
     needs: [vars,deploys-uat]

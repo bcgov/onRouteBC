@@ -31,7 +31,6 @@ export interface BCeIDUserDetailContext {
   phone2?: string;
   phone2Extension?: string;
   email: string;
-  fax?: string;
   userRole: BCeIDUserRoleType;
 }
 

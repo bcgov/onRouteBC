@@ -93,7 +93,6 @@ export const IDIRCompanySearchResults = memo(
             migratedClientHash,
             mailingAddress,
             email,
-            fax,
             alternateName,
             phone,
             extension,
@@ -109,7 +108,6 @@ export const IDIRCompanySearchResults = memo(
             email,
             phone,
             extension,
-            fax,
             alternateName,
             isSuspended,
           };

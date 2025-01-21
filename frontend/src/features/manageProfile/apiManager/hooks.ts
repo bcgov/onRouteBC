@@ -151,7 +151,6 @@ export const useUserContext = (
           phone2: user.phone2,
           phone2Extension: user.phone2Extension,
           email: user.email,
-          fax: user.fax,
           userRole: user.userRole as BCeIDUserRoleType,
         } as BCeIDUserDetailContext;
 

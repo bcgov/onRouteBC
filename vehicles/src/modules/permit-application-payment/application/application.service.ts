@@ -74,7 +74,7 @@ import { ApplicationSearch } from '../../../common/enum/application-search.enum'
 
 import { CaseStatusType } from '../../../common/enum/case-status-type.enum';
 import { INotificationDocument } from '../../../common/interface/notification-document.interface';
-import { validateEmailandFaxList } from '../../../common/helper/notification.helper';
+import { validateEmailList } from '../../../common/helper/notification.helper';
 import { NotificationTemplate } from '../../../common/enum/notification-template.enum';
 import { PermitData } from '../../../common/interface/permit.template.interface';
 import { ApplicationApprovedNotification } from '../../../common/interface/application-approved.notification.interface';
@@ -1164,7 +1164,7 @@ export class ApplicationService {
           ];
           const notificationDocument: INotificationDocument = {
             templateName: notificationTemplate,
-            to: validateEmailandFaxList(emailList),
+            to: validateEmailList(emailList),
             subject: subject,
             data: notificationData,
           };

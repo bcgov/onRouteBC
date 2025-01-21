@@ -51,7 +51,6 @@ export type Contact = {
   phone2?: string;
   phone2Extension?: string;
   email: string;
-  fax?: string;
   city: string;
   provinceCode: string;
   countryCode: string;
@@ -69,7 +68,6 @@ export type CompanyProfile = {
   email: string;
   phone: string;
   extension?: Nullable<string>;
-  fax?: Nullable<string>;
   primaryContact: Contact;
   migratedClientHash?: Nullable<string>;
   alternateName?: Nullable<string>;
@@ -114,7 +112,6 @@ export type CreateCompanyRequest = {
   email: string;
   phone: string;
   extension?: Nullable<string>;
-  fax?: Nullable<string>;
   primaryContact: Contact;
   adminUser?: Nullable<Contact>;
   clientNumber?: Nullable<string>;

@@ -15,7 +15,6 @@ import {
 } from '../constants/permit.constant';
 import { differenceBetween } from './date-time.helper';
 import * as dayjs from 'dayjs';
-import { ApplicationStatus } from '../enum/application-status.enum';
 import { Nullable } from '../types/common';
 
 /**
@@ -59,7 +58,6 @@ export const permitFee = (
         TROS_PRICE_PER_TERM,
         TROS_TERM,
         oldAmount,
-        application.permitStatus,
         isNoFee,
       );
     }
@@ -89,7 +87,6 @@ export const permitFee = (
         TROW_PRICE_PER_TERM,
         TROW_TERM,
         oldAmount,
-        application.permitStatus,
         isNoFee,
       );
     }
@@ -105,19 +102,8 @@ export const yearlyPermit = (duration: number): boolean => {
 };
 
 export const calculateDuration = (application: Permit): number => {
-  let startDate = application.permitData.startDate;
+  const startDate = application.permitData.startDate;
   const endDate = application.permitData.expiryDate;
-  const today = dayjs(new Date()).format('YYYY-MM-DD');
-  if (
-    application.permitStatus === ApplicationStatus.VOIDED &&
-    startDate < today
-  )
-    startDate = today;
-  if (
-    application.permitStatus === ApplicationStatus.VOIDED &&
-    today === startDate
-  )
-    startDate = dayjs(today).add(1, 'day').format('YYYY-MM-DD');
   const duration = differenceBetween(startDate, endDate) + 1;
   return duration;
 };
@@ -155,20 +141,11 @@ export const currentPermitFee = (
   pricePerTerm: number,
   allowedPermitTerm: number,
   oldAmount?: Nullable<number>,
-  permitStatus?: Nullable<ApplicationStatus>,
   isNoFee?: Nullable<boolean>,
 ): number => {
   // Calculate the number of permit terms based on the duration
-  const permitTerms =
-    permitStatus === ApplicationStatus.VOIDED
-      ? Math.floor(duration / allowedPermitTerm)
-      : Math.ceil(duration / allowedPermitTerm);
+  const permitTerms = Math.ceil(duration / allowedPermitTerm);
 
-  // Special fee calculation for void permit
-  if (permitStatus === ApplicationStatus.VOIDED) {
-    // If the permit status is voided, return a refund of 0 for permit with no fees, or return the applicable refund amount
-    return oldAmount === 0 ? 0 : -pricePerTerm * permitTerms;
-  }
   // For non void new application (exclude amendment application), if no fee applies, set the price per term to 0 for new application
   if ((isNoFee && oldAmount === undefined) || oldAmount === 0) return 0;
   if (oldAmount === undefined) oldAmount = 0;

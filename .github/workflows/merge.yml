@@ -30,7 +30,7 @@ jobs:
       - name: Get PR Number From Event
         if: ${{ github.event_name == 'push' }}
         id: pr_no
-        uses: bcgov-nr/action-get-pr@v0.0.1
+        uses: bcgov/action-get-pr@v0.0.1
       - name: PR Number
         id: pr
         run: echo pr=${{ steps.pr_no.outputs.pr || inputs.pr}} >> $GITHUB_OUTPUT
