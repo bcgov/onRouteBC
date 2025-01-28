@@ -63,6 +63,7 @@ const envPath = path.resolve(process.cwd() + '/../');
       logger: new TypeormCustomLogger(
         getTypeormLogLevel(process.env.DOPS_API_TYPEORM_LOG_LEVEL),
       ),
+      pool: { max: +process.env.DOPS_API_MSSQL_MAX_CONNECTION || 10 },
     }),
     AutomapperModule.forRoot({
       strategyInitializer: classes(),

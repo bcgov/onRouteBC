@@ -1,10 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ArrayMinSize,
-  IsEmail,
-  IsEnum,
-} from 'class-validator';
+import { ArrayMinSize, IsEmail, IsEnum } from 'class-validator';
 import { NotificationType } from '../../../../common/enum/notification-type.enum';
 
 export class CreateNotificationDto {

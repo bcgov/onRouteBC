@@ -14,6 +14,8 @@ import { ReadCaseActivityDto } from '../dto/response/read-case-activity.dto';
 import { IUserJWT } from '../../../common/interface/user-jwt.interface';
 import { doesUserHaveRole } from '../../../common/helper/auth.helper';
 import { IDIR_USER_ROLE_LIST } from '../../../common/enum/user-role.enum';
+import { Case } from '../entities/case.entity';
+import { ReadCaseMetaDto } from '../dto/response/read-case-meta.dto';
 
 @Injectable()
 export class CaseManagementProfile extends AutomapperProfile {
@@ -24,6 +26,24 @@ export class CaseManagementProfile extends AutomapperProfile {
   override get profile() {
     return (mapper: Mapper) => {
       createMap(mapper, CaseEvent, ReadCaseEvenDto);
+
+      createMap(
+        mapper,
+        Case,
+        ReadCaseMetaDto,
+        forMember(
+          (d) => d.assignedUser,
+          mapFrom((s) => s?.assignedUser?.userName),
+        ),
+        forMember(
+          (d) => d.applicationNumber,
+          mapFrom((s) => s?.permit?.applicationNumber),
+        ),
+        forMember(
+          (d) => d.applicationId,
+          mapFrom((s) => s?.permit?.permitId),
+        ),
+      );
 
       createMap(
         mapper,

@@ -8,6 +8,11 @@ on:
         required: false
         type: string
         default: "prod"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
   workflow_call:
     inputs:
       tag:
@@ -15,6 +20,11 @@ on:
         required: false
         type: string
         default: "prod"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
 
 jobs:
   deploys-prod:
@@ -31,4 +41,4 @@ jobs:
         --set-string global.zone='prod' \
         --set-string global.vault.role='prod' \
         --set-string global.vault.zone='prod' \
-        --set-string global.pr_num='${{ inputs.tag }}' \
+        ${{ inputs.params }} \

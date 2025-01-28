@@ -33,6 +33,7 @@ const envPath = path.resolve(process.cwd() + '/../');
       logger: new TypeormCustomLogger(
         getTypeormLogLevel(process.env.SCHEDULER_API_TYPEORM_LOG_LEVEL),
       ),
+      pool: { max: +process.env.SCHEDULER_API_MSSQL_MAX_CONNECTION || 10 },
     }),
     CacheModule.register({
       max: 50, //Max cache items in store. Revisit the number when required.

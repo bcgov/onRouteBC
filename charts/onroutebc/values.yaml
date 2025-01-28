@@ -1,5 +1,6 @@
 ---
 global:
+  env: {}
   autoscaling: true
   license: "c28f0c"
   podAnnotations: |
@@ -34,7 +35,8 @@ frontend:
       ACCESS_API_URL: "https://{{.Release.Name}}-vehicles.apps.silver.devops.gov.bc.ca"
       POLICY_URL: "https://{{.Release.Name}}-policy.apps.silver.devops.gov.bc.ca"
       DEPLOY_ENVIRONMENT: "{{.Values.global.vault.zone}}"
-      FRONTEND_PR_NUM: "{{.Values.global.pr_num}}"
+      PR_NUM: "{{.Values.global.env.pr_num}}"
+      RELEASE_NUM: "{{.Values.global.env.release_num}}"
       config.js.template: |-
         const envConfig = (() => { return {
             "VITE_DEPLOY_ENVIRONMENT":"$DEPLOY_ENVIRONMENT",
@@ -43,7 +45,8 @@ frontend:
             "VITE_KEYCLOAK_ISSUER_URL":"$KEYCLOAK_ISSUER_URL",
             "VITE_KEYCLOAK_AUDIENCE":"$KEYCLOAK_AUDIENCE",
             "VITE_SITEMINDER_LOG_OFF_URL":"$SITEMINDER_LOG_OFF_URL",
-            "VITE_FRONTEND_PR_NUM":"$FRONTEND_PR_NUM",
+            "VITE_PR_NUM":"$PR_NUM",
+            "VITE_RELEASE_NUM":"$RELEASE_NUM",
           };
         })();
   containers:
@@ -64,11 +67,13 @@ frontend:
             key: POLICY_URL            
           - name: DEPLOY_ENVIRONMENT
             key: DEPLOY_ENVIRONMENT
-          - name: FRONTEND_PR_NUM
-            key: FRONTEND_PR_NUM
-        fromValues:
+        fromValues: 
           - name: TIMESTAMP
             value: "{{ now | toString }}"
+          - name: PR_NUM
+            value: "{{ .Values.global.env.pr_num | toString }}"
+          - name: RELEASE_NUM
+            value: "{{ .Values.global.env.release_num | toString }}"
       ports:
         - name: http
           containerPort: 3000
@@ -203,8 +208,10 @@ vehicles:
         fromValues:
           - name: TIMESTAMP
             value: "{{ now | toString }}"
-          - name: VEHICLES_PR_NUM
-            value: '{{.Values.global.pr_num}}'
+          - name: PR_NUM
+            value: "{{ .Values.global.env.pr_num | toString }}"
+          - name: RELEASE_NUM
+            value: "{{ .Values.global.env.release_num | toString }}"
       ports:
         - name: vehicles-api
           containerPort: 5000
@@ -340,10 +347,12 @@ dops:
           - name: ACCESS_API_URL
             key: ACCESS_API_URL
         fromValues:
-          - name: DOPS_PR_NUM
-            value: '{{.Values.global.pr_num}}'
           - name: TIMESTAMP
             value: "{{ now | toString }}"
+          - name: PR_NUM
+            value: "{{ .Values.global.env.pr_num | toString }}"
+          - name: RELEASE_NUM
+            value: "{{ .Values.global.env.release_num | toString }}"
       ports:
         - name: dops-api
           containerPort: 5001
@@ -474,10 +483,12 @@ scheduler:
           - name: ACCESS_API_URL
             key: ACCESS_API_URL
         fromValues:
-          - name: SCHEDULER_PR_NUM
-            value: '{{.Values.global.pr_num}}'
           - name: TIMESTAMP
             value: "{{ now | toString }}"
+          - name: PR_NUM
+            value: "{{ .Values.global.env.pr_num | toString }}"
+          - name: RELEASE_NUM
+            value: "{{ .Values.global.env.release_num | toString }}"
       ports:
         - name: scheduler
           containerPort: 5050
@@ -581,10 +592,12 @@ policy:
           - name: FRONTEND_URL
             key: FRONTEND_URL
         fromValues:
-          - name: POLICY_PR_NUM
-            value: '{{.Values.global.pr_num}}'
           - name: TIMESTAMP
             value: "{{ now | toString }}"
+          - name: PR_NUM
+            value: "{{ .Values.global.env.pr_num | toString }}"
+          - name: RELEASE_NUM
+            value: "{{ .Values.global.env.release_num | toString }}"
       ports:
         - name: policy-api
           containerPort: 5002

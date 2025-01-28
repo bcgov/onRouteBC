@@ -24,6 +24,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ReadCaseEvenDto } from './dto/response/read-case-event.dto';
 import { ReadCaseActivityDto } from './dto/response/read-case-activity.dto';
+import { ReadCaseMetaDto } from './dto/response/read-case-meta.dto';
 
 @Injectable()
 export class CaseManagementService {
@@ -337,6 +338,74 @@ export class CaseManagementService {
         newEvent,
         CaseEvent,
         ReadCaseEvenDto,
+      );
+    } catch (error) {
+      if (localQueryRunner) {
+        await queryRunner.rollbackTransaction();
+      }
+      this.logger.error(error);
+      throw error;
+    } finally {
+      if (localQueryRunner) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  /**
+   * Retrieves metadata for an existing case, ensuring it is available and in an acceptable state.
+   * If the case does not exist or is already closed, it throws appropriate exceptions.
+   *
+   * @param queryRunner - Optional, existing QueryRunner instance.
+   * @param caseId - Optional, the ID of the case to be queried.
+   * @param originalCaseId - Optional, the original ID of the case.
+   * @param applicationId - Optional, the ID of the permit associated with the case.
+   * @param existingCase - Optional, the existing `Case` entity to be queried.
+   * @returns A `Promise<ReadCaseMetaDto>` object containing the metadata details of the case.
+   * @throws `DataNotFoundException` - If the case cannot be found or does not exist.
+   * @throws `UnprocessableEntityException` - If the case is already closed.
+   */
+  @LogAsyncMethodExecution()
+  async getCaseMetadata({
+    queryRunner,
+    caseId,
+    originalCaseId,
+    applicationId,
+    existingCase,
+  }: {
+    queryRunner?: Nullable<QueryRunner>;
+    caseId?: Nullable<number>;
+    originalCaseId?: Nullable<number>;
+    applicationId?: Nullable<string>;
+    existingCase?: Nullable<Case>;
+  }): Promise<ReadCaseMetaDto> {
+    let localQueryRunner = true;
+    ({ localQueryRunner, queryRunner } = await getQueryRunner({
+      queryRunner,
+      dataSource: this.dataSource,
+    }));
+    try {
+      if (!existingCase) {
+        existingCase = await this.findLatest({
+          queryRunner,
+          caseId,
+          originalCaseId,
+          applicationId,
+        });
+      }
+      if (!existingCase) {
+        throw new DataNotFoundException();
+      } else if (existingCase.caseStatusType === CaseStatusType.CLOSED) {
+        throwUnprocessableEntityException('Application no longer available.');
+      }
+
+      if (localQueryRunner) {
+        await queryRunner.commitTransaction();
+      }
+      return await this.classMapper.mapAsync(
+        existingCase,
+        Case,
+        ReadCaseMetaDto,
       );
     } catch (error) {
       if (localQueryRunner) {

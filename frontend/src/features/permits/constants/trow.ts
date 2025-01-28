@@ -29,13 +29,6 @@ export const TROW_ELIGIBLE_VEHICLE_SUBTYPES = [
 
 export const TROW_CONDITIONS: PermitCondition[] = [
   {
-    description: "General Permit Conditions",
-    condition: "CVSE-1000",
-    conditionLink: "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1251",
-    checked: true,
-    disabled: true,
-  },
-  {
     description: "Permit Scope and Limitation",
     condition: "CVSE-1070",
     conditionLink: "https://www.th.gov.bc.ca/forms/getForm.aspx?formId=1261",

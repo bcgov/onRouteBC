@@ -46,7 +46,10 @@ import {
 
 import {
   APPLICATIONS_ROUTES,
+  APPLICATION_QUEUE_ROUTES,
   APPLICATION_STEPS,
+  APPLICATION_STEP_CONTEXTS,
+  ApplicationStepContext,
   ERROR_ROUTES,
 } from "../../../../routes/constants";
 
@@ -59,9 +62,11 @@ const FEATURE = "application";
 export const ApplicationForm = ({
   permitType,
   companyId,
+  applicationStepContext,
 }: {
   permitType: PermitType;
   companyId: number;
+  applicationStepContext: ApplicationStepContext;
 }) => {
   // Context to hold all of the application data related to the application
   const applicationContext = useContext(ApplicationContext);
@@ -88,7 +93,7 @@ export const ApplicationForm = ({
     trailerSubtypeNamesMap,
   } = usePermitVehicleManagement(companyId);
 
-  const policyEngine = usePolicyEngine();
+  const policyEngine = usePolicyEngine(specialAuthorizations);
 
   // Use a custom hook that performs the following whenever page is rendered (or when application context is updated/changed):
   // 1. Get all data needed to initialize the application form (from application context, company, user details)
@@ -192,6 +197,7 @@ export const ApplicationForm = ({
     const updatedViolations = await triggerPolicyValidation();
     // prevent CV client continuing if there are policy engine validation errors
     if (Object.keys(updatedViolations).length > 0 && !isStaffUser) {
+      console.error(updatedViolations);
       return;
     }
 
@@ -201,10 +207,13 @@ export const ApplicationForm = ({
     const savedVehicleDetails = await handleSaveVehicle(vehicleData);
 
     // Save application before continuing
-    await onSaveApplication(
-      (permitId) => navigate(APPLICATIONS_ROUTES.REVIEW(permitId)),
-      savedVehicleDetails,
-    );
+    await onSaveApplication((permitId) => {
+      return navigate(
+        applicationStepContext === APPLICATION_STEP_CONTEXTS.QUEUE
+          ? APPLICATION_QUEUE_ROUTES.REVIEW(companyId, permitId)
+          : APPLICATIONS_ROUTES.REVIEW(permitId),
+      );
+    }, savedVehicleDetails);
   };
 
   const onSaveSuccess = (savedApplication: Application, status: number) => {

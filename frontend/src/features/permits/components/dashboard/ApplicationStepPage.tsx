@@ -129,11 +129,11 @@ export const ApplicationStepPage = ({
         <ApplicationReview companyId={companyId} />
       );
     }
-
     return (
       <ApplicationForm
         permitType={applicationPermitType}
         companyId={companyId}
+        applicationStepContext={applicationStepContext}
       />
     );
   };

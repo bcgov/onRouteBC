@@ -9,6 +9,11 @@ on:
         required: false
         type: string
         default: "test"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
   workflow_call:
     inputs:
       tag:
@@ -16,6 +21,11 @@ on:
         required: false
         type: string
         default: "test"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
   
 jobs:
   deploy-uat:
@@ -32,4 +42,4 @@ jobs:
         --set-string global.zone='test' \
         --set-string global.vault.role='nonprod' \
         --set-string global.vault.zone='uat' \
-        --set-string global.pr_num='${{ inputs.tag }}' \
+        ${{ inputs.params }} \

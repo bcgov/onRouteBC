@@ -8,6 +8,11 @@ on:
         required: false
         type: string
         default: "uat"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
   workflow_call:
     inputs:
       tag:
@@ -15,6 +20,11 @@ on:
         required: false
         type: string
         default: "uat"
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
   
 jobs:
   deploy-demo:

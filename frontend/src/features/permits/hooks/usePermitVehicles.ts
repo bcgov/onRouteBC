@@ -45,7 +45,6 @@ export const usePermitVehicles = (
   const eligibleVehicleSubtypes = useMemo(() => {
     return getEligibleVehicleSubtypes(
       permitType,
-      isLcvDesignated,
       selectedCommodity,
       policyEngine,
     );
