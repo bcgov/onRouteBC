@@ -45,7 +45,6 @@ FROM nginx:1.27-alpine as production-stage
 RUN mkdir /app
 COPY --from=builder /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY static_home_page /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
 
 RUN apk add --no-cache curl

@@ -149,12 +149,12 @@ jobs:
           echo "No triggers have fired, deployment skipped"
 
       - uses: redhat-actions/openshift-tools-installer@v1
-        if: ${{ steps.triggers.outputs.triggered == 'true' }}
+        if: steps.triggers.outputs.triggered == 'true'
         with:
           oc: "4"
 
       - name: Deploy if Triggers Fired
-        if: ${{ steps.triggers.outputs.triggered == 'true' }}
+        if: steps.triggers.outputs.triggered == 'true'
         working-directory: ${{ inputs.directory }}
         shell: bash
         run: |

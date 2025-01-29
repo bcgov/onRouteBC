@@ -16,12 +16,13 @@ jobs:
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
       release-name: ${{ steps.release-name.outputs.release-name }}
+      release-num: ${{ steps.release-name.outputs.release-num }}
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
       # Get PR number for squash merges to main
       - name: Get PR Number From Event
-        if: ${{ github.event_name == 'release' }}
+        if: github.event_name == 'release'
         id: pr_no
         uses: bcgov/action-get-pr@main
       - name: PR Number
@@ -31,7 +32,7 @@ jobs:
         id: release-name
         run: |
           echo release-name=$(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | jq -r .tag_name) >> $GITHUB_OUTPUT
-  
+          echo release-num=V$(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | jq -r .tag_name | sed 's/[^0-9]//g')  >> $GITHUB_OUTPUT
   promote-images-release:
     name: Promote Images - Release
     needs: [vars]
@@ -59,7 +60,7 @@ jobs:
       tag: ${{ needs.vars.outputs.pr }}
       params: |
         --set-string global.env.pr_num='${{ needs.vars.outputs.pr }}' \
-        --set-string global.env.release_num='${{ needs.vars.outputs.release-name }}' \
+        --set-string global.env.release_num='${{ needs.vars.outputs.release-num }}' \
         
   promote-images-uat:
     name: Promote Images - Uat
@@ -88,7 +89,7 @@ jobs:
       tag: ${{ needs.vars.outputs.pr }}
       params: |
         --set-string global.env.pr_num='${{ needs.vars.outputs.pr }}' \
-        --set-string global.env.release_num='${{ needs.vars.outputs.release-name }}' \
+        --set-string global.env.release_num='${{ needs.vars.outputs.release-num }}' \
   
   promote-images-prod:
     name: Promote Images - Prod

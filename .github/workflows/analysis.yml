@@ -18,7 +18,7 @@ jobs:
   # https://github.com/github/codeql-action
   codeql:
     name: CodeQL
-    if: ${{ ! github.event.pull_request.draft }}
+    if: (! github.event.pull_request.draft)
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:
@@ -38,7 +38,7 @@ jobs:
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
     name: Trivy Security Scan
-    if: ${{ ! github.event.pull_request.draft }}
+    if: (! github.event.pull_request.draft)
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
@@ -60,7 +60,7 @@ jobs:
 
   tests:
     name: Tests
-    if: ${{ ! github.event.pull_request.draft }}
+    if: (! github.event.pull_request.draft)
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     services:

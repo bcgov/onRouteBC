@@ -184,3 +184,9 @@
 
 ### Version 56:
 - Configure the MV4001 external form in OnRouteBC
+
+### Version 57:
+- Configure new templates for TROS and TROW
+
+### Version 58:
+- Updates to support new vehicle types for TROS and TROW

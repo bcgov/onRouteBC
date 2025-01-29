@@ -89,6 +89,12 @@ export class ReadShoppingCartDto {
   })
   duration: number;
 
+  @ApiProperty({
+    description: 'The total distance',
+    example: 30,
+  })
+  totalDistance?: number;
+
   @AutoMap()
   @ApiProperty({
     enum: PermitApplicationOrigin,

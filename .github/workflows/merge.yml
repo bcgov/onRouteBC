@@ -28,7 +28,7 @@ jobs:
     steps:
       # Get PR number for squash merges to main
       - name: Get PR Number From Event
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push'
         id: pr_no
         uses: bcgov/action-get-pr@v0.0.1
       - name: PR Number
