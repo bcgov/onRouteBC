@@ -7,7 +7,7 @@ import { IDPS } from "../../types/idp";
 import { LoadBCeIDUserContext } from "../LoadBCeIDUserContext";
 import OnRouteBCContext from "../OnRouteBCContext";
 
-const isBCeID = (identityProvider: string) => identityProvider === IDPS.BCEID;
+const isBCeID = (identityProvider: string) => identityProvider === IDPS.BUSINESS_BCEID;
 
 /**
  * This component ensures that a page is only available to new BCeID users.

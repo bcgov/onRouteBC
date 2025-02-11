@@ -272,7 +272,7 @@ VALUES
   (
     '12',
     'STAFF-CAN-PAY',
-    'DISABLED',
+    'ENABLED',
     NULL,
     N'dbo',
     GETUTCDATE(),
@@ -294,7 +294,29 @@ VALUES
   (
     '13',
     'CVCLIENT-PAY-IN-PERSON',
-    'DISABLED',
+    'ENABLED',
+    NULL,
+    N'dbo',
+    GETUTCDATE(),
+    N'dbo',
+    GETUTCDATE()
+  );
+INSERT INTO
+  [dbo].[ORBC_FEATURE_FLAG] (
+    [FEATURE_ID],
+    [FEATURE_KEY],
+    [FEATURE_VALUE],
+    [CONCURRENCY_CONTROL_NUMBER],
+    [DB_CREATE_USERID],
+    [DB_CREATE_TIMESTAMP],
+    [DB_LAST_UPDATE_USERID],
+    [DB_LAST_UPDATE_TIMESTAMP]
+  )
+VALUES
+  (
+    '14',
+    'BRIDGE-FORMULA-CALCULATION-TOOL',
+    'ENABLED',
     NULL,
     N'dbo',
     GETUTCDATE(),

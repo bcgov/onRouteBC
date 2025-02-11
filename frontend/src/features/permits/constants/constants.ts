@@ -62,10 +62,10 @@ export const ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS: PermitTypeChooseFromItem[] = [
   //     label: getPermitTypeShortName(permitType),
   //   })),
   // },
-  // {
-  //   value: PERMIT_TYPES.MFP,
-  //   label: getPermitTypeShortName(PERMIT_TYPES.MFP),
-  // },
+  {
+    value: PERMIT_TYPES.MFP,
+    label: getPermitTypeShortName(PERMIT_TYPES.MFP),
+  },
 ];
 
 export interface PermitTypeChooseFromItem {

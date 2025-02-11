@@ -190,6 +190,7 @@ export const IDIR_ROUTES = {
   REPORTS: `${IDIR_ROUTE_BASE}/reports`,
   CREATE_COMPANY: `${IDIR_ROUTE_BASE}/create-company`,
   STAFF_HOME: `${IDIR_ROUTE_BASE}/home`,
+  BRIDGE_FORMULA_CALCULATION_TOOL: `${IDIR_ROUTE_BASE}/bridge-formula-calculation-tool`,
 };
 
 // Payment

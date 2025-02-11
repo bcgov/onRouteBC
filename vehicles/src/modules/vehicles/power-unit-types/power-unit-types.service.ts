@@ -33,7 +33,7 @@ export class PowerUnitTypesService {
   @LogAsyncMethodExecution()
   async findAll(): Promise<ReadPowerUnitTypeDto[]> {
     return this.classMapper.mapArrayAsync(
-      await this.powerUnitTypeRepository.find(),
+      await this.powerUnitTypeRepository.find({ where: { isActive: '1' } }),
       PowerUnitType,
       ReadPowerUnitTypeDto,
     );

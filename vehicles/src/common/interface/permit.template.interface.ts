@@ -17,6 +17,7 @@ export interface PermitTemplateData {
   loas?: string;
   permitIssueDateTime?: string;
   revisionIssueDateTime?: string;
+  thirdPartyLiability?: string;
 }
 
 interface Revision {

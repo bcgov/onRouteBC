@@ -1,4 +1,4 @@
-import { Box, MenuItem } from "@mui/material"
+import { Box, MenuItem } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 
 import "./CommodityDetailsSection.scss";
@@ -8,7 +8,10 @@ import { PERMIT_TYPES, PermitType } from "../../../../../types/PermitType";
 import { Autocomplete } from "../../../../../../../common/components/form/subFormComponents/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
 import { Nullable } from "../../../../../../../common/types/common";
-import { DEFAULT_COMMODITY_SELECT_OPTION, DEFAULT_COMMODITY_SELECT_VALUE } from "../../../../../constants/constants";
+import {
+  DEFAULT_COMMODITY_SELECT_OPTION,
+  DEFAULT_COMMODITY_SELECT_VALUE,
+} from "../../../../../constants/constants";
 import { getDefaultRequiredVal } from "../../../../../../../common/helpers/util";
 import { ApplicationFormData } from "../../../../../types/application";
 import { ChangeCommodityTypeDialog } from "./ChangeCommodityTypeDialog";
@@ -29,7 +32,9 @@ export const CommodityDetailsSection = ({
   selectedCommodityType?: Nullable<string>;
   onChangeCommodityType: (commodityType: string) => void;
 }) => {
-  const [newCommodityType, setNewCommodityType] = useState<string | undefined>();
+  const [newCommodityType, setNewCommodityType] = useState<
+    string | undefined
+  >();
 
   const selectedCommodityOption = useMemo(() => {
     return getDefaultRequiredVal(
@@ -50,16 +55,19 @@ export const CommodityDetailsSection = ({
     trigger("permitData.permittedCommodity.commodityType");
   };
 
-  const handleCommodityTypeChange = useCallback((updatedCommodityType: string) => {
-    if (selectedCommodityType === updatedCommodityType) return;
+  const handleCommodityTypeChange = useCallback(
+    (updatedCommodityType: string) => {
+      if (selectedCommodityType === updatedCommodityType) return;
 
-    if (selectedCommodityType !== DEFAULT_COMMODITY_SELECT_VALUE) {
-      setNewCommodityType(updatedCommodityType);
-      return;
-    }
+      if (selectedCommodityType !== DEFAULT_COMMODITY_SELECT_VALUE) {
+        setNewCommodityType(updatedCommodityType);
+        return;
+      }
 
-    handleConfirmChangeCommodityType(updatedCommodityType);
-  }, [selectedCommodityType]);
+      handleConfirmChangeCommodityType(updatedCommodityType);
+    },
+    [selectedCommodityType],
+  );
 
   return permitType === PERMIT_TYPES.STOS ? (
     <Box className="commodity-details-section">
@@ -73,10 +81,11 @@ export const CommodityDetailsSection = ({
           rules={{
             required: { value: true, message: requiredMessage() },
             validate: {
-              mustSelect: (value) => value !== DEFAULT_COMMODITY_SELECT_VALUE || requiredMessage(),
+              mustSelect: (value) =>
+                value !== DEFAULT_COMMODITY_SELECT_VALUE || requiredMessage(),
             },
           }}
-          render={({ fieldState: {error} }) => (
+          render={({ fieldState: { error } }) => (
             <Autocomplete
               label={{
                 id: "commodity-type-label",
@@ -100,11 +109,16 @@ export const CommodityDetailsSection = ({
                     {option.label}
                   </MenuItem>
                 ),
-                isOptionEqualToValue: (option, value) => option.value === value.value && option.label === value.label,
+                isOptionEqualToValue: (option, value) =>
+                  option.value === value.value && option.label === value.label,
               }}
-              helperText={error?.message ? {
-                errors: [error.message],
-              } : undefined}
+              helperText={
+                error?.message
+                  ? {
+                      errors: [error.message],
+                    }
+                  : undefined
+              }
             />
           )}
         />

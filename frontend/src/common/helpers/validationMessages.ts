@@ -16,6 +16,9 @@ export const requiredMessage = () => validationMessages.required.defaultMessage;
 export const selectionRequired = () =>
   validationMessages.selectionRequired.defaultMessage;
 export const invalidNumber = () => validationMessages.NaN.defaultMessage;
+
+export const invalidInput = () => validationMessages.invalid.defaultMessage;
+
 export const mustBeGreaterThan = (val: number) => {
   const { messageTemplate, placeholders } = validationMessages.greaterThan;
   return replacePlaceholders(messageTemplate, placeholders, val);

@@ -1,0 +1,147 @@
+@import "../../../themes/orbcStyles";
+
+.bridge-formula-calculation-tool {
+  .table-container {
+    margin-top: 1.5rem;
+    padding: 0;
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    overflow-x: auto;
+  }
+  
+  .table {
+    border-collapse: collapse;
+
+    &__input {
+      margin: 0;
+    }
+
+    &__input-container {
+      margin: 0;
+    }
+
+    &__cell {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid $bc-border-grey;
+      min-width: 5rem;
+      max-width: 5rem;
+    }
+
+  }
+
+  .column, .row {
+    &__label {
+      background-color: $bc-background-light-grey;
+      border: 1px solid $bc-border-grey;
+      padding: 1.75rem 1rem;
+      text-align: start;
+      font-weight: bold;
+      font-size: 1rem;
+      color: $bc-black;
+      white-space: nowrap;
+
+      &:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+
+      &--fail {
+        background-color: $bc-messages-red-background;
+        color: $bc-red;
+      }
+    }
+  }
+
+  .column-label {
+    &__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 36px;
+    }
+  }
+
+  .button-container {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .button-icon {
+    font-size: 1rem;
+    color: $bc-black;
+  }
+  
+  .button {
+    font-size: 1rem;
+    padding: .5rem 1rem;
+    box-shadow: none;
+    min-width: fit-content;
+
+    &:hover, &:focus {
+      box-shadow: none; 
+    }
+
+    &--add {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: 1.5rem;
+      color: $bc-black;
+      border: 2px solid $bc-text-box-border-grey;
+
+      &:hover, &:focus {
+        background-color: $bc-background-light-grey;
+        border: 2px solid $bc-text-box-border-grey;
+      }
+    }
+
+    &--remove {
+      border: 2px solid $bc-black;
+      border-radius: 4px;
+
+      &:hover, &:focus {
+        background: $bc-border-grey;
+      }
+    }
+
+    &--reset {
+      color: $bc-black;
+      background-color: $bc-background-light-grey;
+      border: 2px solid $bc-background-light-grey;
+
+      &:hover, &:focus {
+        background-color: $bc-background-light-grey;
+        border-color: $bc-text-box-border-grey;
+      }
+    }
+
+    &--submit {
+      padding: .5rem 2rem;
+      font-weight: bold;
+    }
+  }
+
+  .results {
+    border-top: 1px solid $bc-border-grey;
+    padding: 2.5rem 0;
+
+    &__heading {
+      color: $bc-black;
+      margin: 0;
+    }
+
+    &__text {
+      &--fail {
+        color: $bc-red;
+      }
+      &--success {
+        color: $bc-green;
+      }
+    }
+  }
+}

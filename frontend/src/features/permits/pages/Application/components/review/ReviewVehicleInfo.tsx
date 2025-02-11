@@ -6,7 +6,7 @@ import "./ReviewVehicleInfo.scss";
 import { DiffChip } from "./DiffChip";
 import { areValuesDifferent } from "../../../../../../common/helpers/equality";
 import { Nullable } from "../../../../../../common/types/common";
-import { VehicleType } from "../../../../../manageVehicles/types/Vehicle";
+import { VEHICLE_TYPES, VehicleType } from "../../../../../manageVehicles/types/Vehicle";
 import { getDefaultRequiredVal } from "../../../../../../common/helpers/util";
 import { DEFAULT_VEHICLE_TYPE, PermitVehicleDetails } from "../../../../types/PermitVehicleDetails";
 import { getCountryFullName } from "../../../../../../common/helpers/countries/getCountryFullName";
@@ -52,6 +52,13 @@ export const ReviewVehicleInfo = ({
     getDefaultRequiredVal("", vehicleDetails?.vehicleSubType),
   );
 
+  const showLicensedGVW = Boolean(permitType)
+    && ([
+      PERMIT_TYPES.STOS,
+      PERMIT_TYPES.MFP,
+    ] as PermitType[]).includes(permitType as PermitType)
+    && vehicleType === VEHICLE_TYPES.POWER_UNIT;
+
   const changedFields = showChangedFields
     ? {
         unit: areValuesDifferent(
@@ -78,6 +85,10 @@ export const ReviewVehicleInfo = ({
           vehicleDetails?.vehicleSubType,
           oldFields?.vehicleSubType,
         ),
+        licensedGVW: areValuesDifferent(
+          vehicleDetails?.licensedGVW,
+          oldFields?.licensedGVW,
+        ),
       }
     : {
         unit: false,
@@ -89,6 +100,7 @@ export const ReviewVehicleInfo = ({
         province: false,
         type: false,
         subtype: false,
+        licensedGVW: false,
       };
 
   const provinceDisplay = getProvinceFullName(
@@ -125,83 +137,95 @@ export const ReviewVehicleInfo = ({
       <Box className="review-vehicle-info__body">
         {permitType !== PERMIT_TYPES.STOS ? (
           <Box className="info-section">
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Unit #</span>
-              {showDiffChip(changedFields.unit)}
-            </Typography>
+            <div className="info-section__info info-section__info--unit">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Unit #</span>
+                {showDiffChip(changedFields.unit)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-unit-number"
-            >
-              {vehicleDetails?.unitNumber}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-unit-number"
+              >
+                {vehicleDetails?.unitNumber}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              VIN{" "}
-              <span className="info-section__label--indicator">
-                (last 6 digits)
-              </span>
-              {showDiffChip(changedFields.vin)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                VIN{" "}
+                <span className="info-section__label--indicator">
+                  (last 6 digits)
+                </span>
+                {showDiffChip(changedFields.vin)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-vin"
-            >
-              {vehicleDetails?.vin}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-vin"
+              >
+                {vehicleDetails?.vin}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Plate</span>
-              {showDiffChip(changedFields.plate)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Plate</span>
+                {showDiffChip(changedFields.plate)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-plate"
-            >
-              {vehicleDetails?.plate}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-plate"
+              >
+                {vehicleDetails?.plate}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Make</span>
-              {showDiffChip(changedFields.make)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Make</span>
+                {showDiffChip(changedFields.make)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-make"
-            >
-              {vehicleDetails?.make}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-make"
+              >
+                {vehicleDetails?.make}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Year</span>
-              {showDiffChip(changedFields.year)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Year</span>
+                {showDiffChip(changedFields.year)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-year"
-            >
-              {vehicleDetails?.year}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-year"
+              >
+                {vehicleDetails?.year}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Country</span>
-              {showDiffChip(changedFields.country)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Country</span>
+                {showDiffChip(changedFields.country)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-country"
-            >
-              {getCountryFullName(vehicleDetails?.countryCode)}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-country"
+              >
+                {getCountryFullName(vehicleDetails?.countryCode)}
+              </Typography>
+            </div>
 
             {provinceDisplay ? (
-              <>
+              <div className="info-section__info">
                 <Typography className="info-section__label">
                   <span className="info-section__label-text">Province / State</span>
                   {showDiffChip(changedFields.province)}
@@ -213,32 +237,52 @@ export const ReviewVehicleInfo = ({
                 >
                   {provinceDisplay}
                 </Typography>
-              </>
+              </div>
             ) : null}
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Vehicle Type</span>
-              {showDiffChip(changedFields.type)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Vehicle Type</span>
+                {showDiffChip(changedFields.type)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-type"
-            >
-              {vehicleTypeDisplayText(vehicleType)}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-type"
+              >
+                {vehicleTypeDisplayText(vehicleType)}
+              </Typography>
+            </div>
 
-            <Typography className="info-section__label">
-              <span className="info-section__label-text">Vehicle Sub-type</span>
-              {showDiffChip(changedFields.subtype)}
-            </Typography>
+            <div className="info-section__info">
+              <Typography className="info-section__label">
+                <span className="info-section__label-text">Vehicle Sub-type</span>
+                {showDiffChip(changedFields.subtype)}
+              </Typography>
 
-            <Typography
-              className="info-section__data"
-              data-testid="review-vehicle-subtype"
-            >
-              {vehicleSubtype}
-            </Typography>
+              <Typography
+                className="info-section__data"
+                data-testid="review-vehicle-subtype"
+              >
+                {vehicleSubtype}
+              </Typography>
+            </div>
+
+            {showLicensedGVW && vehicleDetails?.licensedGVW ? (
+              <div className="info-section__info">
+                <Typography className="info-section__label">
+                  <span className="info-section__label-text">Licensed GVW (kg)</span>
+                  {showDiffChip(changedFields.licensedGVW)}
+                </Typography>
+
+                <Typography
+                  className="info-section__data"
+                  data-testid="review-vehicle-gvw"
+                >
+                  {vehicleDetails.licensedGVW.toLocaleString()}
+                </Typography>
+              </div>
+            ) : null}
 
             {vehicleWasSaved ? (
               <Typography className="info-section__msg">

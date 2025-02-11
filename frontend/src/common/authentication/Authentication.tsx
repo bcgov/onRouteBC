@@ -15,7 +15,7 @@ const LoginOptions = () => {
           variant="contained"
           onClick={() => {
             signinRedirect({
-              extraQueryParams: { kc_idp_hint: IDPS.BCEID },
+              extraQueryParams: { kc_idp_hint: IDPS.BUSINESS_BCEID },
             });
           }}
           sx={{ width: "200px" }}

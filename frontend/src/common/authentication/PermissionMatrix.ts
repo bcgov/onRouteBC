@@ -433,6 +433,13 @@ const MISCELLANEOUS = {
   STAFF_ACT_AS_COMPANY: {
     allowedIDIRRoles: [PC, SA, FIN, CTPO, HQA],
   },
+
+  /**
+   * Bridge Formula Calculation Tool available from Sidebar
+   */
+  BRIDGE_FORMULA_CALCULATION_TOOL: {
+    allowedIDIRRoles: [HQA, SA, PC, CTPO, EO],
+  },
 } as const;
 
 /**

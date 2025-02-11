@@ -30,7 +30,6 @@ import { VoidPermitDto } from './dto/request/void-permit.dto';
 import { ApiPaginatedResponse } from 'src/common/decorator/api-paginate-response';
 import { GetPermitQueryParamsDto } from './dto/request/queryParam/getPermit.query-params.dto';
 import {
-  CLIENT_USER_ROLE_LIST,
   IDIR_USER_ROLE_LIST,
   IDIRUserRole,
 } from 'src/common/enum/user-role.enum';
@@ -71,7 +70,6 @@ export class PermitController {
    */
   @ApiPaginatedResponse(ReadPermitMetadataDto)
   @Permissions({
-    allowedBCeIDRoles: CLIENT_USER_ROLE_LIST,
     allowedIdirRoles: IDIR_USER_ROLE_LIST,
   })
   @Get()

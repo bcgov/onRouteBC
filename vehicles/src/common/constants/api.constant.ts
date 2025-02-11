@@ -10,3 +10,6 @@ export const TOKEN_EXPIRY_BUFFER = 15;
 export const PERMISSIONS_KEY = 'permissions';
 export const TIMEZONE_PACIFIC = 'America/Vancouver';
 export const GL_PROJ_CODE_PLACEHOLDER = 'PROJECT';
+export const THIRD_PARTY_LIABILITY_DANGEROUS_GOODS =
+  'Dangerous Goods ($2,000,000)';
+export const THIRD_PARTY_LIABILITY_GENERAL_GOODS = 'General Goods ($1,000,000)';

@@ -26,8 +26,9 @@ export const getEligibleVehicleSubtypes = (
   // result in an empty map returned.
   const subtypesMap = policyEngine.getPermittableVehicleTypes(
     permitType,
-    getDefaultRequiredVal('-', selectedCommodity),
+    getDefaultRequiredVal("-", selectedCommodity),
   );
+
   return new Set(
     [
       ...getDefaultRequiredVal(

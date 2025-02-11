@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   zap_scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Penetration Tests
     env:
       DOMAIN: apps.silver.devops.gov.bc.ca
@@ -77,7 +77,7 @@ jobs:
     env:
       # https://tecadmin.net/getting-yesterdays-date-in-bash/
       CUTOFF: "1 week ago"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: redhat-actions/openshift-tools-installer@v1

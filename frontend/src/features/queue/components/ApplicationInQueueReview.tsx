@@ -13,7 +13,7 @@ import {
 import { useCompanyInfoDetailsQuery } from "../../manageProfile/apiManager/hooks";
 import { usePowerUnitSubTypesQuery } from "../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../manageVehicles/hooks/trailers";
-import { calculateFeeByDuration } from "../../permits/helpers/feeSummary";
+import { calculatePermitFee } from "../../permits/helpers/feeSummary";
 import { PermitReview } from "../../permits/pages/Application/components/review/PermitReview";
 import { Application } from "../../permits/types/application";
 import { PERMIT_REVIEW_CONTEXTS } from "../../permits/types/PermitReviewContext";
@@ -46,9 +46,13 @@ export const ApplicationInQueueReview = ({
   );
   const fee = isNoFeePermitType
     ? "0"
-    : `${calculateFeeByDuration(
+    : `${calculatePermitFee(
         permitType,
-        getDefaultRequiredVal(0, applicationData?.permitData?.permitDuration),
+        getDefaultRequiredVal(
+          0,
+          applicationData?.permitData?.permitDuration,
+          applicationData?.permitData?.permittedRoute?.manualRoute?.totalDistance,
+        ),
       )}`;
 
   const navigate = useNavigate();

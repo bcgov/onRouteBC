@@ -80,13 +80,17 @@ export const useRemoveFromCart = () => {
 /**
  * Hook used to get the number of items in the cart.
  * @param companyId id of company to get cart item count for
+ * @param doesUserDetailsExist Does the user details exist in the OnRouteBCContext
  * @returns Query object used for getting cart item count
  */
-export const useGetCartCount = (companyId: number) => {
+export const useGetCartCount = (
+  companyId: number,
+  doesUserDetailsExist: boolean,
+) => {
   return useQuery({
     queryKey: [CART_COUNT_KEY, companyId],
     queryFn: () => getCartCount(companyId),
-    enabled: Boolean(companyId),
+    enabled: Boolean(companyId) && doesUserDetailsExist,
     retry: false,
     refetchOnMount: "always",
     refetchOnWindowFocus: false,

@@ -19,10 +19,7 @@ import { AmendPermitFormData } from "../pages/Amend/types/AmendPermitFormData";
 import { Nullable, Optional } from "../../../common/types/common";
 import { useTableControls } from "./useTableControls";
 import { getDefaultRequiredVal } from "../../../common/helpers/util";
-import {
-  Application,
-  ApplicationFormData,
-} from "../types/application";
+import { Application, ApplicationFormData } from "../types/application";
 
 import {
   APPLICATION_STEPS,
@@ -68,7 +65,7 @@ const QUERY_KEYS = {
  */
 export const useSaveApplicationMutation = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({
       data,
@@ -79,7 +76,7 @@ export const useSaveApplicationMutation = () => {
     }) => {
       return data.permitId
         ? await updateApplication(data, data.permitId, companyId)
-        : await createApplication(data, companyId);      
+        : await createApplication(data, companyId);
     },
     onSuccess: (res) => {
       if (res.status === 200 || res.status === 201) {

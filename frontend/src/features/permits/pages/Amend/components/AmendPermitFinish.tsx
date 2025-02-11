@@ -47,6 +47,7 @@ export const AmendPermitFinish = () => {
         amendmentApplication?.permitType,
         permit?.permitType,
       ),
+      amendmentApplication?.permitData?.permittedRoute?.manualRoute?.totalDistance,
     );
 
   const { mutation: startTransactionMutation, transaction } =

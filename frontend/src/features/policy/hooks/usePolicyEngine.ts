@@ -18,12 +18,13 @@ export const usePolicyEngine = (specialAuthorizations?: SpecialAuthorizationData
     if (isNull(policyConfiguration)) return null;
     if (!policyConfiguration) return undefined;
 
-    return new Policy(policyConfiguration.policy);
-  }, [policyConfiguration]);
+    const policy = new Policy(policyConfiguration.policy);
+    if (specialAuthorizations) {
+      policy?.setSpecialAuthorizations(specialAuthorizations);
+    }
 
-  if (specialAuthorizations) {
-    policyEngine?.setSpecialAuthorizations(specialAuthorizations);
-  }
+    return policy;
+  }, [policyConfiguration, specialAuthorizations]);
 
   return policyEngine;
 };

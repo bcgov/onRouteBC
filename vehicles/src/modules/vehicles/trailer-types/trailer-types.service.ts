@@ -31,7 +31,7 @@ export class TrailerTypesService {
   @LogAsyncMethodExecution()
   async findAll(): Promise<ReadTrailerTypeDto[]> {
     return this.classMapper.mapArrayAsync(
-      await this.trailerTypeRepository.find(),
+      await this.trailerTypeRepository.find({ where: { isActive: '1' } }),
       TrailerType,
       ReadTrailerTypeDto,
     );

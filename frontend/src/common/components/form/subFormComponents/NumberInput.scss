@@ -1,4 +1,4 @@
-@use "../../../../themes/orbcStyles";
+@use "../../../../themes/orbcStyles.scss";
 
 .number-input {
   & &__label {
@@ -10,7 +10,7 @@
   &#{&}--error &__label {
     color: orbcStyles.$bc-black;
   }
-
+  
   &#{&}--error &__input {
     &:hover {
       fieldset {
@@ -32,6 +32,10 @@
       fieldset {
         border: 2px solid orbcStyles.$focus-blue;   
       }
+    }
+
+    input:disabled + fieldset {
+      background-color: orbcStyles.$bc-background-light-grey;
     }
   }
 }

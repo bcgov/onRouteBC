@@ -66,6 +66,13 @@ export const useApplicationFormUpdateMethods = () => {
     );
   }, [setValue]);
 
+  const onUpdateTotalDistance = useCallback((updatedTotalDistance?: RequiredOrNull<number>) => {
+    setValue(
+      "permitData.permittedRoute.manualRoute.totalDistance",
+      updatedTotalDistance,
+    );
+  }, [setValue]);
+
   const onUpdateVehicleConfigTrailers = useCallback(
     (updatedTrailerSubtypes: VehicleInConfiguration[]) => {
       setValue(
@@ -105,6 +112,7 @@ export const useApplicationFormUpdateMethods = () => {
     onClearVehicle,
     onUpdateLOAs,
     onUpdateHighwaySequence,
+    onUpdateTotalDistance,
     onUpdateVehicleConfigTrailers,
     onSetCommodityType,
     onUpdateVehicleConfig,

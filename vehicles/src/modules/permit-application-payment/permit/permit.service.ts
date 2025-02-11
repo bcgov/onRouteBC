@@ -318,6 +318,12 @@ export class PermitService {
             { searchString: `%${searchString}%` },
           );
           break;
+        case PermitSearch.VIN:
+          permitsQuery = permitsQuery.andWhere(
+            'permitData.vin like :searchString',
+            { searchString: `%${searchString}%` },
+          );
+          break;
         case PermitSearch.PERMIT_NUMBER:
           permitsQuery = permitsQuery.andWhere(
             new Brackets((query) => {

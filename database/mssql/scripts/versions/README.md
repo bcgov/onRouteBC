@@ -190,3 +190,6 @@
 
 ### Version 58:
 - Updates to support new vehicle types for TROS and TROW
+
+### Version 59:
+- Configure ICBC (QRFR & STFR) permit templates

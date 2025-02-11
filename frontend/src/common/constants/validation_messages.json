@@ -10,6 +10,9 @@
   "NaN": {
     "defaultMessage": "Must be a number"
   },
+  "invalid": {
+    "defaultMessage": "Invalid input"
+  },
   "greaterThan": {
     "messageTemplate": "Must be greater than :val.",
     "placeholders": [":val"]

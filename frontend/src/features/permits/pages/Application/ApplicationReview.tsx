@@ -18,7 +18,7 @@ import { CartContext } from "../../context/CartContext";
 import { usePowerUnitSubTypesQuery } from "../../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../../manageVehicles/hooks/trailers";
 import { useFetchSpecialAuthorizations } from "../../../settings/hooks/specialAuthorizations";
-import { calculateFeeByDuration } from "../../helpers/feeSummary";
+import { calculatePermitFee } from "../../helpers/feeSummary";
 import { DEFAULT_PERMIT_TYPE, PERMIT_TYPES } from "../../types/PermitType";
 import { PERMIT_REVIEW_CONTEXTS } from "../../types/PermitReviewContext";
 import { usePolicyEngine } from "../../../policy/hooks/usePolicyEngine";
@@ -52,9 +52,10 @@ export const ApplicationReview = ({
   const permitType = getDefaultRequiredVal(DEFAULT_PERMIT_TYPE, applicationData?.permitType);
   const fee = isNoFeePermitType
     ? "0"
-    : `${calculateFeeByDuration(
+    : `${calculatePermitFee(
         permitType,
         getDefaultRequiredVal(0, applicationData?.permitData?.permitDuration),
+        applicationData?.permitData?.permittedRoute?.manualRoute?.totalDistance,
       )}`;
 
   const { setSnackBar } = useContext(SnackBarContext);

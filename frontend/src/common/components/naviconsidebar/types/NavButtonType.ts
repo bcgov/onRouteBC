@@ -1,9 +1,14 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faFileLines, faHome } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileLines,
+  faHome,
+  faTruckMoving,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const NAV_BUTTON_TYPES = {
   HOME: "home",
   REPORT: "report",
+  BFCT: "bfct",
 } as const;
 
 export type NavButtonType =
@@ -14,7 +19,11 @@ export const getNavButtonTitle = (type: NavButtonType): string => {
     return "Home";
   }
 
-  return "Report";
+  if (type === NAV_BUTTON_TYPES.REPORT) {
+    return "Report";
+  }
+
+  return "Bridge Formula Calculation Tool";
 };
 
 export const getIcon = (type: NavButtonType): IconDefinition => {
@@ -22,5 +31,9 @@ export const getIcon = (type: NavButtonType): IconDefinition => {
     return faHome;
   }
 
-  return faFileLines;
+  if (type === NAV_BUTTON_TYPES.REPORT) {
+    return faFileLines;
+  }
+
+  return faTruckMoving;
 };

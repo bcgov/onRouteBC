@@ -18,6 +18,8 @@ export const TripDetails = ({
 }) => {
   const origin = getDefaultRequiredVal("", routeDetails?.manualRoute?.origin);
   const destination = getDefaultRequiredVal("", routeDetails?.manualRoute?.destination);
+  const exitPoint = getDefaultRequiredVal("", routeDetails?.manualRoute?.exitPoint);
+  const totalDistanceStr = getDefaultRequiredVal(0, routeDetails?.manualRoute?.totalDistance).toFixed(2);
   const highwaySequence = getDefaultRequiredVal([], routeDetails?.manualRoute?.highwaySequence);
   const details = getDefaultRequiredVal("", routeDetails?.routeDetails);
 
@@ -30,6 +32,14 @@ export const TripDetails = ({
         destination: areValuesDifferent(
           routeDetails?.manualRoute?.destination,
           oldRouteDetails?.manualRoute?.destination,
+        ),
+        exitPoint: areValuesDifferent(
+          routeDetails?.manualRoute?.exitPoint,
+          oldRouteDetails?.manualRoute?.exitPoint,
+        ),
+        totalDistance: areValuesDifferent(
+          totalDistanceStr,
+          getDefaultRequiredVal(0, oldRouteDetails?.manualRoute?.totalDistance).toFixed(2),
         ),
         highwaySequences: areOrderedSequencesEqual(
           routeDetails?.manualRoute?.highwaySequence,
@@ -44,6 +54,8 @@ export const TripDetails = ({
     : {
         origin: false,
         destination: false,
+        exitPoint: false,
+        totalDistance: false,
         highwaySequences: false,
         routeDetails: false,
       };
@@ -61,18 +73,18 @@ export const TripDetails = ({
       </Box>
 
       <Box className="review-trip-details__body">
-        {origin || destination ? (
-          <Box className="origin-destination">
+        {routeDetails?.manualRoute ? (
+          <Box className="manual-route">
             {origin ? (
-              <div className="origin-destination__origin">
-                <Typography className="origin-destination__label">
-                  <span className="origin-destination__label-text">Origin</span>
+              <div className="manual-route__origin">
+                <Typography className="manual-route__label">
+                  <span className="manual-route__label-text">Origin</span>
 
                   {showDiffChip(changedFields.origin)}
                 </Typography>
 
                 <Typography
-                  className="origin-destination__data"
+                  className="manual-route__data"
                   data-testid="permit-route-origin"
                 >
                   {origin}
@@ -81,18 +93,52 @@ export const TripDetails = ({
             ) : null}
             
             {destination ? (
-              <div className="origin-destination__destination">
-                <Typography className="origin-destination__label">
-                  <span className="origin-destination__label-text">Destination</span>
+              <div className="manual-route__destination">
+                <Typography className="manual-route__label">
+                  <span className="manual-route__label-text">Destination</span>
 
                   {showDiffChip(changedFields.destination)}
                 </Typography>
 
                 <Typography
-                  className="origin-destination__data"
+                  className="manual-route__data"
                   data-testid="permit-route-destination"
                 >
                   {destination}
+                </Typography>
+              </div>
+            ) : null}
+
+            {exitPoint ? (
+              <div className="manual-route__exit">
+                <Typography className="manual-route__label">
+                  <span className="manual-route__label-text">Exit Point</span>
+
+                  {showDiffChip(changedFields.exitPoint)}
+                </Typography>
+
+                <Typography
+                  className="manual-route__data"
+                  data-testid="permit-route-exit"
+                >
+                  {exitPoint}
+                </Typography>
+              </div>
+            ) : null}
+
+            {Number(totalDistanceStr) > 0 ? (
+              <div className="manual-route__total-distance">
+                <Typography className="manual-route__label">
+                  <span className="manual-route__label-text">Total Distance (km)</span>
+
+                  {showDiffChip(changedFields.totalDistance)}
+                </Typography>
+
+                <Typography
+                  className="manual-route__data"
+                  data-testid="permit-route-total-distance"
+                >
+                  {totalDistanceStr}
                 </Typography>
               </div>
             ) : null}

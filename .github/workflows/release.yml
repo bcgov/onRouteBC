@@ -32,7 +32,7 @@ jobs:
         id: release-name
         run: |
           echo release-name=$(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | jq -r .tag_name) >> $GITHUB_OUTPUT
-          echo release-num=V$(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | jq -r .tag_name | sed 's/[^0-9]//g')  >> $GITHUB_OUTPUT
+          echo release-num=V$(curl https://api.github.com/repos/bcgov/onroutebc/releases/latest | jq -r .tag_name | sed 's/[^0-9.]//g')  >> $GITHUB_OUTPUT
   promote-images-release:
     name: Promote Images - Release
     needs: [vars]

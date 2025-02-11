@@ -118,6 +118,7 @@ export const AmendPermitReview = () => {
         amendmentApplication?.permitData?.permitDuration,
       ),
       permitType,
+      amendmentApplication?.permitData?.permittedRoute?.manualRoute?.totalDistance,
     );
 
   return (

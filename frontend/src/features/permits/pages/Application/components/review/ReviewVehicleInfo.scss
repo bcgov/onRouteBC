@@ -7,6 +7,14 @@
 .review-vehicle-info {
   &__body {
     .info-section {
+      &__info {
+        margin-top: 1.5rem;
+
+        &--unit {
+          margin-top: 0;
+        }
+      }
+
       &__label {
         font-weight: bold;
 

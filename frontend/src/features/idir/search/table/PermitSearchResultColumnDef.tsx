@@ -27,6 +27,7 @@ export const PermitSearchResultColumnDef = (
     sortingFn: "alphanumeric",
     Cell: (props: { cell: any; row: any }) => {
       const permit = props.row.original as PermitListItem;
+
       const { permitId, permitStatus, expiryDate, companyId } = permit;
 
       const getDisplayedPermitStatus = (
@@ -35,6 +36,10 @@ export const PermitSearchResultColumnDef = (
       ) => {
         if (permitStatus === PERMIT_STATUSES.VOIDED) {
           return PERMIT_STATUSES.VOIDED;
+        }
+
+        if (permitStatus === PERMIT_STATUSES.SUPERSEDED) {
+          return PERMIT_STATUSES.SUPERSEDED;
         }
 
         if (hasPermitExpired(expiryDate)) {
@@ -105,7 +110,10 @@ export const PermitSearchResultColumnDef = (
     enableSorting: true,
     sortingFn: dateTimeStringSortingFn,
     Cell: (props: { cell: any }) => {
-      const formattedDate = formatCellValuetoDatetime(props.cell.getValue(), true);
+      const formattedDate = formatCellValuetoDatetime(
+        props.cell.getValue(),
+        true,
+      );
       return formattedDate;
     },
   },
@@ -115,7 +123,10 @@ export const PermitSearchResultColumnDef = (
     enableSorting: true,
     sortingFn: dateTimeStringSortingFn,
     Cell: (props: { cell: any }) => {
-      const formattedDate = formatCellValuetoDatetime(props.cell.getValue(), true);
+      const formattedDate = formatCellValuetoDatetime(
+        props.cell.getValue(),
+        true,
+      );
       return formattedDate;
     },
   },

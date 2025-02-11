@@ -48,11 +48,16 @@ export const getPermittedCommodityOptions = (
     policyEngine?.getCommodities(permitType),
   );
 
-  return [DEFAULT_COMMODITY_SELECT_OPTION].concat(
-    [...commodities.entries()]
-      .map(([commodityType, commodityDescription]) => ({
-        value: commodityType,
-        label: commodityDescription,
-      })),
-  );
+  const commodityOptions = [...commodities.entries()]
+    .map(([commodityType, commodityDescription]) => ({
+      value: commodityType,
+      label: commodityDescription,
+    }))
+    .sort((a, b) => {
+      if (a.label === "None") return -1; // Move "none" to the top
+      if (b.label === "None") return 1;
+      return a.label.localeCompare(b.label);
+    });
+
+  return [DEFAULT_COMMODITY_SELECT_OPTION].concat(commodityOptions);
 };

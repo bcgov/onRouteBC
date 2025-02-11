@@ -8,12 +8,14 @@
   &__body {
     width: 100%;
     
-    .origin-destination {
+    .manual-route {
       &__label-text {
         font-weight: bold;
       }
 
-      &__destination {
+      &__destination,
+      &__exit,
+      &__total-distance {
         margin-top: 1.5rem;
       }
     }
@@ -21,7 +23,7 @@
     .review-highway-sequences {
       margin-top: 1.5rem;
       border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
-      padding: 1.5rem 0;
+      padding: 1.5rem 0 0 0;
 
       &__sequences {
         margin-top: 1.5rem;
@@ -32,6 +34,7 @@
     }
 
     .specific-route {
+      margin-top: 1.5rem;
       padding-top: 1.5rem;
       border-top: 1px solid orbcStyles.$bc-text-box-border-grey;
 

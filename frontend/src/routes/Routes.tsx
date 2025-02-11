@@ -34,6 +34,7 @@ import IDPRedirect from "../common/components/idpredirect/IDPRedirect";
 import { ShoppingCartDashboard } from "../features/permits/ShoppingCartDashboard";
 import { DocumentUnavailable } from "../common/pages/DocumentUnavailable";
 import { StaffDashboard } from "../features/idir/StaffDashboard";
+import { BFCTDashboard } from "../features/bridgeFormulaCalculationTool/BFCTDashboard";
 // import { ReviewApplicationInQueue } from "../features/queue/pages/ReviewApplicationInQueue";
 
 export const AppRoutes = () => {
@@ -137,7 +138,7 @@ export const AppRoutes = () => {
             />
           }
         />
-        
+
         <Route
           path={`${routes.APPLICATION_QUEUE_ROUTES.EDIT()}`}
           element={
@@ -153,16 +154,29 @@ export const AppRoutes = () => {
         element={
           <IDIRAuthWall
             permissionMatrixKeys={{
+              permissionMatrixFeatureKey: "MISCELLANEOUS",
+              permissionMatrixFunctionKey: "BRIDGE_FORMULA_CALCULATION_TOOL",
+            }}
+          />
+        }
+      >
+        <Route
+          path={routes.IDIR_ROUTES.BRIDGE_FORMULA_CALCULATION_TOOL}
+          element={<BFCTDashboard />}
+        />
+      </Route>
+
+      <Route
+        element={
+          <IDIRAuthWall
+            permissionMatrixKeys={{
               permissionMatrixFeatureKey: "GLOBAL_SEARCH",
               permissionMatrixFunctionKey: "VOID_PERMIT",
             }}
           />
         }
       >
-        <Route
-          path={routes.PERMITS_ROUTES.VOID()}
-          element={<VoidPermit />}
-        />
+        <Route path={routes.PERMITS_ROUTES.VOID()} element={<VoidPermit />} />
       </Route>
 
       <Route
@@ -175,10 +189,7 @@ export const AppRoutes = () => {
           />
         }
       >
-        <Route
-          path={routes.PERMITS_ROUTES.AMEND()}
-          element={<AmendPermit />}
-        />
+        <Route path={routes.PERMITS_ROUTES.AMEND()} element={<AmendPermit />} />
       </Route>
       <Route
         element={
@@ -357,7 +368,9 @@ export const AppRoutes = () => {
               element={
                 <ApplicationSteps
                   applicationStep={routes.APPLICATION_STEPS.DETAILS}
-                  applicationStepContext={routes.APPLICATION_STEP_CONTEXTS.APPLY}
+                  applicationStepContext={
+                    routes.APPLICATION_STEP_CONTEXTS.APPLY
+                  }
                 />
               }
             />
@@ -366,7 +379,9 @@ export const AppRoutes = () => {
               element={
                 <ApplicationSteps
                   applicationStep={routes.APPLICATION_STEPS.REVIEW}
-                  applicationStepContext={routes.APPLICATION_STEP_CONTEXTS.APPLY}
+                  applicationStepContext={
+                    routes.APPLICATION_STEP_CONTEXTS.APPLY
+                  }
                 />
               }
             />
