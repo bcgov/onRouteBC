@@ -6,12 +6,12 @@ export const ClaimedApplicationModal = ({
   showModal,
   onCancel,
   onConfirm,
-  currentClaimant,
+  assignedUser,
 }: {
   showModal: boolean;
   onCancel: () => void;
   onConfirm: () => Promise<void>;
-  currentClaimant: string;
+  assignedUser: string;
 }) => {
   const formMethods = useForm<{ comment: string }>({
     defaultValues: {
@@ -42,7 +42,7 @@ export const ClaimedApplicationModal = ({
         <div className="claimed-application-modal__body">
           <span className="claimed-application-modal__text">
             This application is already claimed by{" "}
-            <strong>{currentClaimant}.</strong>
+            <strong>{assignedUser}.</strong>
           </span>
           <span className="claimed-application-modal__text">
             All unsaved changes will be lost. Would you like to claim it

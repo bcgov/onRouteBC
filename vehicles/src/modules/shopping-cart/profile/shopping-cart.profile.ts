@@ -68,6 +68,15 @@ export class ShoppingCartProfile extends AutomapperProfile {
           }),
         ),
         forMember(
+          (d) => d.thirdPartyLiability,
+          mapFrom((s) => {
+            const parsedPermitData = JSON.parse(
+              s?.permitData?.permitData,
+            ) as PermitData;
+            return parsedPermitData?.thirdPartyLiability;
+          }),
+        ),
+        forMember(
           (d) => d.plate,
           mapFrom((s) => s?.permitData?.plate),
         ),

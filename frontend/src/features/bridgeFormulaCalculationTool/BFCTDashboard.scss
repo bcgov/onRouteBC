@@ -6,6 +6,8 @@
 .bfct-dashboard {
   &__split {
     display: flex;
+    justify-content: flex-start;
+    align-items: center;
     gap: 3rem;
     padding: 4rem 0;
     border-bottom: 1px solid orbcStyles.$bc-border-grey;
@@ -13,10 +15,23 @@
 
   &__info-banner {
     font-weight: normal;
-    width: 100%;
+    width: 50%;
+    max-width: 792px;
   }
 
   &__image {
-    width: 100%;
+    width: 50%;
+    max-width: 792px;
+    max-height: 246px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .bfct-dashboard__split {
+    flex-direction: column;
+
+    & > * {
+      width: 100%;
+    }
   }
 }

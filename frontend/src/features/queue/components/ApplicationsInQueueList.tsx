@@ -21,10 +21,12 @@ import { Loading } from "../../../common/pages/Loading";
 import { APPLICATION_QUEUE_ROUTES } from "../../../routes/constants";
 import { ApplicationListItem } from "../../permits/types/application";
 import {
+  useApplicationInQueueMetadata,
   useClaimApplicationInQueueMutation,
   useUnclaimedApplicationsInQueueQuery,
 } from "../hooks/hooks";
 import { getApplicationInQueueColumnDefinition } from "./ApplicationInQueueColumnDefinition";
+import { ClaimedApplicationModal } from "./ClaimedApplicationModal";
 
 export const ApplicationsInQueueList = () => {
   const {
@@ -40,6 +42,7 @@ export const ApplicationsInQueueList = () => {
     isError: unclaimedApplicationsError,
     isPending: unclaimedApplicationsPending,
     isFetching: unclaimedapplicationsFetching,
+    refetch: refetchUnclaimedApplications,
   } = unclaimedApplicationsInQueueQuery;
 
   const [showTable, setShowTable] = useState<boolean>(false);
@@ -75,10 +78,46 @@ export const ApplicationsInQueueList = () => {
 
   const [selectedApplication, setSelectedApplication] =
     useState<ApplicationListItem>();
+  const [assignedUser, setAssignedUser] = useState<string>("");
+  const [showClaimedApplicationModal, setShowClaimedApplicationModal] =
+    useState<boolean>(false);
+
+  const { refetch: refetchApplicationMetadata } = useApplicationInQueueMetadata(
+    {
+      applicationId: getDefaultRequiredVal("", selectedApplication?.permitId),
+      companyId: getDefaultRequiredVal(0, selectedApplication?.companyId),
+    },
+  );
+
+  const confirmClaimApplication = async (application: ApplicationListItem) => {
+    await claimApplication({
+      companyId: application.companyId,
+      applicationId: application.permitId,
+    });
+  };
+
+  const handleClaimApplication = async (application: ApplicationListItem) => {
+    const { data: applicationMetadata } = await refetchApplicationMetadata();
+
+    if (applicationMetadata?.assignedUser) {
+      setAssignedUser(applicationMetadata.assignedUser);
+      setShowClaimedApplicationModal(true);
+    } else {
+      confirmClaimApplication(application);
+    }
+  };
 
   const handleFollowApplicationLink = (application: ApplicationListItem) => {
     setSelectedApplication(application);
-    handleClaimApplication(application);
+  };
+
+  useEffect(() => {
+    selectedApplication && handleClaimApplication(selectedApplication);
+  }, [selectedApplication]);
+
+  const handleCloseClaimedApplicationModal = () => {
+    setShowClaimedApplicationModal(false);
+    refetchUnclaimedApplications();
   };
 
   const {
@@ -86,13 +125,6 @@ export const ApplicationsInQueueList = () => {
     data: claimApplicationResponse,
     isPending: claimApplicationPending,
   } = useClaimApplicationInQueueMutation();
-
-  const handleClaimApplication = async (application: ApplicationListItem) => {
-    await claimApplication({
-      companyId: application.companyId,
-      applicationId: application.permitId,
-    });
-  };
 
   const navigate = useNavigate();
 
@@ -175,12 +207,22 @@ export const ApplicationsInQueueList = () => {
   return (
     <>
       {showTable ? (
-        <div className="applications-in-queue-list table-container">
-          <MaterialReactTable table={table} />
+        <div>
+          <div className="applications-in-queue-list table-container">
+            <MaterialReactTable table={table} />
+          </div>
         </div>
       ) : (
         <NoRecordsFound />
       )}
+      <ClaimedApplicationModal
+        showModal={showClaimedApplicationModal}
+        onCancel={handleCloseClaimedApplicationModal}
+        onConfirm={() =>
+          confirmClaimApplication(selectedApplication as ApplicationListItem)
+        }
+        assignedUser={assignedUser}
+      />
     </>
   );
 };

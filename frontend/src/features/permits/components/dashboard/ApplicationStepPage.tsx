@@ -6,10 +6,8 @@ import "../../../../common/components/dashboard/Dashboard.scss";
 import { Banner } from "../../../../common/components/dashboard/components/banner/Banner";
 import { ApplicationForm } from "../../pages/Application/ApplicationForm";
 import { ApplicationContext } from "../../context/ApplicationContext";
-import { ApplicationReview } from "../../pages/Application/ApplicationReview";
 import { getCompanyIdFromSession } from "../../../../common/apiManager/httpRequestHandler";
 import { Loading } from "../../../../common/pages/Loading";
-import { ApplicationInQueueReview } from "../../../queue/components/ApplicationInQueueReview";
 import { useApplicationForStepsQuery } from "../../hooks/hooks";
 import { PERMIT_STATUSES } from "../../types/PermitStatus";
 import {
@@ -25,12 +23,12 @@ import {
 } from "../../types/PermitType";
 
 import {
-  APPLICATION_STEP_CONTEXTS,
   APPLICATION_STEPS,
   ApplicationStep,
   ApplicationStepContext,
   ERROR_ROUTES,
 } from "../../../../routes/constants";
+import { ApplicationReview } from "../../pages/Application/ApplicationReview";
 
 const displayHeaderText = (stepKey: ApplicationStep) => {
   switch (stepKey) {
@@ -126,12 +124,8 @@ export const ApplicationStepPage = ({
 
   const renderApplicationStep = () => {
     if (applicationStep === APPLICATION_STEPS.REVIEW) {
-      return applicationStepContext === APPLICATION_STEP_CONTEXTS.QUEUE ? (
-        <ApplicationInQueueReview
-          applicationData={contextData.applicationData}
-        />
-      ) : (
-        <ApplicationReview companyId={companyId} />
+      return (
+        <ApplicationReview applicationStepContext={applicationStepContext} />
       );
     }
     return (

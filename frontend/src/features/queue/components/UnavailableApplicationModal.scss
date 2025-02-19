@@ -1,6 +1,6 @@
 @import "../../../themes/orbcStyles.scss";
 
-.claimed-application-modal {
+.unavailable-application-modal {
   & &__container {
     width: 100%;
     display: flex;
@@ -40,20 +40,6 @@
 
   }
   & &__button {
-    &--cancel {
-      margin-right: 1.5rem;
-      cursor: pointer;
-      background-color: $bc-background-light-grey;
-      color: $bc-black;
-      border: 2px solid $bc-background-light-grey;
-      box-shadow: none;
-
-      &:hover, &:focus {
-        background-color: $bc-background-light-grey;
-        border: 2px solid $bc-border-grey;
-        box-shadow: none;
-      }
-    }
 
     &--confirm {
       color: $white;

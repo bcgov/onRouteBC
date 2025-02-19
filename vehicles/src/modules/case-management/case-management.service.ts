@@ -565,6 +565,7 @@ export class CaseManagementService {
       } else if (existingCase.assignedUser?.userGUID !== currentUser.userGUID) {
         throwUnprocessableEntityException(
           `Application no longer available. This application is claimed by ${existingCase.assignedUser?.userName}`,
+          { currentClaimant: existingCase.assignedUser?.userName },
         );
       } else if (existingCase.caseStatusType !== CaseStatusType.IN_PROGRESS) {
         throwUnprocessableEntityException('Application no longer available.');

@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ApplicationStatus } from '../../../../common/enum/application-status.enum';
 import { PermitType } from '../../../../common/enum/permit-type.enum';
 import { PermitApplicationOrigin } from '../../../../common/enum/permit-application-origin.enum';
+import { ThirdPartyLiability } from '../../../../common/enum/third-party-liability.enum';
 
 export class ReadShoppingCartDto {
   @AutoMap()
@@ -94,6 +95,14 @@ export class ReadShoppingCartDto {
     example: 30,
   })
   totalDistance?: number;
+
+  @AutoMap()
+  @ApiProperty({
+    enum: ThirdPartyLiability,
+    example: ThirdPartyLiability.DANGEROUS_GOODS,
+    description: 'Third Party Liability for ICBC Permits.',
+  })
+  thirdPartyLiability?: ThirdPartyLiability;
 
   @AutoMap()
   @ApiProperty({

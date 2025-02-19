@@ -86,7 +86,10 @@ export class NotificationService {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
+        'Accept-Encoding': 'gzip, deflate, br', // Add compression support
+        'accept': 'application/json',
       },
+      responseType: 'json'
     };
 
     // Sending the email through the HTTP service and handling the response

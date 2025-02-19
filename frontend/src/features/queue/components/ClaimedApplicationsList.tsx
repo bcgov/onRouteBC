@@ -195,7 +195,7 @@ export const ClaimedApplicationsList = () => {
             onConfirm={() =>
               handleClaimApplication(selectedApplication as ApplicationListItem)
             }
-            currentClaimant={getDefaultRequiredVal(
+            assignedUser={getDefaultRequiredVal(
               "",
               selectedApplication?.claimedBy,
             )}

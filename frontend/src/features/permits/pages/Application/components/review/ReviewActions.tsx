@@ -78,7 +78,7 @@ export const ReviewActions = ({
         </Button>
       ) : null}
 
-      {reviewContext === PERMIT_REVIEW_CONTEXTS.QUEUE ? (
+      {reviewContext === PERMIT_REVIEW_CONTEXTS.QUEUE && (
         <>
           <Button
             className="review-actions__btn review-actions__btn--reject"
@@ -106,7 +106,7 @@ export const ReviewActions = ({
             Approve
           </Button>
         </>
-      ) : null}
+      )}
     </Box>
   );
 };

@@ -62,7 +62,7 @@ describe('Login Test for OnRouteBC', () => {
     cy.get('[id="mui-component-select-permitData.vehicleDetails.vehicleSubType"]').click({ force: true });
     cy.wait(wait_time);
     
-    cy.get('[data-value="TRKTRAC"]').click();
+    cy.get('[data-value="FEDRMMX"]').click();
     cy.wait(wait_time);
 
     cy.get('[data-testid="continue-application-button"]').click({ force: true });

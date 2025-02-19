@@ -4,7 +4,10 @@ import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider } from "@mui/material/styles";
 
-import { APPLICATIONS_API_ROUTES, CART_API_ROUTES } from "../../../../../apiManager/endpoints/endpoints";
+import {
+  APPLICATIONS_API_ROUTES,
+  CART_API_ROUTES,
+} from "../../../../../apiManager/endpoints/endpoints";
 import { renderForTests } from "../../../../../../../common/helpers/testHelper";
 import { bcGovTheme } from "../../../../../../../themes/bcGovTheme";
 import { ApplicationContext } from "../../../../../context/ApplicationContext";
@@ -34,6 +37,7 @@ import {
   getDefaultPowerUnitSubTypes,
   getDefaultTrailerSubTypes,
 } from "../../../../../components/dashboard/tests/integration/fixtures/getVehicleInfo";
+import { APPLICATION_STEP_CONTEXTS } from "../../../../../../../routes/constants";
 
 export const newApplicationNumber = "A1-00000001-800-R01";
 export const newPermitId = "1";
@@ -156,24 +160,19 @@ const server = setupServer(
     },
   ),
 
-  http.get(
-    `${CART_API_ROUTES.COUNT(companyInfo.companyId.toString())}`,
-    () => {
-      return HttpResponse.json(1);
-    },
-  ),
+  http.get(`${CART_API_ROUTES.COUNT(companyInfo.companyId.toString())}`, () => {
+    return HttpResponse.json(1);
+  }),
 
   http.get(
     `${SPECIAL_AUTH_API_ROUTES.SPECIAL_AUTH.GET(companyInfo.companyId.toString())}`,
     () => {
-      return HttpResponse.json(
-        {
-          companyId: companyInfo.companyId,
-          specialAuthId: 1,
-          isLcvAllowed: false,
-          noFeeType: null,
-        },
-      );
+      return HttpResponse.json({
+        companyId: companyInfo.companyId,
+        specialAuthId: 1,
+        isLcvAllowed: false,
+        noFeeType: null,
+      });
     },
   ),
 );
@@ -209,7 +208,9 @@ const ComponentWithWrapper = ({
           [testApplicationData],
         )}
       >
-        <ApplicationReview companyId={applicationData.companyId} />
+        <ApplicationReview
+          applicationStepContext={APPLICATION_STEP_CONTEXTS.APPLY}
+        />
       </ApplicationContext.Provider>
     </ThemeProvider>
   );

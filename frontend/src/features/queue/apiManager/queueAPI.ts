@@ -5,6 +5,7 @@ import { CaseActivityType } from "../types/CaseActivityType";
 import { APPLICATION_QUEUE_API_ROUTES } from "./endpoints/endpoints";
 import {
   getCompanyIdFromSession,
+  httpGETRequest,
   httpPOSTRequest,
 } from "../../../common/apiManager/httpRequestHandler";
 
@@ -13,6 +14,7 @@ import {
   PaginatedResponse,
   PaginationAndFilters,
 } from "../../../common/types/common";
+import { ApplicationMetadata } from "../../permits/types/ApplicationMetadata";
 
 /**
  * Fetch all applications in queue.
@@ -114,4 +116,15 @@ export const submitApplicationForReview = async (
     APPLICATION_QUEUE_API_ROUTES.SUBMIT_FOR_REVIEW(companyId, applicationId),
     {},
   );
+};
+
+export const getApplicationInQueueMetadata = async (
+  companyId: number,
+  applicationId: string,
+): Promise<ApplicationMetadata> => {
+  const response = await httpGETRequest(
+    APPLICATION_QUEUE_API_ROUTES.GET_METADATA(companyId, applicationId),
+  );
+
+  return response.data;
 };
