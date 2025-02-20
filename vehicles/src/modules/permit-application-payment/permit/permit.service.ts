@@ -56,6 +56,7 @@ import { CreateNotificationDto } from '../../common/dto/request/create-notificat
 import { ReadNotificationDto } from '../../common/dto/response/read-notification.dto';
 import { DataNotFoundException } from '../../../common/exception/data-not-found.exception';
 import { NotificationType } from '../../../common/enum/notification-type.enum';
+import { TransactionType } from '../../../common/enum/transaction-type.enum';
 import { validateEmailList } from '../../../common/helper/notification.helper';
 
 @Injectable()
@@ -594,33 +595,46 @@ export class PermitService {
         },
       );
 
-      const createTransactionDto = new CreateTransactionDto();
-      createTransactionDto.transactionTypeId = voidPermitDto.transactionTypeId;
-      createTransactionDto.paymentMethodTypeCode =
-        voidPermitDto.paymentMethodTypeCode;
-      createTransactionDto.paymentCardTypeCode = voidPermitDto.pgCardType;
-      createTransactionDto.pgCardType = voidPermitDto.pgCardType;
-      createTransactionDto.pgTransactionId = voidPermitDto.pgTransactionId;
-      createTransactionDto.pgPaymentMethod = voidPermitDto.pgPaymentMethod;
-
-      // Refund for void should automatically set this flag to approved for payment gateway payment methods
-      // Otherwise, the flag is not applicable
-      if (voidPermitDto.paymentMethodTypeCode === PaymentMethodType.WEB) {
-        createTransactionDto.pgApproved = 1;
+      if (voidPermitDto.transactionTypeId === TransactionType.REFUND) {
+        await this.paymentService.createRefundTransactions({
+          currentUser,
+          applicationId: newPermit.permitId,
+          transactions: voidPermitDto.transactions,
+          nestedQueryRunner: queryRunner,
+        });
       }
 
-      createTransactionDto.applicationDetails = [
-        {
-          applicationId: newPermit.permitId,
-          transactionAmount: voidPermitDto.transactionAmount,
-        },
-      ];
-      await this.paymentService.createTransactions(
-        currentUser,
-        createTransactionDto,
-        queryRunner,
-      );
+      if (voidPermitDto.transactionTypeId === TransactionType.PURCHASE) {
+        const transaction = voidPermitDto?.transactions?.at(0);
+        const createTransactionDto = new CreateTransactionDto();
+        createTransactionDto.transactionTypeId =
+          voidPermitDto.transactionTypeId;
+        createTransactionDto.paymentMethodTypeCode =
+          transaction.paymentMethodTypeCode;
+        createTransactionDto.paymentCardTypeCode =
+          transaction.paymentCardTypeCode;
+        createTransactionDto.pgCardType = transaction.paymentCardTypeCode;
+        createTransactionDto.pgTransactionId = transaction.pgTransactionId;
+        createTransactionDto.pgPaymentMethod = transaction.pgPaymentMethod;
 
+        // Refund for void should automatically set this flag to approved for payment gateway payment methods
+        // Otherwise, the flag is not applicable
+        if (transaction.paymentMethodTypeCode === PaymentMethodType.WEB) {
+          createTransactionDto.pgApproved = 1;
+        }
+
+        createTransactionDto.applicationDetails = [
+          {
+            applicationId: newPermit.permitId,
+            transactionAmount: transaction.transactionAmount,
+          },
+        ];
+        await this.paymentService.createTransactions(
+          currentUser,
+          createTransactionDto,
+          queryRunner,
+        );
+      }
       await queryRunner.commitTransaction();
       success = permitId;
       voidRevokedPermitId = newPermit.permitId;

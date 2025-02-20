@@ -37,6 +37,7 @@ import {
   CLIENT_USER_ROLE_LIST,
   IDIRUserRole,
 } from '../../../common/enum/user-role.enum';
+import { CreateRefundTransactionDto } from './dto/request/create-refund-transaction.dto';
 
 @ApiBearerAuth()
 @ApiTags('Payment')
@@ -86,6 +87,34 @@ export class PaymentController {
       currentUser,
       createTransactionDto,
     );
+
+    return paymentDetails;
+  }
+
+  @ApiCreatedResponse({
+    description: 'The Transaction Resource',
+    isArray: true,
+    type: ReadTransactionDto,
+  })
+  @Permissions({
+    allowedIdirRoles: [
+      IDIRUserRole.PPC_CLERK,
+      IDIRUserRole.SYSTEM_ADMINISTRATOR,
+      IDIRUserRole.CTPO,
+    ],
+  })
+  @Post('refund')
+  async createRefundTransactionDetails(
+    @Req() request: Request,
+    @Body() { applicationId, transactions }: CreateRefundTransactionDto,
+  ): Promise<ReadTransactionDto[]> {
+    const currentUser = request.user as IUserJWT;
+
+    const paymentDetails = await this.paymentService.createRefundTransactions({
+      currentUser,
+      applicationId,
+      transactions,
+    });
 
     return paymentDetails;
   }
