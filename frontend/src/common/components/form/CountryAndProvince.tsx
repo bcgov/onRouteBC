@@ -25,6 +25,8 @@ interface CountryAndProvinceProps {
   provinceClassName?: string;
   readOnly?: boolean;
   disabled?: boolean;
+  countryValidationRules?: Record<string, (country?: string) => boolean | string>;
+  provinceValidationRules?: Record<string, (province?: string) => boolean | string>;
 }
 
 /**
@@ -42,6 +44,8 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
   provinceClassName,
   disabled,
   readOnly,
+  countryValidationRules = {},
+  provinceValidationRules = {},
 }: CountryAndProvinceProps): JSX.Element => {
   const { resetField, watch, setValue } = useFormContext();
   const countrySelected = watch(countryField);
@@ -117,6 +121,7 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
         (!isCountryRequired && (country == null || country === "")) ||
         (country != null && country !== "" && /^[A-Z]{2}$/.test(country)) ||
         invalidCountryCode(),
+      ...countryValidationRules,
     },
     onChange: onChangeCountry,
   };
@@ -131,6 +136,7 @@ export const CountryAndProvince = <T extends ORBC_FormTypes>({
         (!isProvinceRequired && (province == null || province === "")) ||
         (province != null && province !== "" && /^[A-Z]{2}$/.test(province)) ||
         invalidProvinceCode(),
+      ...provinceValidationRules,
     },
   };
 

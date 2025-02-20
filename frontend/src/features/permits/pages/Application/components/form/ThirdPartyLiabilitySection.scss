@@ -1,0 +1,38 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".third-party-liability-section");
+@include orbcStyles.permit-left-box-style(".third-party-liability-section__header");
+@include orbcStyles.permit-right-box-style(".third-party-liability-section__body");
+
+.third-party-liability-section {
+  & &__radio-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .third-party-liability {
+      &--dangerous {
+        margin-left: 1.5rem;
+      }
+
+      &__label {
+        margin: 0;
+      }
+
+      &__radio {
+        padding: 0;
+        margin-right: 0.5rem;
+
+        &:hover {
+          background-color: orbcStyles.$bc-border-grey;
+        }
+
+        &--checked {
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
+}

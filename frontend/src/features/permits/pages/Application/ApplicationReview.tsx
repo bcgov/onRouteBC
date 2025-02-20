@@ -18,7 +18,12 @@ import { CartContext } from "../../context/CartContext";
 import { usePowerUnitSubTypesQuery } from "../../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../../manageVehicles/hooks/trailers";
 import { useFetchSpecialAuthorizations } from "../../../settings/hooks/specialAuthorizations";
-import { calculatePermitFee } from "../../helpers/feeSummary";
+import { UnavailableApplicationModal } from "../../../queue/components/UnavailableApplicationModal";
+import { useCalculatePermitFee } from "../../hooks/useCalculatePermitFee";
+import { serializePermitData } from "../../helpers/serialize/serializePermitData";
+import { CASE_ACTIVITY_TYPES } from "../../../queue/types/CaseActivityType";
+import { QueueBreadcrumb } from "../../../queue/components/QueueBreadcrumb";
+import { RejectApplicationModal } from "../../../queue/components/RejectApplicationModal";
 import { DEFAULT_PERMIT_TYPE, PERMIT_TYPES } from "../../types/PermitType";
 import { PERMIT_REVIEW_CONTEXTS } from "../../types/PermitReviewContext";
 import { usePolicyEngine } from "../../../policy/hooks/usePolicyEngine";
@@ -34,15 +39,12 @@ import {
   ERROR_ROUTES,
   IDIR_ROUTES,
 } from "../../../../routes/constants";
-import { CASE_ACTIVITY_TYPES } from "../../../queue/types/CaseActivityType";
-import { QueueBreadcrumb } from "../../../queue/components/QueueBreadcrumb";
-import { RejectApplicationModal } from "../../../queue/components/RejectApplicationModal";
+
 import {
   useApplicationInQueueMetadata,
   useSubmitApplicationForReview,
   useUpdateApplicationInQueueStatus,
 } from "../../../queue/hooks/hooks";
-import { UnavailableApplicationModal } from "../../../queue/components/UnavailableApplicationModal";
 
 export const ApplicationReview = ({
   applicationStepContext,
@@ -61,7 +63,6 @@ export const ApplicationReview = ({
   const isStaffUser = Boolean(idirUserDetails?.userRole);
 
   const { data: specialAuth } = useFetchSpecialAuthorizations(companyId);
-  const isNoFeePermitType = Boolean(specialAuth?.noFeeType);
 
   const { data: companyInfo } = useCompanyInfoDetailsQuery(companyId);
   const doingBusinessAs = companyInfo?.alternateName;
@@ -70,13 +71,14 @@ export const ApplicationReview = ({
     DEFAULT_PERMIT_TYPE,
     applicationData?.permitType,
   );
-  const fee = isNoFeePermitType
-    ? "0"
-    : `${calculatePermitFee(
-        permitType,
-        getDefaultRequiredVal(0, applicationData?.permitData?.permitDuration),
-        applicationData?.permitData?.permittedRoute?.manualRoute?.totalDistance,
-      )}`;
+
+  const policyEngine = usePolicyEngine(specialAuth);
+  const fee = useCalculatePermitFee({
+    permitType,
+    permitData: applicationData?.permitData
+      ? serializePermitData(applicationData.permitData)
+      : {},
+  }, policyEngine);
 
   const { setSnackBar } = useContext(SnackBarContext);
   const { refetchCartCount } = useContext(CartContext);
@@ -86,7 +88,6 @@ export const ApplicationReview = ({
 
   const navigate = useNavigate();
 
-  const policyEngine = usePolicyEngine(specialAuth);
   const { commodityOptions } = useCommodityOptions(policyEngine, permitType);
   const powerUnitSubTypesQuery = usePowerUnitSubTypesQuery();
   const trailerSubTypesQuery = useTrailerSubTypesQuery();
@@ -371,10 +372,11 @@ export const ApplicationReview = ({
           route={applicationData?.permitData?.permittedRoute}
           applicationNotes={applicationData?.permitData?.applicationNotes}
           doingBusinessAs={doingBusinessAs}
-          calculatedFee={fee}
+          calculatedFee={`${fee}`}
           loas={applicationData?.permitData?.loas}
           applicationRejectionHistory={applicationData?.rejectionHistory}
           isStaffUser={isStaffUser}
+          thirdPartyLiability={applicationData?.permitData?.thirdPartyLiability}
         />
       </FormProvider>
 

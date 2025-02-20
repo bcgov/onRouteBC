@@ -1,15 +1,14 @@
+import { Policy } from "onroute-policy-engine";
+
+import { PermitData } from "../types/PermitData";
 import { PermitHistory } from "../types/PermitHistory";
 import { TRANSACTION_TYPES, TransactionType } from "../types/payment";
 import { Permit } from "../types/permit";
 import { isValidTransaction } from "./payment";
 import { Nullable } from "../../../common/types/common";
 import { PERMIT_STATES, getPermitState } from "./permitState";
-import { PERMIT_TYPES, PermitType } from "../types/PermitType";
-import {
-  getDurationIntervalDays,
-  maxDurationForPermitType,
-} from "./dateSelection";
-
+import { PermitType } from "../types/PermitType";
+import { ReplaceDayjsWithString } from "../types/utility";
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
@@ -17,76 +16,37 @@ import {
 
 /**
  * Calculates the fee for a permit.
- * @param permitType Type of permit
- * @param duration Number of days for duration of permit
- * @param totalDistance Total distance to travel for the route trip of the permit, if applicable
+ * @param permit Object containing permit information (must have permitType and parts of permitData)
+ * @param policyEngine Instance of policy engine, if it exists
  * @returns Fee to be paid for the permit
  */
-export const calculatePermitFee = (
-  permitType: PermitType,
-  duration: number,
-  totalDistance?: Nullable<number>,
+export const calculatePermitFee = async (
+  permit: {
+    permitType: PermitType;
+    permitData: Partial<ReplaceDayjsWithString<PermitData>>;
+  },
+  policyEngine?: Nullable<Policy>,
 ) => {
-  const maxAllowableDuration = maxDurationForPermitType(permitType);
-
-  // Make sure that duration is between 0 and max allowable duration (for given permit type)
-  const safeDuration =
-    duration < 0
-      ? 0
-      : duration > maxAllowableDuration
-        ? maxAllowableDuration
-        : duration;
-
-  const intervalDays = getDurationIntervalDays(permitType);
-
-  const intervalPeriodsToPay =
-    safeDuration > 360
-      ? Math.ceil(360 / intervalDays)
-      : Math.ceil(safeDuration / intervalDays);
-
-  switch (permitType) {
-    // Add more conditions for other permit types if needed
-    case PERMIT_TYPES.MFP:
-      // MFP only calculate fee based on totalDistance
-      // minimum $20 no matter what, $0.11 per km
-      return Math.max(20, 0.11 * getDefaultRequiredVal(0, totalDistance));
-    case PERMIT_TYPES.STOS:
-      // STOS have constant fee of $15 (regardless of duration)
-      return 15;
-    case PERMIT_TYPES.TROW:
-      // Only for TROW, $100 per interval (30 days)
-      return intervalPeriodsToPay * 100;
-    case PERMIT_TYPES.TROS:
-    default:
-      // For TROS, $30 per interval (30 days)
-      return intervalPeriodsToPay * 30;
-  }
+  const validationResults = await policyEngine?.validate(permit);
+  const fee = getDefaultRequiredVal([], validationResults?.cost)
+    .map(({ cost }) => getDefaultRequiredVal(0, cost))
+    .reduce((cost1, cost2) => cost1 + cost2, 0);
+  
+  return fee;
 };
 
 /**
  * Gets full display text for fee summary.
  * @param feeSummary fee summary field for a permit (if exists)
- * @param duration duration field for a permit (if exists)
- * @param permitType type of permit (if exists)
- * @param totalDistance total distance to travel for the route trip of a permit (if applicable)
  * @returns display text for the fee summary (currency amount to 2 decimal places)
  */
-export const feeSummaryDisplayText = (
-  feeSummary?: Nullable<string>,
-  duration?: Nullable<number>,
-  permitType?: Nullable<PermitType>,
-  totalDistance?: Nullable<number>,
-) => {
+export const feeSummaryDisplayText = (feeSummary?: Nullable<string>) => {
   const feeFromSummary = applyWhenNotNullable(
     (numericStr) => Number(numericStr).toFixed(2),
     feeSummary,
   );
-  const feeFromDuration =
-    duration && permitType
-      ? calculatePermitFee(permitType, duration, totalDistance).toFixed(2)
-      : null;
-
-  const fee = getDefaultRequiredVal("0.00", feeFromSummary, feeFromDuration);
+    
+  const fee = getDefaultRequiredVal("0.00", feeFromSummary);
   const numericFee = Number(fee);
   return numericFee >= 0 ? `$${fee}` : `-$${(numericFee * -1).toFixed(2)}`;
 };
@@ -124,24 +84,24 @@ export const calculateNetAmount = (permitHistory: PermitHistory[]) => {
 /**
  * Calculates the amount that needs to be refunded (or paid if amount is negative) for a permit.
  * @param permitHistory List of history objects that make up the history of a permit and its transactions
- * @param currDuration Current (updated) duration of the permit
- * @param currPermitType Permit type of current permit to refund for
- * @param updatedTotalDistance Updated total distance of the route trip for the permit (if applicable)
+ * @param permit Object containing permit information (must have permitType and parts of permitData)
+ * @param policyEngine Instance of policy engine, if it exists
  * @returns Amount that needs to be refunded, or if negative then the amount that still needs to be paid
  */
-export const calculateAmountToRefund = (
+export const calculateAmountToRefund = async (
   permitHistory: PermitHistory[],
-  currDuration: number,
-  currPermitType: PermitType,
-  updatedTotalDistance?: Nullable<number>,
+  permit: {
+    permitType: PermitType;
+    permitData: Partial<ReplaceDayjsWithString<PermitData>>;
+  },
+  policyEngine?: Nullable<Policy>,
 ) => {
   const netPaid = calculateNetAmount(permitHistory);
   if (isZeroAmount(netPaid)) return 0; // If total paid is $0 (eg. no-fee permits), then refund nothing
 
-  const updatedFee = calculatePermitFee(
-    currPermitType,
-    currDuration,
-    updatedTotalDistance,
+  const updatedFee = await calculatePermitFee(
+    permit,
+    policyEngine,
   );
 
   return netPaid - updatedFee;

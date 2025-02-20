@@ -10,6 +10,7 @@ import { ApplicationFormData } from "../../types/application";
 import { getDefaultVehicleConfiguration } from "../../helpers/vehicles/configuration/getDefaultVehicleConfiguration";
 import { PermitType } from "../../types/PermitType";
 import { RequiredOrNull } from "../../../../common/types/common";
+import { ThirdPartyLiability } from "../../types/ThirdPartyLiability";
 
 /**
  * Hook that returns custom methods that update specific values in the application form.
@@ -103,6 +104,16 @@ export const useApplicationFormUpdateMethods = () => {
     [setValue],
   );
 
+  const onUpdateThirdPartyLiability = useCallback(
+    (updatedThirdPartyLiability: ThirdPartyLiability) => {
+      setValue(
+        "permitData.thirdPartyLiability",
+        updatedThirdPartyLiability,
+      );
+    },
+    [setValue],
+  );
+
   return {
     onSetDuration,
     onSetExpiryDate,
@@ -117,5 +128,6 @@ export const useApplicationFormUpdateMethods = () => {
     onSetCommodityType,
     onUpdateVehicleConfig,
     onClearVehicleConfig,
+    onUpdateThirdPartyLiability,
   };
 };

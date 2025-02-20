@@ -32,5 +32,9 @@ export const serializePermitVehicleConfiguration = (
       vehicleConfiguration.overallLength,
       null,
     ),
+    loadedGVW: convertToNumberIfValid(
+      vehicleConfiguration.loadedGVW,
+      null,
+    ),
   } : null;
 };

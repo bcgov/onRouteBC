@@ -13,7 +13,6 @@ import {
 import { useCompanyInfoDetailsQuery } from "../../manageProfile/apiManager/hooks";
 import { usePowerUnitSubTypesQuery } from "../../manageVehicles/hooks/powerUnits";
 import { useTrailerSubTypesQuery } from "../../manageVehicles/hooks/trailers";
-import { calculatePermitFee } from "../../permits/helpers/feeSummary";
 import { PermitReview } from "../../permits/pages/Application/components/review/PermitReview";
 import { Application } from "../../permits/types/application";
 import { PERMIT_REVIEW_CONTEXTS } from "../../permits/types/PermitReviewContext";
@@ -25,6 +24,8 @@ import { RejectApplicationModal } from "./RejectApplicationModal";
 import { useUpdateApplicationInQueueStatus } from "../hooks/hooks";
 import { usePolicyEngine } from "../../policy/hooks/usePolicyEngine";
 import { useCommodityOptions } from "../../permits/hooks/useCommodityOptions";
+import { useCalculatePermitFee } from "../../permits/hooks/useCalculatePermitFee";
+import { serializePermitData } from "../../permits/helpers/serialize/serializePermitData";
 
 export const ApplicationInQueueReview = ({
   applicationData,
@@ -35,7 +36,6 @@ export const ApplicationInQueueReview = ({
   const applicationId = getDefaultRequiredVal("", applicationData?.permitId);
 
   const { data: specialAuth } = useFetchSpecialAuthorizations(companyId);
-  const isNoFeePermitType = Boolean(specialAuth?.noFeeType);
 
   const { data: companyInfo } = useCompanyInfoDetailsQuery(companyId);
   const doingBusinessAs = companyInfo?.alternateName;
@@ -44,20 +44,17 @@ export const ApplicationInQueueReview = ({
     DEFAULT_PERMIT_TYPE,
     applicationData?.permitType,
   );
-  const fee = isNoFeePermitType
-    ? "0"
-    : `${calculatePermitFee(
-        permitType,
-        getDefaultRequiredVal(
-          0,
-          applicationData?.permitData?.permitDuration,
-          applicationData?.permitData?.permittedRoute?.manualRoute?.totalDistance,
-        ),
-      )}`;
+  
+  const policyEngine = usePolicyEngine(specialAuth);
+  const fee = useCalculatePermitFee({
+    permitType,
+    permitData: applicationData?.permitData
+      ? serializePermitData(applicationData.permitData)
+      : {},
+  }, policyEngine);
 
   const navigate = useNavigate();
 
-  const policyEngine = usePolicyEngine(specialAuth);
   const { commodityOptions } = useCommodityOptions(policyEngine, permitType);
   const powerUnitSubTypesQuery = usePowerUnitSubTypesQuery();
   const trailerSubTypesQuery = useTrailerSubTypesQuery();
@@ -165,9 +162,10 @@ export const ApplicationInQueueReview = ({
           route={applicationData?.permitData?.permittedRoute}
           applicationNotes={applicationData?.permitData?.applicationNotes}
           doingBusinessAs={doingBusinessAs}
-          calculatedFee={fee}
+          calculatedFee={`${fee}`}
           applicationRejectionHistory={applicationData?.rejectionHistory}
           isStaffUser={true}
+          thirdPartyLiability={applicationData?.permitData?.thirdPartyLiability}
         />
       </FormProvider>
 

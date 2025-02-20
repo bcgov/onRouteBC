@@ -14,6 +14,7 @@ import { CommodityDetailsSection } from "./CommodityDetailsSection/CommodityDeta
 import { ApplicationNotesSection } from "./ApplicationNotesSection";
 import { TripDetailsSection } from "./TripDetailsSection/TripDetailsSection";
 import { LoadedDimensionsSection } from "./LoadedDimensionsSection/LoadedDimensionsSection";
+import { ThirdPartyLiabilitySection } from "./ThirdPartyLiabilitySection";
 
 export const PermitForm = () => {
   const {
@@ -46,6 +47,7 @@ export const PermitForm = () => {
     selectedVehicleConfigSubtypes,
     commodityType,
     vehicleConfiguration,
+    thirdPartyLiability,
     onLeave,
     onSave,
     onCancel,
@@ -60,6 +62,7 @@ export const PermitForm = () => {
     onUpdateVehicleConfigTrailers,
     onChangeCommodityType,
     onUpdateVehicleConfig,
+    onUpdateThirdPartyLiability,
   } = useApplicationFormContext();
 
   return (
@@ -88,6 +91,7 @@ export const PermitForm = () => {
 
         <PermitDetails
           feature={feature}
+          permitType={permitType}
           expiryDate={expiryDate}
           allConditions={allConditions}
           durationOptions={availableDurationOptions}
@@ -135,6 +139,12 @@ export const PermitForm = () => {
           totalDistance={totalDistance}
           onUpdateHighwaySequence={onUpdateHighwaySequence}
           onUpdateTotalDistance={onUpdateTotalDistance}
+        />
+
+        <ThirdPartyLiabilitySection
+          permitType={permitType}
+          thirdPartyLiability={thirdPartyLiability}
+          onChange={onUpdateThirdPartyLiability}
         />
 
         <ApplicationNotesSection feature={feature} permitType={permitType} />

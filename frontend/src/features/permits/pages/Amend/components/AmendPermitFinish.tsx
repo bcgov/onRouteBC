@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import "./AmendPermitFinish.scss";
 import { AmendPermitContext } from "../context/AmendPermitContext";
-import { calculateAmountToRefund } from "../../../helpers/feeSummary";
 import { PERMIT_REFUND_ACTIONS, RefundPage } from "../../Refund/RefundPage";
 import { RefundFormData } from "../../Refund/types/RefundFormData";
 import { Breadcrumb } from "../../../../../common/components/breadcrumb/Breadcrumb";
@@ -14,6 +13,10 @@ import { hasPermitsActionFailed } from "../../../helpers/permitState";
 import { ERROR_ROUTES } from "../../../../../routes/constants";
 import { applyWhenNotNullable, getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { DEFAULT_PERMIT_TYPE } from "../../../types/PermitType";
+import { useFetchSpecialAuthorizations } from "../../../../settings/hooks/specialAuthorizations";
+import { usePolicyEngine } from "../../../../policy/hooks/usePolicyEngine";
+import { useCalculateRefundAmount } from "../../../hooks/useCalculateRefundAmount";
+import { serializePermitData } from "../../../helpers/serialize/serializePermitData";
 
 export const AmendPermitFinish = () => {
   const navigate = useNavigate();
@@ -33,22 +36,26 @@ export const AmendPermitFinish = () => {
   );
 
   const permitId = getDefaultRequiredVal("", amendmentApplication?.permitId);
+  const permitType = getDefaultRequiredVal(
+    DEFAULT_PERMIT_TYPE,
+    amendmentApplication?.permitType,
+    permit?.permitType,
+  );
 
-  const amountToRefund =
-    -1 *
-    calculateAmountToRefund(
-      validTransactionHistory,
-      getDefaultRequiredVal(
-        0,
-        amendmentApplication?.permitData?.permitDuration,
-      ),
-      getDefaultRequiredVal(
-        DEFAULT_PERMIT_TYPE,
-        amendmentApplication?.permitType,
-        permit?.permitType,
-      ),
-      amendmentApplication?.permitData?.permittedRoute?.manualRoute?.totalDistance,
-    );
+  const { data: specialAuthorizations } = useFetchSpecialAuthorizations(companyId);
+  const policyEngine = usePolicyEngine(specialAuthorizations);
+  const calculatedRefundAmount = useCalculateRefundAmount(
+    validTransactionHistory,
+    {
+      permitType,
+      permitData: amendmentApplication?.permitData
+        ? serializePermitData(amendmentApplication.permitData)
+        : {},
+    },
+    policyEngine,
+  );
+
+  const amountToRefund = -1 * calculatedRefundAmount;
 
   const { mutation: startTransactionMutation, transaction } =
     useStartTransaction();

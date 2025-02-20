@@ -58,6 +58,7 @@ export const useApplicationFormContext = () => {
     onSetCommodityType,
     onUpdateVehicleConfig,
     onClearVehicleConfig,
+    onUpdateThirdPartyLiability,
   } = useApplicationFormUpdateMethods();
 
   const {
@@ -76,6 +77,7 @@ export const useApplicationFormContext = () => {
     permittedRoute,
     permittedCommodity,
     vehicleConfiguration,
+    thirdPartyLiability,
   } = formData.permitData;
 
   const createdAt = useMemoizedObject(
@@ -238,6 +240,7 @@ export const useApplicationFormContext = () => {
     trailerSubtypeNamesMap,
     selectedVehicleConfigSubtypes,
     vehicleConfiguration,
+    thirdPartyLiability,
     onLeave,
     onSave,
     onCancel,
@@ -255,5 +258,6 @@ export const useApplicationFormContext = () => {
     commodityType: permittedCommodity?.commodityType,
     onChangeCommodityType,
     onUpdateVehicleConfig,
+    onUpdateThirdPartyLiability,
   };
 };

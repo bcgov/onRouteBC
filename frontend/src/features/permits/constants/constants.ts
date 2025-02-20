@@ -54,14 +54,20 @@ export const ALL_PERMIT_TYPE_CHOOSE_FROM_OPTIONS: PermitTypeChooseFromItem[] = [
     // })),
   },
   /* TODO uncomment these when required */
-  // {
-  //   value: PERMIT_CATEGORIES.NON_RESIDENT,
-  //   label: getPermitCategoryName(PERMIT_CATEGORIES.NON_RESIDENT),
-  //   items: NON_RESIDENT_PERMIT_LIST.map((permitType: PermitType) => ({
-  //     value: permitType,
-  //     label: getPermitTypeShortName(permitType),
-  //   })),
-  // },
+  {
+    value: PERMIT_CATEGORIES.NON_RESIDENT,
+    label: getPermitCategoryName(PERMIT_CATEGORIES.NON_RESIDENT),
+    items: [
+      {
+        value: PERMIT_TYPES.STFR,
+        label: getPermitTypeShortName(PERMIT_TYPES.STFR),
+      },
+    ],
+    // items: NON_RESIDENT_PERMIT_LIST.map((permitType: PermitType) => ({
+    //   value: permitType,
+    //   label: getPermitTypeShortName(permitType),
+    // })),
+  },
   {
     value: PERMIT_TYPES.MFP,
     label: getPermitTypeShortName(PERMIT_TYPES.MFP),

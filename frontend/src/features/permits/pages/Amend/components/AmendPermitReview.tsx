@@ -8,7 +8,6 @@ import { PermitReview } from "../../Application/components/review/PermitReview";
 import { Breadcrumb } from "../../../../../common/components/breadcrumb/Breadcrumb";
 import { getDefaultFormDataFromPermit } from "../types/AmendPermitFormData";
 import { ReviewReason } from "./review/ReviewReason";
-import { calculateAmountToRefund } from "../../../helpers/feeSummary";
 import { isValidTransaction } from "../../../helpers/payment";
 import { getDatetimes } from "./helpers/getDatetimes";
 import { useModifyAmendmentApplication } from "../../../hooks/hooks";
@@ -19,11 +18,13 @@ import { useTrailerSubTypesQuery } from "../../../../manageVehicles/hooks/traile
 import { PERMIT_REVIEW_CONTEXTS } from "../../../types/PermitReviewContext";
 import { usePolicyEngine } from "../../../../policy/hooks/usePolicyEngine";
 import { useCommodityOptions } from "../../../hooks/useCommodityOptions";
+import { useFetchSpecialAuthorizations } from "../../../../settings/hooks/specialAuthorizations";
+import { useCalculateRefundAmount } from "../../../hooks/useCalculateRefundAmount";
+import { serializePermitData } from "../../../helpers/serialize/serializePermitData";
 import {
   applyWhenNotNullable,
   getDefaultRequiredVal,
 } from "../../../../../common/helpers/util";
-import { useFetchSpecialAuthorizations } from "../../../../settings/hooks/specialAuthorizations";
 
 export const AmendPermitReview = () => {
   const navigate = useNavigate();
@@ -109,17 +110,16 @@ export const AmendPermitReview = () => {
 
   const oldFields = getDefaultFormDataFromPermit(companyInfo, permit);
 
-  const amountToRefund =
-    -1 *
-    calculateAmountToRefund(
-      validTransactionHistory,
-      getDefaultRequiredVal(
-        0,
-        amendmentApplication?.permitData?.permitDuration,
-      ),
+  const amountToRefund = useCalculateRefundAmount(
+    validTransactionHistory,
+    {
       permitType,
-      amendmentApplication?.permitData?.permittedRoute?.manualRoute?.totalDistance,
-    );
+      permitData: amendmentApplication?.permitData
+        ? serializePermitData(amendmentApplication.permitData)
+        : {},
+    },
+    policyEngine,
+  );
 
   return (
     <div className="amend-permit-review">
@@ -172,10 +172,11 @@ export const AmendPermitReview = () => {
             ),
           },
         }}
-        calculatedFee={`${amountToRefund}`}
+        calculatedFee={`${-1 * amountToRefund}`}
         doingBusinessAs={doingBusinessAs}
         loas={amendmentApplication?.permitData?.loas}
         isStaffUser={true}
+        thirdPartyLiability={amendmentApplication?.permitData?.thirdPartyLiability}
       >
         {amendmentApplication?.comment ? (
           <ReviewReason reason={amendmentApplication.comment} />

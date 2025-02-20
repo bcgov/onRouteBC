@@ -184,6 +184,9 @@ export const areVehicleConfigurationsEqual = (
   ) && (
     getDefaultRequiredVal(0, vehicleConfig1?.rearProjection)
       === getDefaultRequiredVal(0, vehicleConfig2?.rearProjection)
+  ) && (
+    getDefaultRequiredVal(0, vehicleConfig1?.loadedGVW)
+      === getDefaultRequiredVal(0, vehicleConfig2?.loadedGVW)
   ) && areOrderedSequencesEqual(
     vehicleConfig1?.trailers,
     vehicleConfig2?.trailers,
@@ -263,6 +266,10 @@ export const areApplicationPermitDataEqual = (
     arePermittedRoutesEqual(data1.permittedRoute, data2.permittedRoute) &&
     (getDefaultRequiredVal("", data1.applicationNotes)
       === getDefaultRequiredVal("", data2.applicationNotes)) &&
+    (getDefaultRequiredVal("", data1.thirdPartyLiability)
+      === getDefaultRequiredVal("", data2.thirdPartyLiability)) &&
+    (getDefaultRequiredVal("", data1.conditionalLicensingFee)
+      === getDefaultRequiredVal("", data2.conditionalLicensingFee)) &&
     ((!data1.companyName && !data2.companyName) ||
       data1.companyName === data2.companyName) &&
     ((!data1.doingBusinessAs && !data2.doingBusinessAs) ||

@@ -96,6 +96,7 @@ export const renderTestComponent = (
     <TestFormWrapper>
       <PermitDetails
         feature={feature}
+        permitType={permitType}
         expiryDate={expiryDate}
         allConditions={allConditions}
         durationOptions={allDurations.map((duration) => ({

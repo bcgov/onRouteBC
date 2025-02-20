@@ -50,6 +50,7 @@ import {
   invalidVINLength,
   invalidYearMin,
   licensedGVWExceeded,
+  provinceVehicleDoesNotRequirePermit,
   requiredMessage,
 } from "../../../../../../../common/helpers/validationMessages";
 
@@ -75,8 +76,24 @@ export const VehicleDetails = ({
   onClearVehicle: (saveVehicle: boolean) => void;
 }) => {
   const hideVehicleType = permitType === PERMIT_TYPES.STOS;
-  const disableVehicleType = permitType === PERMIT_TYPES.MFP;
-  const showGVW = permitType === PERMIT_TYPES.STOS || permitType === PERMIT_TYPES.MFP;
+  const disableVehicleType = ([
+    PERMIT_TYPES.MFP,
+    PERMIT_TYPES.STFR,
+    PERMIT_TYPES.QRFR,
+  ] as PermitType[]).includes(permitType);
+
+  const showGVW = ([
+    PERMIT_TYPES.STOS,
+    PERMIT_TYPES.MFP,
+    PERMIT_TYPES.STFR,
+    PERMIT_TYPES.QRFR,
+  ] as PermitType[]).includes(permitType);
+
+  const shouldValidateProvince = ([
+    PERMIT_TYPES.STFR,
+    PERMIT_TYPES.QRFR,
+  ] as PermitType[]).includes(permitType);
+
   const vehicleType = vehicleFormData.vehicleType;
 
   // Choose vehicle based on either Unit Number or Plate
@@ -295,6 +312,13 @@ export const VehicleDetails = ({
           isProvinceRequired={true}
           readOnly={isSelectedLOAVehicle}
           disabled={isSelectedLOAVehicle}
+          provinceValidationRules={{
+            shouldNotBeInBC: (province?: string) =>
+              !shouldValidateProvince
+              || !province
+              || province !== "BC"
+              || provinceVehicleDoesNotRequirePermit("BC"),
+          }}
         />
 
         {!hideVehicleType ? (

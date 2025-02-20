@@ -153,6 +153,13 @@ export const requiredHighway = () => validationMessages.highway.missing;
 
 export const requiredPowerUnit = () => validationMessages.powerUnit.required;
 
+export const provinceVehicleDoesNotRequirePermit = (province: string) => {
+  const { messageTemplate, placeholders }
+    = validationMessages.province.provinceVehicleDoesNotRequirePermit;
+  
+  return replacePlaceholders(messageTemplate, placeholders, province);
+};
+
 /**
  * Checks if a given string is
  * null, empty or conforms to length requirements if it has a value.

@@ -12,6 +12,7 @@ import { CustomExternalLink } from "../../../../../../common/components/links/Cu
 import { BANNER_MESSAGES } from "../../../../../../common/constants/bannerMessages";
 import { PermitCondition } from "../../../../types/PermitCondition";
 import { DATE_FORMATS } from "../../../../../../common/helpers/formatDate";
+import { PERMIT_TYPES, PermitType } from "../../../../types/PermitType";
 import {
   CustomDatePicker,
   PastStartDateStatus,
@@ -24,6 +25,7 @@ import {
 
 export const PermitDetails = ({
   feature,
+  permitType,
   expiryDate,
   allConditions,
   durationOptions,
@@ -32,6 +34,7 @@ export const PermitDetails = ({
   onSetConditions,
 }: {
   feature: string;
+  permitType: PermitType;
   expiryDate: Dayjs;
   allConditions: PermitCondition[];
   durationOptions: {
@@ -44,6 +47,8 @@ export const PermitDetails = ({
 }) => {
   const formattedExpiryDate = dayjs(expiryDate).format(DATE_FORMATS.SHORT);
 
+  const showSTFRInfoBanner = permitType === PERMIT_TYPES.STFR;
+
   return (
     <Box className="permit-details">
       <Box className="permit-details__header">
@@ -51,6 +56,13 @@ export const PermitDetails = ({
       </Box>
 
       <Box className="permit-details__body">
+        {showSTFRInfoBanner ? (
+          <InfoBcGovBanner
+            className="permit-details__info-banner--top"
+            msg={BANNER_MESSAGES.PERMIT_SINGLE_ROUND_TRIP}
+          />
+        ) : null}
+
         <Box className="permit-details__date-selection">
           <CustomDatePicker
             className="permit-details__input permit-details__input--start-date"

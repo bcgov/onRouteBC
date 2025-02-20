@@ -8,7 +8,12 @@ import {
 } from "../../../../../common/types/common";
 
 export const gvwLimit = (permitType: PermitType) => {
-  if (permitType === PERMIT_TYPES.STOS || permitType === PERMIT_TYPES.MFP) {
+  if (([
+    PERMIT_TYPES.STOS,
+    PERMIT_TYPES.MFP,
+    PERMIT_TYPES.STFR,
+    PERMIT_TYPES.QRFR,
+  ] as PermitType[]).includes(permitType)) {
     return 63500;
   }
   

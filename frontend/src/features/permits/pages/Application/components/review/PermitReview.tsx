@@ -31,6 +31,8 @@ import { PermittedRoute } from "../../../../types/PermittedRoute";
 import { LoadedDimensions } from "./LoadedDimensions";
 import { ApplicationNotes } from "./ApplicationNotes";
 import { TripDetails } from "./TripDetails";
+import { ThirdPartyLiability } from "../../../../types/ThirdPartyLiability";
+import { ThirdPartyLiabilitySection } from "./ThirdPartyLiabilitySection";
 import {
   PERMIT_REVIEW_CONTEXTS,
   PermitReviewContext,
@@ -80,6 +82,7 @@ interface PermitReviewProps {
   loas?: Nullable<PermitLOA[]>;
   applicationRejectionHistory?: Nullable<ApplicationRejectionHistory[]>;
   isStaffUser: boolean;
+  thirdPartyLiability?: Nullable<ThirdPartyLiability>;
 }
 
 export const PermitReview = (props: PermitReviewProps) => {
@@ -175,6 +178,12 @@ export const PermitReview = (props: PermitReviewProps) => {
         <TripDetails
           routeDetails={props.route}
           oldRouteDetails={props.oldFields?.permitData?.permittedRoute}
+          showChangedFields={props.showChangedFields}
+        />
+
+        <ThirdPartyLiabilitySection
+          thirdPartyLiability={props.thirdPartyLiability}
+          oldThirdPartyLiability={props.oldFields?.permitData?.thirdPartyLiability}
           showChangedFields={props.showChangedFields}
         />
 

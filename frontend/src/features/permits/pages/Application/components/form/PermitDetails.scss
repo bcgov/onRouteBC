@@ -5,6 +5,13 @@
 @include orbcStyles.permit-right-box-style(".permit-details__body");
 
 .permit-details {
+  & &__info-banner {
+    &--top {
+      margin-bottom: 1.5rem;
+      width: auto;
+    }
+  }
+
   & &__date-selection {
     display: flex;
     flex-direction: row;

@@ -11,4 +11,5 @@ export interface PermitVehicleConfiguration {
   frontProjection?: Nullable<number>;
   rearProjection?: Nullable<number>;
   trailers?: Nullable<VehicleInConfiguration[]>;
+  loadedGVW?: Nullable<number>;
 };

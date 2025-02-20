@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from "react";
 
 import { CartContext } from "../../../context/CartContext";
 import { useFetchCart, useRemoveFromCart } from "../../../hooks/cart";
-import { SelectableCartItem } from "../../../types/CartItem";
+import { CartItem, SelectableCartItem } from "../../../types/CartItem";
 import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { useFetchSpecialAuthorizations } from "../../../../settings/hooks/specialAuthorizations";
 import { calculatePermitFee } from "../../../helpers/feeSummary";
+import { usePolicyEngine } from "../../../../policy/hooks/usePolicyEngine";
 
 export const useShoppingCart = (
   companyId: number,
@@ -24,6 +25,7 @@ export const useShoppingCart = (
   // Check if no-fee permit type is designated
   const { data: specialAuth } = useFetchSpecialAuthorizations(companyId);
   const isNoFeePermitType = Boolean(specialAuth?.noFeeType);
+  const policyEngine = usePolicyEngine(specialAuth);
 
   // Cart item state
   const [cartItemSelection, setCartItemSelection] = useState<SelectableCartItem[]>([]);
@@ -41,22 +43,40 @@ export const useShoppingCart = (
   }, [showAllApplications]);
 
   useEffect(() => {
+    const updateCartItemSelection = async (itemsInCart: CartItem[]) => {
+      const cartSelectionWithFees = await Promise.all(
+        itemsInCart.map(async (cartItem) => {
+          const fee = await calculatePermitFee({
+            permitType: cartItem.permitType,
+            permitData: {
+              permitDuration: cartItem.duration,
+              permittedRoute: {
+                manualRoute: {
+                  totalDistance: cartItem.totalDistance,
+                  highwaySequence: [], // required, but not used for fee calculation
+                  origin: "", // required, but not used for fee calculation
+                  destination: "", // required, but not used for fee calculation
+                },
+              },
+              thirdPartyLiability: cartItem.thirdPartyLiability,
+            },
+          }, policyEngine);
+
+          return {
+            ...cartItem,
+            selected: true, // all selected by default
+            isSelectable: true, // add user permission check (ie. CA can't select staff cart items)
+            fee,
+          };
+        }),
+      );
+
+      setCartItemSelection(cartSelectionWithFees);
+    };
+
     const items = getDefaultRequiredVal([], cartItems);
-    setCartItemSelection(
-      items.map(cartItem => ({
-        ...cartItem,
-        selected: true, // all selected by default
-        isSelectable: true, // add user permission check (ie. CA can't select staff cart items)
-        fee: isNoFeePermitType
-          ? 0
-          : calculatePermitFee(
-            cartItem.permitType,
-            cartItem.duration,
-            cartItem.totalDistance,
-          ),
-      })),
-    );
-  }, [cartItems, isNoFeePermitType]);
+    updateCartItemSelection(items);
+  }, [cartItems, isNoFeePermitType, policyEngine]);
 
   const selectedItemsCount = cartItemSelection.filter(cartItem => cartItem.selected).length;
 

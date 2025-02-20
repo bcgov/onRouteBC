@@ -33,7 +33,11 @@
     "defaultMessage": "Invalid country code"
   },
   "province": {
-    "defaultMessage": "Invalid province code"
+    "defaultMessage": "Invalid province code",
+    "provinceVehicleDoesNotRequirePermit": {
+      "messageTemplate": ":province plated vehicles don't require this permit.",
+      "placeholders": [":province"]
+    }
   },
   "date": {
     "defaultMessage": "Your date is not valid",

@@ -1,0 +1,22 @@
+@use "../../../../../../themes/orbcStyles";
+
+@include orbcStyles.permit-main-box-style(".third-party-liability-section");
+@include orbcStyles.permit-left-box-style(".third-party-liability-section__header");
+@include orbcStyles.permit-right-box-style(".third-party-liability-section__body");
+
+.third-party-liability-section {
+  &__body {
+    display: flex;
+    align-items: flex-start;
+  }
+}
+
+@media (width < 370px) {
+  .third-party-liability-section {
+    &__body {
+      max-width: 100%;
+      min-width: 100%;
+      display: block;
+    }
+  }
+}

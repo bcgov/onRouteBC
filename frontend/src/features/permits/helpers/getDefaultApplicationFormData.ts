@@ -4,7 +4,6 @@ import { BCeIDUserDetailContext } from "../../../common/authentication/OnRouteBC
 import { getMandatoryConditions } from "./conditions";
 import { Nullable } from "../../../common/types/common";
 import { PERMIT_STATUSES } from "../types/PermitStatus";
-import { calculatePermitFee } from "./feeSummary";
 import { PERMIT_TYPES, PermitType } from "../types/PermitType";
 import { getExpiryDate } from "./permitState";
 import { PermitMailingAddress } from "../types/PermitMailingAddress";
@@ -14,6 +13,7 @@ import { minDurationForPermitType } from "./dateSelection";
 import { getDefaultVehicleDetails } from "./vehicles/getDefaultVehicleDetails";
 import { getDefaultPermittedRoute } from "./route/getDefaultPermittedRoute";
 import { getDefaultPermittedCommodity } from "./permittedCommodity";
+import { DEFAULT_THIRD_PARTY_LIABILITY } from "../types/ThirdPartyLiability";
 import {
   getDefaultVehicleConfiguration
 } from "./vehicles/configuration/getDefaultVehicleConfiguration";
@@ -233,11 +233,7 @@ export const getDefaultValues = (
       vehicleDetails: getDefaultVehicleDetails(
         applicationData?.permitData?.vehicleDetails,
       ),
-      feeSummary: `${calculatePermitFee(
-        defaultPermitType,
-        durationOrDefault,
-        defaultPermittedRoute?.manualRoute?.totalDistance,
-      )}`,
+      feeSummary: "", // not used, as actual fee is derived at the given locations when required
       loas: getDefaultRequiredVal([], applicationData?.permitData?.loas),
       permittedRoute: defaultPermittedRoute,
       applicationNotes: permitType !== PERMIT_TYPES.STOS
@@ -250,6 +246,21 @@ export const getDefaultValues = (
         permitType,
         applicationData?.permitData?.vehicleConfiguration,
       ),
+      thirdPartyLiability: ([
+        PERMIT_TYPES.STFR,
+        PERMIT_TYPES.QRFR,
+      ] as PermitType[]).includes(permitType)
+        ? getDefaultRequiredVal(
+          DEFAULT_THIRD_PARTY_LIABILITY,
+          applicationData?.permitData?.thirdPartyLiability
+        )
+        : null,
+      conditionalLicensingFee: ([
+        PERMIT_TYPES.NRSCV,
+        PERMIT_TYPES.QNRBS,
+      ] as PermitType[]).includes(permitType)
+        ? getDefaultRequiredVal("", applicationData?.permitData?.conditionalLicensingFee)
+        : null,
     },
   };
 };

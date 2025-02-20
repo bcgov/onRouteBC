@@ -6,22 +6,13 @@ import { getPermitTypeName, PermitType } from "../../types/PermitType";
 export const FeeSummary = ({
   permitType,
   feeSummary,
-  permitDuration,
   hideDescriptions,
-  permittedRouteTotalDistance,
 }: {
   permitType?: Nullable<PermitType>;
   feeSummary?: Nullable<string>;
-  permitDuration?: number;
   hideDescriptions?: boolean;
-  permittedRouteTotalDistance?: Nullable<number>;
 }) => {
-  const feeDisplayText = feeSummaryDisplayText(
-    feeSummary,
-    permitDuration,
-    permitType,
-    permittedRouteTotalDistance,
-  );
+  const feeDisplayText = feeSummaryDisplayText(feeSummary);
 
   return (
     <div className="fee-summary">

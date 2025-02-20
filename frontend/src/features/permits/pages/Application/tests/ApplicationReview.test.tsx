@@ -5,7 +5,6 @@ import { PermitVehicleDetails } from "../../../types/PermitVehicleDetails";
 import { vehicleTypeDisplayText } from "../../../helpers/mappers";
 import { VehicleType } from "../../../../manageVehicles/types/Vehicle";
 import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
-import { calculatePermitFee } from "../../../helpers/feeSummary";
 import { getPermitTypeName } from "../../../types/PermitType";
 import { getCountryFullName } from "../../../../../common/helpers/countries/getCountryFullName";
 import { getProvinceFullName } from "../../../../../common/helpers/countries/getProvinceFullName";
@@ -39,9 +38,6 @@ import {
   contactInfoName,
   contactInfoPhone1,
   contactInfoPhone2,
-  feeSummaryPermitType,
-  feeSummaryPrice,
-  feeSummaryTotal,
   permitConditionCodes,
   permitConditionDescriptions,
   permitConditionLinks,
@@ -400,26 +396,6 @@ describe("Review and Confirm Application Details", () => {
 
       // Assert
       expect(async () => await vehicleSavedMsg()).rejects.toThrow();
-    });
-
-    it("should display proper fee summary", async () => {
-      // Arrange and Act
-      renderTestComponent(defaultApplicationData);
-
-      // Assert
-      const feeSummary = `${calculatePermitFee(
-        defaultApplicationData.permitType,
-        defaultApplicationData.permitData.permitDuration,
-        defaultApplicationData.permitData.permittedRoute?.manualRoute?.totalDistance,
-      )}`;
-
-      const permitTypeStr = getPermitTypeName(
-        defaultApplicationData.permitType,
-      );
-
-      expect(await feeSummaryPermitType()).toHaveTextContent(permitTypeStr);
-      expect(await feeSummaryPrice()).toHaveTextContent(`$${feeSummary}.00`);
-      expect(await feeSummaryTotal()).toHaveTextContent(`$${feeSummary}.00`);
     });
   });
 

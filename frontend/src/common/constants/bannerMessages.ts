@@ -39,6 +39,8 @@ export const BANNER_MESSAGES = {
     EXAMPLE:
       "e.g. If the origin is Victoria, BC and the destination is Hope, BC, the sequence of highways travelled in order will be 17 1 3.",
   },
+  PERMIT_SINGLE_ROUND_TRIP: "This permit allows only one round trip into and out of the province during the permit duration.",
+  PERMIT_START_DATE_VALID_QUARTER: "The start date you choose determines the valid quarter for the permit. This permit allows multiple trips into and out of the province during the permit duration.",
   TOTAL_DISTANCE:
     "The total distance, in km, is the distance that will be travelled within BC (or from/to BC border). This is to include the return trip distance.",
   BRIDGE_FORMULA_CALCULATION_TOOL:
