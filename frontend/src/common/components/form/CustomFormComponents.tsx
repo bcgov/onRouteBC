@@ -14,12 +14,13 @@ import { CustomSelect } from "./subFormComponents/CustomSelect";
 import { PhoneNumberInput } from "./subFormComponents/PhoneNumberInput";
 import { CustomTextArea } from "./subFormComponents/CustomTextArea";
 import { PhoneExtInput } from "./subFormComponents/PhoneExtInput";
+import { WholeNumberInput } from "./subFormComponents/WholeNumberInput";
 
 /**
  * Properties of onRouteBC custom form components
  */
 export interface CustomFormComponentProps<T extends FieldValues> {
-  type: "input" | "select" | "phone" | "textarea" | "ext";
+  type: "input" | "select" | "phone" | "textarea" | "ext" | "number";
   feature: string;
   options: CustomFormOptionsProps<T>;
   menuOptions?: JSX.Element[];
@@ -41,6 +42,7 @@ interface CustomFormOptionsProps<T extends FieldValues> {
   width?: string;
   customHelperText?: string;
   inputType?: "number"; // currently only support number, add "date", "email" and other types later
+  showOptionalLabel?: boolean;
 }
 
 /**
@@ -90,6 +92,7 @@ export const CustomFormComponent = <T extends ORBC_FormTypes>({
     width = "528px",
     customHelperText,
     inputType, // currently only used for "input" types, add for "select" types later
+    showOptionalLabel,
   },
   menuOptions,
   className,
@@ -102,12 +105,6 @@ export const CustomFormComponent = <T extends ORBC_FormTypes>({
     control,
     formState: { errors },
   } = useFormContext();
-
-  const showOptionalLabel = () => {
-    if (rules.required === false) return true;
-    if ((rules.required as any)?.value === false) return true;
-    return false;
-  };
 
   const renderSubFormComponent = (invalid: boolean) => {
     switch (type) {
@@ -172,6 +169,20 @@ export const CustomFormComponent = <T extends ORBC_FormTypes>({
             readOnly={readOnly}
           />
         );
+
+      case "number":
+        return (
+          <WholeNumberInput
+            feature={feature}
+            name={name}
+            rules={rules}
+            inputProps={inputProps}
+            invalid={invalid}
+            inputType={inputType}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+        );
       default:
         return null;
     }
@@ -201,7 +212,7 @@ export const CustomFormComponent = <T extends ORBC_FormTypes>({
               }}
             >
               {label}
-              {showOptionalLabel() ? (
+              {showOptionalLabel ? (
                 <span style={{ fontWeight: "normal" }}> (optional)</span>
               ) : null}
               {customHelperText ? (

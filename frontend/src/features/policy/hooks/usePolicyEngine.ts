@@ -9,7 +9,7 @@ import { SpecialAuthorizationData } from "../../settings/types/SpecialAuthorizat
  * Hook that instantiates the policy engine instance.
  * The hook will return undefined when policy configuration is still loading,
  * and null when there's a problem getting the policy configuration.
- * @returns The instantiated policy engine, or undefined when loading, and null on error 
+ * @returns The instantiated policy engine, or undefined when loading, and null on error
  */
 export const usePolicyEngine = (specialAuthorizations?: SpecialAuthorizationData) => {
   const { data: policyConfiguration } = usePolicyConfigurationQuery();

@@ -1,28 +1,30 @@
-import { getDefaultRequiredVal } from "../../../../../common/helpers/util";
 import { isZeroAmount } from "../../../helpers/feeSummary";
 import { PERMIT_STATUSES } from "../../../types/PermitStatus";
 import { TRANSACTION_TYPES } from "../../../types/payment";
-import { RefundFormData } from "../../Refund/types/RefundFormData";
-import {
-  CONSOLIDATED_PAYMENT_METHODS,
-  PAYMENT_METHOD_TYPE_CODE,
-} from "../../../../../common/types/paymentMethods";
 
 import {
   RevokePermitRequestData,
   VoidPermitFormData,
   VoidPermitRequestData,
 } from "../types/VoidPermit";
+import { RefundFormData } from "../../Refund/types/RefundFormData";
+import { mapToRefundRequestData } from "../../Refund/helpers/mapper";
+import { PAYMENT_METHOD_TYPE_CODE } from "../../../../../common/types/paymentMethods";
 
-export const mapToRevokeRequestData = (
+export const mapToVoidRequestData = (
+  refundData: RefundFormData[],
   voidPermitFormData: VoidPermitFormData,
-): RevokePermitRequestData => {
-  const reqData: RevokePermitRequestData = {
-    status: PERMIT_STATUSES.REVOKED,
-    paymentMethodTypeCode: PAYMENT_METHOD_TYPE_CODE.NP,
-    transactionAmount: 0,
+  amountToRefund: number,
+): VoidPermitRequestData => {
+  const isRefundZeroAmount = isZeroAmount(-1 * amountToRefund);
+
+  const reqData: VoidPermitRequestData = {
+    status: PERMIT_STATUSES.VOIDED,
+    transactions: mapToRefundRequestData(refundData),
+    transactionTypeId: isRefundZeroAmount
+      ? TRANSACTION_TYPES.P
+      : TRANSACTION_TYPES.R,
     comment: voidPermitFormData.reason,
-    transactionTypeId: TRANSACTION_TYPES.P,
   };
 
   if (voidPermitFormData.additionalEmail) {
@@ -32,49 +34,19 @@ export const mapToRevokeRequestData = (
   return reqData;
 };
 
-export const mapToVoidRequestData = (
+export const mapToRevokeRequestData = (
   voidPermitFormData: VoidPermitFormData,
-  refundData: RefundFormData,
-  amountToRefund: number,
-): VoidPermitRequestData => {
-  const isRefundZeroAmount = isZeroAmount(amountToRefund);
-
-  const getRefundMethodType = () => {
-    if (isRefundZeroAmount) return PAYMENT_METHOD_TYPE_CODE.NP;
-
-    const refundMethodTypeCode = getDefaultRequiredVal(
-      PAYMENT_METHOD_TYPE_CODE.WEB,
-      CONSOLIDATED_PAYMENT_METHODS[refundData.refundMethod]
-        ?.paymentMethodTypeCode,
-    );
-
-    return refundData.shouldUsePrevPaymentMethod
-      ? refundMethodTypeCode
-      : PAYMENT_METHOD_TYPE_CODE.CHEQUE;
-  };
-
-  const getRefundCardType = () => {
-    if (isRefundZeroAmount || !refundData.shouldUsePrevPaymentMethod) {
-      return undefined;
-    }
-
-    return CONSOLIDATED_PAYMENT_METHODS[refundData.refundMethod]
-      ?.paymentCardTypeCode;
-  };
-
-  const reqData: VoidPermitRequestData = {
-    status: PERMIT_STATUSES.VOIDED,
-    pgTransactionId: refundData.transactionId,
-    paymentMethodTypeCode: getRefundMethodType(),
-    transactionAmount: amountToRefund,
-    pgPaymentMethod: refundData.refundOnlineMethod
-      ? refundData.refundOnlineMethod
-      : undefined,
-    pgCardType: getRefundCardType(),
+): RevokePermitRequestData => {
+  const reqData: RevokePermitRequestData = {
+    status: PERMIT_STATUSES.REVOKED,
+    transactions: [
+      {
+        transactionAmount: 0,
+        paymentMethodTypeCode: PAYMENT_METHOD_TYPE_CODE.NP,
+      },
+    ],
+    transactionTypeId: TRANSACTION_TYPES.P,
     comment: voidPermitFormData.reason,
-    transactionTypeId: isRefundZeroAmount
-      ? TRANSACTION_TYPES.P
-      : TRANSACTION_TYPES.R,
   };
 
   if (voidPermitFormData.additionalEmail) {

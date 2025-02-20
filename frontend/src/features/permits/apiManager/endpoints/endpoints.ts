@@ -12,15 +12,12 @@ const STAFF_APPLICATIONS_API_BASE = `${VEHICLES_URL}/applications`;
 
 export const APPLICATIONS_API_ROUTES = {
   CREATE: (companyId: string | number) => APPLICATIONS_API_BASE(companyId),
-  UPDATE: (
-    companyId: string | number,
-    permitId: string,
-  ) => `${APPLICATIONS_API_BASE(companyId)}/${permitId}`,
-  GET: (
-    companyId: string | number,
-    permitId: string,
-  ) => `${APPLICATIONS_API_BASE(companyId)}/${permitId}`,
-  GET_APPLICATIONS: (companyId: string | number) => APPLICATIONS_API_BASE(companyId),
+  UPDATE: (companyId: string | number, permitId: string) =>
+    `${APPLICATIONS_API_BASE(companyId)}/${permitId}`,
+  GET: (companyId: string | number, permitId: string) =>
+    `${APPLICATIONS_API_BASE(companyId)}/${permitId}`,
+  GET_APPLICATIONS: (companyId: string | number) =>
+    APPLICATIONS_API_BASE(companyId),
   DELETE: (companyId: string | number) => APPLICATIONS_API_BASE(companyId),
 };
 
@@ -31,7 +28,8 @@ export const STAFF_APPLICATIONS_API_ROUTES = {
 export const PERMITS_API_ROUTES = {
   BASE: (companyId: string | number) => PERMITS_API_BASE(companyId),
   GET: (companyId: string | number) => PERMITS_API_BASE(companyId),
-  ISSUE: (companyId: string | number) => `${APPLICATIONS_API_BASE(companyId)}/issue`,
+  ISSUE: (companyId: string | number) =>
+    `${APPLICATIONS_API_BASE(companyId)}/issue`,
   AMEND: APPLICATIONS_API_ROUTES.CREATE,
   DOWNLOAD: (companyId: string | number, permitId: string) =>
     `${PERMITS_API_BASE(companyId)}/${permitId}/document`,
@@ -49,6 +47,7 @@ export const PAYMENT_API_ROUTES = {
   COMPLETE: PAYMENT_API_BASE,
   GET: PAYMENT_API_BASE,
   PAYMENT_GATEWAY: `payment-gateway`,
+  REFUND: `${PAYMENT_API_BASE}/refund`,
 };
 
 const CART_API_BASE = (companyId: string | number) =>

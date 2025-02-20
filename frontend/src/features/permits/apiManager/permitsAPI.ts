@@ -62,8 +62,8 @@ import {
 
 import {
   RevokePermitRequestData,
+  VoidOrRevokePermitResponseData,
   VoidPermitRequestData,
-  VoidPermitResponseData,
 } from "../pages/Void/types/VoidPermit";
 
 /**
@@ -120,11 +120,12 @@ export const getApplications = async (
   }: ApplicationFilters,
   companyId?: Nullable<number>,
 ): Promise<PaginatedResponse<ApplicationListItem>> => {
-  // If the user is staff and not acting as a company, get timeInQueue and claimedBy properties 
+  // If the user is staff and not acting as a company, get timeInQueue and claimedBy properties
   // in addition to the ApplicationListItem response to be used in the ApplicationsInQueueList component
-  const applicationsURL = !getStaffQueue && companyId
-    ? new URL(APPLICATIONS_API_ROUTES.GET_APPLICATIONS(companyId))
-    : new URL(STAFF_APPLICATIONS_API_ROUTES.GET());
+  const applicationsURL =
+    !getStaffQueue && companyId
+      ? new URL(APPLICATIONS_API_ROUTES.GET_APPLICATIONS(companyId))
+      : new URL(STAFF_APPLICATIONS_API_ROUTES.GET());
 
   // API pagination index starts at 1. Hence page + 1.
   applicationsURL.searchParams.set("page", `${page + 1}`);
@@ -269,7 +270,7 @@ export const deleteApplications = async (
   const requestBody = {
     applications: applicationIds,
   };
-  
+
   return await httpDELETERequest(
     `${APPLICATIONS_API_ROUTES.DELETE(companyId)}`,
     replaceEmptyValuesWithNull(requestBody),
@@ -537,7 +538,7 @@ export const getPermitHistory = async (
  * @param voidData Void or revoke data to be sent to backend.
  * @returns Response data containing successfully voided/revoked permit ids, as well as failed ones.
  */
-export const voidPermit = async (voidPermitParams: {
+export const voidOrRevokePermit = async (voidPermitParams: {
   permitId: string;
   voidData: VoidPermitRequestData | RevokePermitRequestData;
 }) => {
@@ -550,7 +551,7 @@ export const voidPermit = async (voidPermitParams: {
 
     if (response.status === 201 && response.data) {
       return removeEmptyIdsFromPermitsActionResponse(
-        response.data as VoidPermitResponseData,
+        response.data as VoidOrRevokePermitResponseData,
       );
     }
 

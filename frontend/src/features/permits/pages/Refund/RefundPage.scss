@@ -3,145 +3,18 @@
 .refund-page {
   padding: 0 8.551vw;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 3rem;
 
-  &__section {
-    display: flex;
-    flex-direction: column;
+  .button {
+    align-self: flex-start;
+    font-size: 1rem;
+    padding: .5rem 2rem;
+    box-shadow: none;
+    min-width: fit-content;
 
-    &--left {
-      width: 60%;
-      margin-right: 2rem;
-    }
-
-    &--right {
-      width: 40%;
-      margin-left: 2rem;
-    }
-
-    .refund-info {
-      padding: 2rem 0;
-      border-bottom: 1px solid $bc-border-grey;
-
-      &--transactions, &--refund-methods {
-        padding-top: 0;
-        padding-bottom: 1rem;
-        border-bottom: none;
-      }
-
-      &__header {
-        margin-bottom: 1em;
-        font-size: 1.5rem;
-        font-weight: 600;
-      }
-
-      &__info {
-        margin: 0.25rem 0;
-      }
-
-      .refund-methods {
-        .refund-method {
-          padding: 1em;
-          border: 1px solid $bc-text-box-border-grey;
-          border-radius: 0.5rem;
-          margin-bottom: 1rem;
-
-          &--active {
-            border: 1px solid $bc-black;
-            background-color: $bc-messages-blue-background;
-          }
-
-          .radio-label span {
-            font-size: 1.2rem;
-            font-weight: 600;
-          }
-
-          .refund-payment {
-            display: flex;
-            flex-direction: row;
-
-            &__info {
-              &--method {
-                margin-right: 0.5rem;
-                width: 50%;
-              }
-
-              &--transaction {
-                margin-left: 0.5rem;
-                width: 50%;
-              }
-            }
-
-            &__label {
-              font-weight: 600;
-              margin-bottom: 0.5rem;
-            }
-
-            &__input {
-              background-color: $white;
-              font-size: 0.9rem;
-
-              .MuiOutlinedInput-notchedOutline {
-                top: -6px;
-              }
-
-              .MuiSelect-icon {
-                display: none;
-              }
-
-              &--method {
-                background-color: $bc-background-light-grey;
-              }
-
-              &--err {
-                .MuiOutlinedInput-notchedOutline {
-                  border: 2px solid $bc-red;
-                }
-              }
-            }
-
-            &__err {
-              color: $bc-red;
-            }
-          }
-        }
-      }
-
-      &--fee-summary {
-        padding: 0;
-        border-bottom: none;
-
-        .refund-fee-summary {
-          border-radius: 4px;
-          overflow: hidden;
-          
-          &__header {
-            padding: 1rem;
-            background-color: $bc-black;
-            color: $white;
-            font-weight: 600;
-          }
-
-          &__title {
-            font-size: 1.5rem;
-          }
-  
-          .fee-summary {
-            margin: 0;
-          }
-  
-          &__footer {
-            padding: 1rem;
-            background-color: $banner-grey;
-  
-            .finish-btn {
-              font-weight: 600;
-              width: 100%;
-            }
-          }
-        }
-      }
+    &:hover, &:focus {
+      box-shadow: none; 
     }
   }
 }

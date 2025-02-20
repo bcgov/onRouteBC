@@ -65,7 +65,7 @@ export interface StartTransactionRequestData
   extends NullableFields<PaymentGatewayData> {
   transactionTypeId: TransactionType;
   paymentMethodTypeCode: PaymentMethodTypeCode;
-  paymentCardTypeCode?: PaymentCardTypeCode;
+  paymentCardTypeCode?: Nullable<PaymentCardTypeCode>;
   applicationDetails: {
     applicationId: string;
     transactionAmount: number;
@@ -78,6 +78,7 @@ export interface StartTransactionResponseData
   transactionTypeId: TransactionType;
   paymentMethodTypeCode: PaymentMethodTypeCode;
   paymentCardTypeCode?: Nullable<PaymentCardTypeCode>;
+  payerName: string;
   totalTransactionAmount: number;
   transactionSubmitDate: string;
   transactionOrderNumber: string;

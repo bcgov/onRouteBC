@@ -105,7 +105,7 @@ export const NumberInput = (props: NumberInputProps) => {
     <FormControl
       margin="normal"
       className={`
-        number-input ${props.classes?.root ? props.classes.root : ""} ${
+        custom-input number-input ${props.classes?.root ? props.classes.root : ""} ${
           errorMessages.length > 0 ? "number-input--error" : ""
         }
       `}
@@ -126,7 +126,7 @@ export const NumberInput = (props: NumberInputProps) => {
         {...inputProps}
         className={`number-input__input ${
           inputProps.className ? inputProps.className : ""
-        }`}
+        } ${inputProps.disabled ? "number-input__input--disabled" : ""}`}
         type="text"
         value={valueDisplay}
         onChange={handleChange}

@@ -34,8 +34,15 @@
       }
     }
 
-    input:disabled + fieldset {
-      background-color: orbcStyles.$bc-background-light-grey;
+    &--disabled {
+      z-index: 1;
+      color: orbcStyles.$bc-black;
+      -webkit-text-fill-color: orbcStyles.$bc-black;
+      fieldset {
+        background-color: orbcStyles.$bc-background-light-grey;
+        border: 2px solid orbcStyles.$bc-text-box-border-grey;
+      }
     }
+
   }
 }

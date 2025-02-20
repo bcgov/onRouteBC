@@ -1,0 +1,27 @@
+@import "../../../../../themes/orbcStyles.scss";
+
+.refund-details {
+  margin: 1.5rem 0;
+  max-width: 830px;
+
+  &__table {
+   border-radius: 4px;
+   padding: 1.5rem;
+   background-color: $banner-grey;
+   display: flex;
+   justify-content: space-between;
+  }
+
+  &__col{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  &__text{
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: $bc-primary-blue;
+    margin: 0;
+  }
+}

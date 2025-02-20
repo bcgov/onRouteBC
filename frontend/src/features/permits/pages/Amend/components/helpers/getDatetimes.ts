@@ -1,6 +1,9 @@
 import dayjs, { Dayjs } from "dayjs";
 
-import { applyWhenNotNullable, getDefaultNullableVal } from "../../../../../../common/helpers/util";
+import {
+  applyWhenNotNullable,
+  getDefaultNullableVal,
+} from "../../../../../../common/helpers/util";
 import { Nullable } from "../../../../../../common/types/common";
 import { Application } from "../../../../types/application";
 import { Permit } from "../../../../types/permit";

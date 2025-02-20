@@ -14,6 +14,7 @@ import {
   Trailer,
 } from "../../features/manageVehicles/types/Vehicle";
 import { LOAFormData } from "../../features/settings/types/LOAFormData";
+import { RefundFormData } from "../../features/permits/pages/Refund/types/RefundFormData";
 
 export interface ApiErrorResponse {
   status: number;
@@ -34,7 +35,8 @@ export type ORBC_FormTypes =
   | SearchFields
   | VerifyClientRequest
   | PermitContactDetails
-  | LOAFormData;
+  | LOAFormData
+  | { refundData: RefundFormData[] };
 
 /**
  * The options for pagination.
@@ -147,10 +149,19 @@ export type NullableFields<T> = {
   [P in keyof T]?: Nullable<T[P]>;
 };
 
+/**
+ * The type of item provided as a list to the TabLayout component
+ */
+export interface DashboardTab {
+  label: string;
+  component: JSX.Element;
+  componentKey: string;
+}
+
 export const isNull = <T>(val?: Nullable<T>) => {
-  return !val && (typeof val !== "undefined") && val == null;
+  return !val && typeof val !== "undefined" && val == null;
 };
 
 export const isUndefined = <T>(val?: Nullable<T>) => {
-  return (typeof val === "undefined");
+  return typeof val === "undefined";
 };

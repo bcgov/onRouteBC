@@ -152,7 +152,7 @@ export const ShoppingCartPage = () => {
   useEffect(() => {
     // transaction is undefined when payment endpoint has not been requested
     // ie. "Pay Now" button has not been pressed
-    if (typeof transaction !== "undefined") {
+    if (typeof transaction !== "undefined" && selectedIds.length > 0) {
       if (!transaction) {
         // Payment failed - ie. transaction object is null
         navigate(SHOPPING_CART_ROUTES.DETAILS(true));
@@ -161,7 +161,7 @@ export const ShoppingCartPage = () => {
         // simply proceed to issue permits
         issuePermitMutation.mutate({
           companyId,
-          applicationIds: [...selectedIds],
+          applicationIds: selectedIds,
         });
 
         // prevent the issuePermitMutation from being called again

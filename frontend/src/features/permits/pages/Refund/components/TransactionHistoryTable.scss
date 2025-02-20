@@ -4,56 +4,62 @@
   &#{&} {
     overflow: visible;
     box-shadow: none;
+    margin-bottom: 2.5rem;
   }
 
-  & &__table {
+  & &__container {
     width: 100%;
-    border: 1px solid $bc-border-grey;
+    border-left: 1px solid $bc-border-grey;
+    border-right: 1px solid $bc-border-grey;
+  }
+
+  & &__row {
+    &--selected {
+      background-color: $bc-messages-blue-background;
+    }
+  }
+
+  & &__checkbox {
+    position: absolute;
+    top: 1.5rem;
+    &--disabled {
+      display: none;
+    }
   }
 
   & &__header {
     background-color: $bc-background-light-grey;
+  }
 
-    &--permit {
-      padding-left: 1rem;
-      padding-right: 0.5rem;
+  & &__cell {
+    height: 2.75rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    
+      &:nth-child(2) {
+        padding-left: 1rem;
+      }
+      &:last-child {
+        padding-right: 1rem;
+      }
+
+    .cell__inner {
+      position: absolute;
+      top: 1rem;
     }
 
-    &--payment {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    &--transaction {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    &--amount {
-      padding-left: 0.5rem;
-      padding-right: 1rem;
+    .cell__value {
+      padding-top: .75rem;
     }
   }
 
-  & &__data {
-    &--permit {
-      padding-left: 1rem;
-      padding-right: 0.5rem;
-    }
+  & &__input-container {
+    margin: 0;
+  }
 
-    &--payment {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    &--transaction {
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
-    }
-
-    &--amount {
-      padding-left: 0.5rem;
-      padding-right: 1rem;
-    }
+  &__input {
+    display: flex;
+    align-items: center;
+    width: 205px;
   }
 }
