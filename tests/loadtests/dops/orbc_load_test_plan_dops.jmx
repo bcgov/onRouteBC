@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -17,7 +17,7 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager" enabled="true">
+      <CacheManager guiclass="CacheManagerGui" testclass="CacheManager" testname="HTTP Cache Manager">
         <boolProp name="clearEachIteration">true</boolProp>
         <boolProp name="useExpires">false</boolProp>
         <boolProp name="CacheManager.controlledByThread">false</boolProp>
@@ -63,41 +63,37 @@
       </HeaderManager>
       <hashTree/>
       <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
-        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
+        <intProp name="HTTPSampler.concurrentPool">2</intProp>
+        <stringProp name="HTTPSampler.embedded_url_re">^((?!google|facebook|youtube|pinterest|twimg|doubleclick).)*$</stringProp>
+        <intProp name="HTTPSampler.connect_timeout">60000</intProp>
+        <intProp name="HTTPSampler.response_timeout">120000</intProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain"></stringProp>
-        <stringProp name="HTTPSampler.port"></stringProp>
-        <stringProp name="HTTPSampler.protocol"></stringProp>
-        <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-        <stringProp name="HTTPSampler.path"></stringProp>
-        <boolProp name="HTTPSampler.concurrentDwn">true</boolProp>
-        <stringProp name="HTTPSampler.concurrentPool">2</stringProp>
-        <stringProp name="HTTPSampler.embedded_url_re">^((?!google|facebook|youtube|pinterest|twimg|doubleclick).)*$</stringProp>
-        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
-        <stringProp name="HTTPSampler.response_timeout">120000</stringProp>
+        <stringProp name="HTTPSampler.implementation"></stringProp>
       </ConfigTestElement>
       <hashTree/>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="NUM_THREADS" elementType="Argument">
             <stringProp name="Argument.name">NUM_THREADS</stringProp>
-            <stringProp name="Argument.value">200</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="FRONTEND_API_URL" elementType="Argument">
             <stringProp name="Argument.name">FRONTEND_API_URL</stringProp>
-            <stringProp name="Argument.value">onroutebc-test-frontend.apps.silver.devops.gov.bc.ca</stringProp>
+            <stringProp name="Argument.value">onroutebc-uat-frontend.apps.silver.devops.gov.bc.ca</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="VEHICLES_API_URL" elementType="Argument">
             <stringProp name="Argument.name">VEHICLES_API_URL</stringProp>
-            <stringProp name="Argument.value">onroutebc-test-vehicles.apps.silver.devops.gov.bc.ca</stringProp>
+            <stringProp name="Argument.value">onroutebc-uat-vehicles.apps.silver.devops.gov.bc.ca</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="DOPS_API_URL" elementType="Argument">
             <stringProp name="Argument.name">DOPS_API_URL</stringProp>
-            <stringProp name="Argument.value">onroutebc-test-dops.apps.silver.devops.gov.bc.ca</stringProp>
+            <stringProp name="Argument.value">onroutebc-uat-dops.apps.silver.devops.gov.bc.ca</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="RESULTS_DIR" elementType="Argument">
@@ -107,26 +103,28 @@
           </elementProp>
           <elementProp name="IDIR_BEARER_TOKEN" elementType="Argument">
             <stringProp name="Argument.name">IDIR_BEARER_TOKEN</stringProp>
-            <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.value">eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJZFJzYmIzRDFsWHplM2dvU2E5Q3QtdDdnSG5DYkl1dkdUYlRsUHBKYzAwIn0.eyJleHAiOjE3MzgzNDg3NzIsImlhdCI6MTczODM0ODQ3MiwiYXV0aF90aW1lIjoxNzM4MzQ1ODMzLCJqdGkiOiI1MDdiMjY4YS0zZTNlLTQ0MGMtODhmYS1mZjkzYzhkYTg1YjQiLCJpc3MiOiJodHRwczovL2xvZ2lucHJveHkuZ292LmJjLmNhL2F1dGgvcmVhbG1zL3N0YW5kYXJkIiwiYXVkIjoib24tcm91dGUtYmMtZGlyZWN0LW5vLWJhc2ljLTU4NjIiLCJzdWIiOiJmOGVhN2Y1NWVkM2Y0OTY3ODNkODMwNjYwMWY3OGE0ZUBpZGlyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoib24tcm91dGUtYmMtZGlyZWN0LW5vLWJhc2ljLTU4NjIiLCJzZXNzaW9uX3N0YXRlIjoiZGNmMmQzMGUtY2ViYy00NjM5LTgwMGUtOWIxYjE4OTYyNDI2Iiwic2NvcGUiOiJvcGVuaWQgYmNlaWRidXNpbmVzcyBlbWFpbCBwcm9maWxlIGlkaXIiLCJzaWQiOiJkY2YyZDMwZS1jZWJjLTQ2MzktODAwZS05YjFiMTg5NjI0MjYiLCJpZGlyX3VzZXJfZ3VpZCI6IkY4RUE3RjU1RUQzRjQ5Njc4M0Q4MzA2NjAxRjc4QTRFIiwiaWRlbnRpdHlfcHJvdmlkZXIiOiJpZGlyIiwiaWRpcl91c2VybmFtZSI6IlRST1JCQ1QxIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiU2VydmljZSBBY2NvdW50IChUUk9SQkNUMSkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJmOGVhN2Y1NWVkM2Y0OTY3ODNkODMwNjYwMWY3OGE0ZUBpZGlyIiwiZGlzcGxheV9uYW1lIjoiU2VydmljZSBBY2NvdW50IChUUk9SQkNUMSkiLCJnaXZlbl9uYW1lIjoiU2VydmljZSIsImZhbWlseV9uYW1lIjoiQWNjb3VudCJ9.likbs62NslRMj0xnyWLLEPNWO02z5essqta4Ne8saglUeXrEqvbH0W5NhgEM5w5EMoJS604I6MB-6PNDx5wRYdWxwuuMlEsYzCPu6xzMcPEsHbja_2qv6f-hCInaIf44JG4ChJyRCUG4tBbzNybY5BAOjuZpfYw5h73UwCm2RPlI569A-SWbqxKVAwa9nu1-NVQcWQMwzTJ4Jt6izlUUrENs6tUnAG3APhgBis__6-zLypdjmqi5Y6P-bHSn9AYYXS9fU1FISF_Zw48ILMzDJAITYlyvfmP3GBAtDsKaB0hBcV0tRyfM-PVBRneUhSJRx3PLtogofOb1PmwC4SNw3w</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="COMPANY_ID" elementType="Argument">
+            <stringProp name="Argument.name">COMPANY_ID</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="IDIR ppc create and download pdf - dops" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
-        </elementProp>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="IDIR ppc create and download pdf - dops">
         <stringProp name="ThreadGroup.num_threads">${NUM_THREADS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,300)}</stringProp>
-        <longProp name="ThreadGroup.start_time">1365261073000</longProp>
-        <longProp name="ThreadGroup.end_time">1365261073000</longProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,0)}</stringProp>
         <stringProp name="ThreadGroup.duration">${__P(duration,3000)}</stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
       </ThreadGroup>
       <hashTree>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
@@ -147,7 +145,12 @@
         </HeaderManager>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ppcSearch" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+          <stringProp name="HTTPSampler.path">https://${VEHICLES_API_URL}/permits?searchColumn=permitNumber&amp;searchString=1&amp;page=1&amp;take=10</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -157,19 +160,6 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://${VEHICLES_API_URL}/permits?searchColumn=permitNumber&amp;searchString=1&amp;page=1&amp;take=10</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
           <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="BlazeMeter Header Manager" enabled="false">
@@ -256,22 +246,14 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ppcDgenGetDocument" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dms/1?download=url&amp;companyId=${COMPANY_ID}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dms/1?download=url&amp;companyId=74</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
           <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="BlazeMeter Header Manager" enabled="false">
@@ -362,6 +344,10 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ppcDgenReportRender" enabled="true">
+          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dgen/report/render</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -442,22 +428,13 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dgen/report/render</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ppcDgenTemplateRender" enabled="true">
+          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dgen/template/render?companyId=${COMPANY_ID}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
@@ -546,19 +523,6 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://${DOPS_API_URL}/dgen/template/render?companyId=74</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
