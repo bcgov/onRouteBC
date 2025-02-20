@@ -115,7 +115,7 @@ jobs:
   deploys:
     name: Helm
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
