@@ -231,4 +231,46 @@ export class PermitController {
     );
     return 'success';
   }
+
+  @Get('/reports')
+  getReportMockData() {
+    return [
+      {
+        'ISSUED ON': 'Jul. 17, 2023, 09:00 PM, PDT',
+        'PROVIDER TRAN ID': '5609123890',
+        'ORBC TRAN ID': 'OR-6904512857',
+        'PAYMENT METHOD': 'Cash',
+        'RECEIPT #': '458721098',
+        'PERMIT #': 'P2-78106199-468',
+        'PERMIT TYPE': 'STOW',
+        USER: 'USERABC',
+        AMOUNT: '90',
+        'TRANSACTION TYPE': 'Payment',
+      },
+      {
+        'ISSUED ON': 'Jul. 17, 2023, 09:20 PM, PDT',
+        'PROVIDER TRAN ID': '56799123890',
+        'ORBC TRAN ID': 'OR-678904012857',
+        'PAYMENT METHOD': 'Cash',
+        'RECEIPT #': '56709123690',
+        'PERMIT #': 'P2-87769836-955',
+        'PERMIT TYPE': 'TROS',
+        USER: 'USERBCD',
+        AMOUNT: '90',
+        'TRANSACTION TYPE': 'Payment',
+      },
+      {
+        'ISSUED ON': 'Jul. 17, 2023, 09:20 PM, PDT',
+        'PROVIDER TRAN ID': '36709123890',
+        'ORBC TRAN ID': 'OR-608904512857',
+        'PAYMENT METHOD': 'Cash',
+        'RECEIPT #': '56709123191',
+        'PERMIT #': 'P2-87768855-956',
+        'PERMIT TYPE': 'TROS',
+        USER: 'USEREFG',
+        AMOUNT: '-90.54',
+        'TRANSACTION TYPE': 'Refund',
+      },
+    ];
+  }
 }

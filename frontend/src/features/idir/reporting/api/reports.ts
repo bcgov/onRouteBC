@@ -50,6 +50,17 @@ export const getPaymentAndRefundSummary = async (
 };
 
 /**
+ * Retrieves the payment and refund summary report.
+ * @param requestObject The {@link PaymentAndRefundSummaryRequest} object
+ * @returns A Promise containing the AxiosResponse
+ */
+export const getPaymentAndRefundSummaryMock = async (
+) => {
+  const url = `${VEHICLES_URL}/permits/reports`;
+  return await httpGETRequest(url.toString());
+};
+
+/**
  * Retrieves the payment and refund detail report.
  * @param requestObject The {@link PaymentAndRefundDetailRequest} object
  * @returns A Promise containing the AxiosResponse
