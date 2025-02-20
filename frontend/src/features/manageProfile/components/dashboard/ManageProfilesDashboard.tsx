@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import React, { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Navigate } from "react-router-dom";
-
+import { useFetchLOAs } from "../../../settings/hooks/LOA";
 import OnRouteBCContext from "../../../../common/authentication/OnRouteBCContext";
 import { CLAIMS } from "../../../../common/authentication/types";
 import { DoesUserHaveClaim } from "../../../../common/authentication/util";
@@ -78,7 +78,17 @@ export const ManageProfilesDashboard = React.memo(() => {
 
   const { data: specialAuthorizations, isPending: isSpecialAuthAPILoading } =
     useFetchSpecialAuthorizations(companyId as number, true);
-
+  const activeLOAsQuery = useFetchLOAs(companyId, false);
+  const expiredLOAsQuery = useFetchLOAs(companyId, true);
+  const activeLOAs = getDefaultRequiredVal([], activeLOAsQuery.data);
+  const expiredLOAs = getDefaultRequiredVal([], expiredLOAsQuery.data);
+  const canWriteLOA = usePermissionMatrix({
+    featureFlag: "LOA",
+    permissionMatrixKeys: {
+      permissionMatrixFeatureKey: "MANAGE_SETTINGS",
+      permissionMatrixFunctionKey: "EDIT_AN_LOA",
+    },
+  });
   const showSpecialAuth = usePermissionMatrix({
     additionalConditionToCheck: () =>
       !isStaffActingAsCompany &&
@@ -87,7 +97,11 @@ export const ManageProfilesDashboard = React.memo(() => {
         featureFlags?.["LCV"] === "ENABLED") &&
       !isSpecialAuthAPILoading &&
       Boolean(
-        specialAuthorizations?.isLcvAllowed || specialAuthorizations?.noFeeType,
+        specialAuthorizations?.isLcvAllowed ||
+          specialAuthorizations?.noFeeType ||
+          activeLOAs.length > 0 ||
+          expiredLOAs.length > 0 ||
+          canWriteLOA,
       ),
     permissionMatrixKeys: {
       permissionMatrixFeatureKey: "MANAGE_PROFILE",

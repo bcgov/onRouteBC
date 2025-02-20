@@ -12,12 +12,10 @@ export const LCVSection = ({
   onUpdateLCV: (enable: boolean) => void;
   isEditable?: boolean;
 }) => {
-  return (isEditable || enableLCV) ? (
+  return isEditable || enableLCV ? (
     <div className={`lcv-section ${isEditable ? "" : "lcv-section--readonly"}`}>
       <div className="lcv-section__header">
-        <div className="lcv-section__title">
-          Long Combination Vehicle (LCV)
-        </div>
+        <div className="lcv-section__title">Long Combination Vehicle (LCV)</div>
 
         {isEditable ? (
           <Switch
