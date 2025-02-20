@@ -123,6 +123,9 @@ RUN apk add --no-cache \
      
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
+# It's a good idea to use dumb-init to help prevent zombie chrome processes.
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
 
 # Add user so we don't need --no-sandbox.
 RUN addgroup -S pptruser && adduser -S -G pptruser pptruser \
@@ -135,6 +138,9 @@ USER pptruser
 
 # Expose Port
 EXPOSE 5001
+
+# It's a good idea to use dumb-init to help prevent zombie chrome processes.
+ENTRYPOINT ["dumb-init", "--"]
 
 # Start the app
 CMD ["npm", "run", "start:prod"]
