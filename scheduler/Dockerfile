@@ -1,6 +1,7 @@
 #  Build container
 FROM node:22.14.0-alpine AS builder
 
+RUN apk update && apk add busybox-extras
 # Set the working directory to /app inside the container
 WORKDIR /app
 
@@ -19,6 +20,8 @@ RUN npm prune --production
 
 # Deployment container
 FROM node:22.14.0-alpine
+RUN apk update && apk add busybox-extras
+
 RUN npm cache clean --force
 
 # Create and Assign permissions to npm folder
