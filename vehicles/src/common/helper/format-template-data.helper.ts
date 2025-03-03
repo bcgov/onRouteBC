@@ -97,12 +97,15 @@ export const formatTemplateData = (
   template.clientNumber = companyInfo.clientNumber;
   template.companyAlternateName = companyInfo.alternateName;
 
-  // Format Fee Summary
   const transcation = permit.permitTransactions?.at(0)?.transaction;
 
+  // Format Fee Summary
   template.permitData.feeSummary = formatAmount(
     transcation.transactionTypeId,
-    permit.permitTransactions?.at(0)?.transactionAmount,
+    permit.permitTransactions?.reduce(
+      (accumulator, item) => accumulator + item.transactionAmount,
+      0,
+    ),
   ).toString();
 
   if (permit.revision > 0) {

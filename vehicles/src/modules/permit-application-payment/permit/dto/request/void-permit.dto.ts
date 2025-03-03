@@ -1,20 +1,19 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMinSize,
+  IsArray,
   IsEmail,
   IsEnum,
-  IsNumber,
   IsOptional,
   IsString,
-  Length,
-  MaxLength,
-  Min,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { ApplicationStatus } from 'src/common/enum/application-status.enum';
-import { PaymentMethodType } from '../../../../../common/enum/payment-method-type.enum';
 import { TransactionType } from '../../../../../common/enum/transaction-type.enum';
-import { PaymentCardType } from '../../../../../common/enum/payment-card-type.enum';
+import { PaymentTransactionDto } from '../../../payment/dto/common/payment-transaction.dto';
+import { Type } from 'class-transformer';
 
 export class VoidPermitDto {
   @AutoMap()
@@ -28,23 +27,15 @@ export class VoidPermitDto {
 
   @AutoMap()
   @ApiProperty({
-    description: 'Provider Transaction ID.',
-    example: '10000148',
-    required: false,
+    description: 'The transaction details specific to application/permit.',
+    required: true,
+    type: [PaymentTransactionDto],
   })
-  @IsOptional()
-  @IsString()
-  @MaxLength(20)
-  pgTransactionId?: string;
-
-  @AutoMap()
-  @ApiProperty({
-    enum: PaymentMethodType,
-    example: PaymentMethodType.WEB,
-    description: 'The identifier of the user selected payment method.',
-  })
-  @IsEnum(PaymentMethodType)
-  paymentMethodTypeCode: PaymentMethodType;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => PaymentTransactionDto)
+  transactions: PaymentTransactionDto[];
 
   @AutoMap()
   @ApiProperty({
@@ -55,48 +46,6 @@ export class VoidPermitDto {
   })
   @IsEnum(TransactionType)
   transactionTypeId: TransactionType;
-
-  @AutoMap()
-  @ApiProperty({
-    description: 'Payment Transaction Amount.',
-    example: 30,
-  })
-  @IsNumber()
-  @Min(0)
-  transactionAmount: number;
-
-  @AutoMap()
-  @ApiProperty({
-    description: 'Payment Transaction Date.',
-    example: '2023-07-10T15:49:36.582Z',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  //@MaxLength(27) // TODO Should it be Is Date?
-  pgTransactionDate?: string;
-
-  @AutoMap()
-  @ApiProperty({
-    example: 'CC',
-    description: 'Represents the payment method of a transaction.',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @Length(1, 2)
-  pgPaymentMethod?: string;
-
-  @AutoMap()
-  @ApiProperty({
-    enum: PaymentCardType,
-    example: PaymentCardType.VISA,
-    description: 'Represents the card type used for the transaction.',
-    required: false,
-  })
-  @IsOptional()
-  @IsEnum(PaymentCardType)
-  pgCardType?: PaymentCardType;
 
   @AutoMap()
   @ApiProperty({
