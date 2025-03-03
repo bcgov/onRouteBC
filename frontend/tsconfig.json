@@ -5,7 +5,8 @@
       "es6",
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "WebWorker"
     ],
     "types": ["vitest/globals", "vite/client", "vite-plugin-svgr/client"],
     "allowJs": true,

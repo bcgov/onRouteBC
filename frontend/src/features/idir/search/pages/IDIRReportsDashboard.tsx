@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { memo, useState } from "react";
 import {
   Box,
@@ -13,6 +14,7 @@ import { Banner } from "../../../../common/components/dashboard/components/banne
 import { BC_COLOURS } from "../../../../themes/bcGovStyles";
 import { PaymentAndRefundDetail } from "../../reporting/forms/PaymentAndRefundDetail";
 import { PaymentAndRefundSummary } from "../../reporting/forms/PaymentAndRefundSummary";
+import { CSVPaymentAndRefundSummary } from "../../reporting/forms/CSVPaymentAndRefundSummary";
 
 /**
  * The types of reports.
@@ -114,7 +116,8 @@ export const IDIRReportsDashboard = memo(() => {
               }}
             />
           </Stack>
-          {reportMode === REPORT_TYPES.SUMMARY && <PaymentAndRefundSummary />}
+          {/* {reportMode === REPORT_TYPES.SUMMARY && <PaymentAndRefundSummary />} */}
+          {reportMode === REPORT_TYPES.SUMMARY && <CSVPaymentAndRefundSummary />}
           {reportMode === REPORT_TYPES.DETAIL && <PaymentAndRefundDetail />}
         </Stack>
       </div>

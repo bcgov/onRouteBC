@@ -39,7 +39,7 @@ export const getUserStorage = () => {
  * Retrieves the access token from session.
  * @returns A string containing the access token.
  */
-const getAccessToken = () => {
+export const getAccessToken = () => {
   const parsedSessionObject = getDefaultRequiredVal(
     { token_type: "", access_token: "" },
     getUserStorage(),

@@ -8,6 +8,7 @@ import { VEHICLES_URL } from "../../../../common/apiManager/endpoints/endpoints"
 import { ONE_HOUR } from "../../../../common/constants/constants";
 import {
   httpGETRequest,
+  httpGETRequestStream,
   httpPOSTRequestStream,
 } from "../../../../common/apiManager/httpRequestHandler";
 
@@ -47,6 +48,17 @@ export const getPaymentAndRefundSummary = async (
 ) => {
   const url = `${VEHICLES_URL}/payment/report/summary`;
   return await streamDownloadWithHTTPPost(url, requestObject);
+};
+
+/**
+ * Retrieves the payment and refund summary report.
+ * @param requestObject The {@link PaymentAndRefundSummaryRequest} object
+ * @returns A Promise containing the AxiosResponse
+ */
+export const getPaymentAndRefundSummaryMock = async (
+) => {
+  const url = `${VEHICLES_URL}/permits/reports`;
+  return await httpGETRequestStream(url.toString());
 };
 
 /**
