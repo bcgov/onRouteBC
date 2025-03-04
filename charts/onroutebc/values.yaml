@@ -239,8 +239,8 @@ vehicles:
           cpu: 300m
           memory: 500Mi
         requests:
-          cpu: 200m
-          memory: 300Mi
+          cpu: 50m
+          memory: 150Mi
   autoscaling:
     #-- enable or disable autoscaling.
     enabled: true
@@ -382,8 +382,8 @@ dops:
           cpu: 2000m
           memory: 4000Mi
         requests:
-          cpu: 1000m
-          memory: 2000Mi
+          cpu: 25m
+          memory: 250Mi
   autoscaling:
     #-- enable or disable autoscaling.
     enabled: true
