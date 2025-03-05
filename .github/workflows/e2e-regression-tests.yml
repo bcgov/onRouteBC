@@ -35,7 +35,7 @@ jobs:
     outputs:
       target: ${{ steps.env.outputs.target }}
       environment: ${{ steps.env.outputs.environment }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: env
         id: env
@@ -55,7 +55,7 @@ jobs:
     name: ${{matrix.test}}
     needs: [vars]
     environment: ${{needs.vars.outputs.environment}}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: tests/
@@ -83,7 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: cypress-io/github-action@v6.7.7
+      - uses: cypress-io/github-action@v6.7.13
         name: Cypress run
         env:
           CYPRESS_baseUrl: https://${{ github.event.repository.name }}-${{ needs.vars.outputs.target || 'test' }}-frontend.apps.silver.devops.gov.bc.ca/
