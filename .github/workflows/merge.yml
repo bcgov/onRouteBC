@@ -23,7 +23,7 @@ jobs:
     name: Set Variables
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 1
     steps:
       # Get PR number for squash merges to main
@@ -49,7 +49,7 @@ jobs:
   promote-images-test:
     name: Promote Images - Test
     needs: [deploys-test, vars]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
     strategy:
