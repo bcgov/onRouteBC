@@ -12,31 +12,30 @@
     
     
   }
+}
 
+.account-info {
+  width: 66.6%;
+  .overview {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid $bc-border-grey;
 
-  .account-info {
-    width: 66.6%;
-    .overview {
-      padding-bottom: 2rem;
-      border-bottom: 1px solid $bc-border-grey;
+    &__flex {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: .5rem;
+      padding-bottom: 1rem;
+    }
 
-      &__flex {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding-top: .5rem;
-        padding-bottom: 1rem;
-      }
-
-      &__title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        padding: 0;
-      }
-    
-      &__user-designation {
-        text-transform: capitalize;
-      }
+    &__title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      padding: 0;
+    }
+  
+    &__user-designation {
+      text-transform: capitalize;
     }
   }
 }

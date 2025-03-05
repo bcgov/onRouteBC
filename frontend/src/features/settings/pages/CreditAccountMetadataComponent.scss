@@ -1,0 +1,8 @@
+@import "../../../themes/orbcStyles";
+
+.non-finance-container {
+  margin-top: 1.5rem;
+  * {
+    font-weight: normal; // Applies to all nested elements
+  }
+}
