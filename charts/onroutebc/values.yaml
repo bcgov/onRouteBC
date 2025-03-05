@@ -47,6 +47,9 @@ frontend:
             "VITE_SITEMINDER_LOG_OFF_URL":"$SITEMINDER_LOG_OFF_URL",
             "VITE_PR_NUM":"$PR_NUM",
             "VITE_RELEASE_NUM":"$RELEASE_NUM",
+            "VITE_BC_GEOCODER_CLIENT_ID":"$VITE_BC_GEOCODER_CLIENT_ID",
+            "VITE_BC_GEOCODER_API_KEY":"$VITE_BC_GEOCODER_API_KEY",
+            "VITE_BC_GEOCODER_API_URL":"$VITE_BC_GEOCODER_API_URL",
           };
         })();
   containers:

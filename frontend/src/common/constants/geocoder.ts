@@ -1,0 +1,9 @@
+export const DEFAULT_MAX_RESULTS = 7;
+export const DEFAULT_MIN_SCORE = 50;
+export const DEFAULT_ECHO = false;
+export const DEFAULT_BRIEF = true;
+export const DEFAULT_AUTOCOMPLETE = true;
+export const DEFAULT_LOCATION_DESCRIPTOR = "accessPoint";
+export const DEFAULT_OUTPUT_SRS = 3857;
+export const DEBOUNCE_DURATION = 500;
+export const MIN_SEARCH_LENGTH = 3;

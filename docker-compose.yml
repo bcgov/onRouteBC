@@ -209,6 +209,9 @@ services:
         VITE_KEYCLOAK_ISSUER_URL: ${VITE_KEYCLOAK_ISSUER_URL}
         VITE_KEYCLOAK_AUDIENCE: ${VITE_KEYCLOAK_AUDIENCE}
         VITE_SITEMINDER_LOG_OFF_URL: ${VITE_SITEMINDER_LOG_OFF_URL}
+        VITE_BC_GEOCODER_CLIENT_ID: ${VITE_BC_GEOCODER_CLIENT_ID}
+        VITE_BC_GEOCODER_API_KEY: ${VITE_BC_GEOCODER_API_KEY}
+        VITE_BC_GEOCODER_API_URL: ${VITE_BC_GEOCODER_API_URL}
     healthcheck:
       test: "curl --silent --fail http://localhost:3000/ > /dev/null || exit 1"
       interval: 1m30s

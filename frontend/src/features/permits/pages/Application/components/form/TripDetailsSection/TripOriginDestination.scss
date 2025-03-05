@@ -1,4 +1,7 @@
 .trip-origin-destination {
+  display: flex;
+  flex-direction: column;
+  
   & &__input {
     max-width: 30.625rem;
     
@@ -7,12 +10,11 @@
     }
 
     &--origin {
-      .custom-form-control {
-        margin: 0;
-      }
+      margin: 0;
+      width: 100%;
     }
 
-    &--total-distance {
+    &--destination, &--total-distance {
       margin: 1.5rem 0 0 0;
       width: 100%;
     }

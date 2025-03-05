@@ -67,6 +67,20 @@ export const useApplicationFormUpdateMethods = () => {
     );
   }, [setValue]);
 
+  const onUpdateTripOrigin = useCallback((updatedTripOrigin: string) => {
+    setValue(
+      "permitData.permittedRoute.manualRoute.origin",
+      updatedTripOrigin,
+    );
+  }, [setValue]);
+
+  const onUpdateTripDestination = useCallback((updatedTripDestination: string) => {
+    setValue(
+      "permitData.permittedRoute.manualRoute.destination",
+      updatedTripDestination,
+    );
+  }, [setValue]);
+
   const onUpdateTotalDistance = useCallback((updatedTotalDistance?: RequiredOrNull<number>) => {
     setValue(
       "permitData.permittedRoute.manualRoute.totalDistance",
@@ -123,6 +137,8 @@ export const useApplicationFormUpdateMethods = () => {
     onClearVehicle,
     onUpdateLOAs,
     onUpdateHighwaySequence,
+    onUpdateTripOrigin,
+    onUpdateTripDestination,
     onUpdateTotalDistance,
     onUpdateVehicleConfigTrailers,
     onSetCommodityType,

@@ -40,6 +40,8 @@ export const PermitForm = () => {
     revisionHistory,
     commodityOptions,
     highwaySequence,
+    tripOrigin,
+    tripDestination,
     totalDistance,
     nextAllowedSubtypes,
     powerUnitSubtypeNamesMap,
@@ -58,6 +60,8 @@ export const PermitForm = () => {
     onClearVehicle,
     onUpdateLOAs,
     onUpdateHighwaySequence,
+    onUpdateTripOrigin,
+    onUpdateTripDestination,
     onUpdateTotalDistance,
     onUpdateVehicleConfigTrailers,
     onChangeCommodityType,
@@ -136,8 +140,12 @@ export const PermitForm = () => {
           feature={feature}
           permitType={permitType}
           highwaySequence={highwaySequence}
+          tripOrigin={tripOrigin}
+          tripDestination={tripDestination}
           totalDistance={totalDistance}
           onUpdateHighwaySequence={onUpdateHighwaySequence}
+          onUpdateTripOrigin={onUpdateTripOrigin}
+          onUpdateTripDestination={onUpdateTripDestination}
           onUpdateTotalDistance={onUpdateTotalDistance}
         />
 

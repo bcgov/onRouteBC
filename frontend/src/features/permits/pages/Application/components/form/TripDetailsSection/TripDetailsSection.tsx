@@ -11,15 +11,23 @@ export const TripDetailsSection = ({
   feature,
   permitType,
   highwaySequence,
+  tripOrigin,
+  tripDestination,
   totalDistance,
   onUpdateHighwaySequence,
+  onUpdateTripOrigin,
+  onUpdateTripDestination,
   onUpdateTotalDistance,
 }: {
   feature: string;
   permitType: PermitType;
   highwaySequence: string[];
+  tripOrigin?: Nullable<string>;
+  tripDestination?: Nullable<string>;
   totalDistance?: Nullable<number>;
   onUpdateHighwaySequence: (updatedHighwaySequence: string[]) => void;
+  onUpdateTripOrigin: (updateTripOrigin: string) => void;
+  onUpdateTripDestination: (updateTripDestination: string) => void;
   onUpdateTotalDistance: (updatedTotalDistance?: RequiredOrNull<number>) => void;
 }) => {
   return (permitType === PERMIT_TYPES.STOS || permitType === PERMIT_TYPES.MFP) ? (
@@ -34,7 +42,11 @@ export const TripDetailsSection = ({
         <TripOriginDestination
           feature={feature}
           permitType={permitType}
+          tripOrigin={tripOrigin}
+          tripDestination={tripDestination}
           totalDistance={totalDistance}
+          onUpdateTripOrigin={onUpdateTripOrigin}
+          onUpdateTripDestination={onUpdateTripDestination}
           onUpdateTotalDistance={onUpdateTotalDistance}
         />
 

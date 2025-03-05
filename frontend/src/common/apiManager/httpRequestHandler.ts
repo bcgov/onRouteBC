@@ -1,11 +1,13 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+
+import { Nullable, RequiredOrNull } from "../types/common";
+import { GEOCODER_URL } from "./endpoints/endpoints";
 import {
   applyWhenNotNullable,
   getDefaultNullableVal,
   getDefaultRequiredVal,
 } from "../helpers/util";
-import { Nullable, RequiredOrNull } from "../types/common";
 
 // Request interceptor to add a correlationId to the header.
 axios.interceptors.request.use(
@@ -16,6 +18,12 @@ axios.interceptors.request.use(
   },
   function (error) {
     console.log("Unable to make a request:", error);
+  },
+  {
+    runWhen: (config) => {
+      // Add exception to not use interceptor when requesting Geocoder URL
+      return Boolean(!config.url?.startsWith(GEOCODER_URL));
+    },
   },
 );
 
